@@ -82,7 +82,7 @@
     </div>
   </div>
   <script>
-    const API = "REPLACE_WITH_YOUR_DEPLOYED_URL";
+    const API = "https://script.google.com/macros/s/AKfycby7ixG_4AJblYo28xgH3fAWqvwhBEWn6I43rT3SYsRRGJ5UQspTEn5bvfadfd6P8sgJIg/exec";
     let scores = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
     
     async function boot() {
@@ -167,6 +167,7 @@
       const res = await fetch(API, { method: "POST", body: JSON.stringify({ action: "getStudentList" }) }).then(r => r.json());
       const pw = window.open('', '_blank');
       pw.document.write(`
+        <!DOCTYPE html>
         <html>
         <head>
           <title>Batch QR Cards</title>
@@ -174,36 +175,40 @@
             body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; text-align: center; }
             .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; }
             .box { border: 1px solid #ddd; padding: 10px; text-align: center; page-break-inside: avoid; border-radius: 8px; }
-            .qr { width: 105px; height: 105px; margin: 5px auto; }
+            .qr { width: 110px; height: 110px; margin: 5px auto; background: #fff; }
             .qr img { margin: 0 auto; }
             .lbl { font-size: 9px; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin-top: 5px; color: #000; }
             .btn { position: fixed; top: 10px; right: 10px; padding: 12px 24px; background: #000; color: #fbff00; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; z-index: 1000; }
             @media print { .btn { display: none; } @page { size: A4; margin: 1cm; } }
           </style>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
         </head>
         <body>
           <button class="btn" onclick="window.print()">PRINT A4 SHEET</button>
           <div class="grid" id="grid"></div>
+          <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
           <script>
-            window.onload = () => {
+            function generate() {
               const ss = ${JSON.stringify(res.students)};
               const g = document.getElementById('grid');
-              if (!window.QRCode) {
-                alert("QR Library failed to load. Please refresh.");
+              if (typeof QRCode === 'undefined') {
+                console.log("Waiting for QR library...");
+                setTimeout(generate, 100);
                 return;
               }
               ss.forEach(s => {
                 const b = document.createElement('div'); b.className = 'box';
                 const q = document.createElement('div'); q.className = 'qr';
                 const l = document.createElement('div'); l.className = 'lbl';
-                l.innerHTML = s.name + '<br>' + (s.dept || '') + ' | ' + (s.house || '');
+                l.innerHTML = (s.name || 'STUDENT') + '<br>' + (s.dept || '') + ' | ' + (s.house || '');
                 b.appendChild(q);
                 b.appendChild(l);
                 g.appendChild(b);
-                new QRCode(q, { text: s.name + ' | ' + s.dept + ' | ' + s.house, width: 105, height: 105 });
+                try {
+                  new QRCode(q, { text: (s.name || '') + ' | ' + (s.dept || '') + ' | ' + (s.house || ''), width: 110, height: 110 });
+                } catch(e) { console.error("QR Error:", e); }
               });
-            };
+            }
+            generate();
           <\/script>
         </body>
         </html>
