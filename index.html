@@ -12,30 +12,39 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
     .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.3) blur(5px); transition: background 0.5s ease; }
-    .header { padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+    
+    /* Mobile SafeArea Support */
+    .header { padding: calc(20px + env(safe-area-inset-top)) 20px 20px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
     .logo-row { display: flex; gap: 15px; align-items: center; }
     .logo-img { height: 45px; } .founder-img { height: 55px; width: 55px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; }
+    
     #dept-gate { padding: 20px; max-width: 900px; margin: auto; }
     .gate-title { text-align: center; font-weight: 900; color: var(--neon); margin-bottom: 25px; font-size: 22px; letter-spacing: 1px; }
-    .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-    .dept-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; }
-    .dept-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-    .dept-card b { font-size: 16px; font-weight: 900; color: white; text-transform: uppercase; }
-    .dept-card i { font-size: 10px; color: var(--accent); margin-top: 5px; font-style: normal; }
+    
+    .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: env(safe-area-inset-bottom); }
+    .dept-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; }
+    .dept-card:active { transform: scale(0.92); background: rgba(255,255,255,0.1); }
+    .dept-card b { font-size: 18px; font-weight: 900; color: white; text-transform: uppercase; }
+    .dept-card i { font-size: 11px; color: var(--accent); margin-top: 5px; font-style: normal; opacity: 0.7; }
+
     #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
     .modal-box { background: #111; border: 1px solid var(--neon); border-radius: 20px; padding: 30px; width: 100%; max-width: 350px; text-align: center; animation: slideUp 0.3s ease; }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
     input, select { width: 100%; padding: 15px; margin: 10px 0; background: #000; color: white; border: 1px solid #333; border-radius: 12px; font-size: 16px; font-family: inherit; }
     input:focus { border-color: var(--neon); outline: none; }
     .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; font-size: 16px; }
-    #teacher-view { display: none; padding: 20px; max-width: 600px; margin: auto; }
+    
+    #teacher-view { display: none; padding: 20px; max-width: 600px; margin: auto; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
     .glass { background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; }
-    .score-row { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .score-row { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 20px; margin-bottom: 20px; scrollbar-width: none; }
     .score-card { flex: 0 0 100px; background: #111; padding: 12px; border-radius: 15px; text-align: center; border-top: 4px solid #888; }
     .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-    .house-btn { padding: 35px 10px; border-radius: 15px; border: none; font-weight: 900; color: black; cursor: pointer; font-size: 16px; }
+    .house-btn { padding: 35px 10px; border-radius: 15px; border: none; font-weight: 900; color: black; cursor: pointer; font-size: 16px; transition: transform 0.1s; }
+    .house-btn:active { transform: scale(0.95); }
     .type-row { display: flex; gap: 10px; margin-bottom: 20px; }
     .type-btn { flex: 1; padding: 15px; border-radius: 12px; font-weight: 900; border: 3px solid transparent; cursor: pointer; }
+    
     #reader { width: 100%; border-radius: 15px; overflow:hidden; display: none; margin: 10px 0; border: 2px solid var(--neon); }
     #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--neon); color: black; padding: 15px 30px; border-radius: 50px; display: none; z-index: 5000; font-weight: 900; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   </style>
@@ -43,14 +52,17 @@
 <body onload="boot()">
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
+
   <div class="header">
     <div class="logo-row"><img id="m-logo" class="logo-img"><img id="m-founder" class="founder-img"></div>
-    <div style="margin-top:10px;"><b style="font-size:14px;">DON BOSCO  POLYTECHNIC COLLEGE</b><br><span style="font-size:10px; color:var(--neon)">G.O.A.T.S CORE PORTAL</span></div>
+    <div style="margin-top:10px;"><b style="font-size:14px;">DB POLYTECHNIC COLLEGE</b><br><span style="font-size:10px; color:var(--neon)">G.O.A.T.S CORE PORTAL</span></div>
   </div>
+
   <div id="dept-gate">
     <h1 class="gate-title">SELECT DEPARTMENT</h1>
     <div id="dept-grid" class="dept-grid"></div>
   </div>
+
   <div id="login-modal" onclick="if(event.target==this) closeLogin()">
     <div class="modal-box">
       <h3 id="target-dept" style="margin:0 0 20px 0; color:var(--accent);"></h3>
@@ -59,6 +71,7 @@
       <div style="margin-top:15px; font-size:12px; opacity:0.6; cursor:pointer;" onclick="closeLogin()">CANCEL</div>
     </div>
   </div>
+
   <div id="teacher-view">
     <div class="glass">
       <div style="text-align:center; color:var(--accent); font-weight:900; margin-bottom:15px;" id="active-dept">---</div>
@@ -75,13 +88,15 @@
       <button onclick="submitManual()" style="width:100%; background:#222; color:white; border:none; padding:12px; border-radius:12px; margin-bottom:20px;">SUBMIT MANUAL</button>
       <input type="text" id="t-name" placeholder="Teacher Name">
       <select id="p-cat"></select>
-      <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:20px;" onclick="location.reload()">LOGOUT</button>
+      <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:20px;" onclick="logout()">LOGOUT</button>
     </div>
   </div>
+
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbwHgJNQKo8T2fvRl85HPLrdGgw6SpmYSGWsB9yorJWcyBlBGM5FkujF6xMsIhluzqncBw/exec";
+    const API = "https://script.google.com/macros/s/AKfycbw_wKW28DE6px97XUd_lIKEfxJFjlE3ymV6Coz3UZv81uoHG7LvPG4IFYtPbKRyl565Og/exec";
     let scores = {}, currentMode = "Positive", currentDept = "", selectedDept = "";
     let html5QrCode = null, scanActive = false;
+
     async function boot() {
       const cache = localStorage.getItem('goats_cache');
       if (cache) try { render(JSON.parse(cache)); } catch(e){}
@@ -91,6 +106,7 @@
         render(res);
       }
     }
+
     function render(data) {
       if (!data) return;
       const { images, houseConfig, deptList, categories } = data;
@@ -99,7 +115,11 @@
       document.getElementById('m-founder').src = images.founder;
       const grid = document.getElementById('dept-grid');
       grid.innerHTML = deptList.map(d => `<div class="dept-card" onclick="openLogin('${d}')"><b>${d}</b><i>Tap to enter</i></div>`).join('');
-      if (Array.isArray(categories)) document.getElementById('p-cat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
+      
+      if (Array.isArray(categories)) {
+        document.getElementById('p-cat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
+      }
+
       if(houseConfig) {
         const scRow = document.getElementById('score-row'), hGrid = document.getElementById('house-grid'), hSel = document.getElementById('man-house');
         scRow.innerHTML = ""; hGrid.innerHTML = ""; hSel.innerHTML = '<option selected disabled>Select House</option>';
@@ -112,8 +132,17 @@
       }
       setMode('Positive');
     }
+
     function openLogin(d) { selectedDept = d; document.getElementById('target-dept').innerText = d; document.getElementById('login-modal').style.display = 'flex'; document.getElementById('pass-input').focus(); }
     function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
+    
+    function logout() {
+      document.getElementById('teacher-view').style.display = 'none';
+      document.getElementById('dept-gate').style.display = 'block';
+      currentDept = "";
+      document.getElementById('pass-input').value = "";
+    }
+
     async function handleLogin() {
       const p = document.getElementById('pass-input').value; if(!p) return;
       const btn = document.querySelector('#login-modal .btn-main'); btn.innerText = "AUTHENTICATING...";
@@ -123,7 +152,9 @@
         currentDept = selectedDept; document.getElementById('active-dept').innerText = selectedDept;
       } else { alert("Invalid Password"); btn.innerText = "ENTER"; }
     }
+
     function setMode(m) { currentMode = m; document.getElementById('btn-pos').style.borderColor = m==='Positive'?'var(--neon)':'transparent'; document.getElementById('btn-neg').style.borderColor = m==='Negative'?'var(--neon)':'transparent'; }
+    
     async function toggleCam() {
       if(!scanActive) {
         document.getElementById('reader').style.display = 'block'; html5QrCode = new Html5Qrcode("reader");
@@ -134,11 +165,13 @@
       } else stopCam();
     }
     async function stopCam() { if(html5QrCode) await html5QrCode.stop(); document.getElementById('reader').style.display = 'none'; scanActive = false; }
+
     function submitManual() {
       const n = document.getElementById('man-name').value, h = document.getElementById('man-house').value;
       if(!n || h === "Select House") return alert("Name & House required");
       record(h, n); document.getElementById('man-name').value = "";
     }
+
     async function record(house, sName, sDept = null) {
       const t = document.getElementById('t-name').value; if(!t) return alert("Teacher Name required");
       const pts = currentMode === 'Positive' ? 10 : -5;
@@ -146,7 +179,8 @@
         scores[house] += pts; document.getElementById('s-'+house).innerText = scores[house];
         showToast(`${sName} (${pts})`); if(pts > 0) confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
         fetch(API, { method: "POST", body: JSON.stringify({
-          action: "submitPoint", data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: t, category: document.getElementById('p-cat').value, house, type: currentMode }
+          action: "submitPoint", 
+          data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: t, category: document.getElementById('p-cat').value, house, type: currentMode }
         })});
       }
     }
