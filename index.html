@@ -178,20 +178,25 @@
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycby7ixG_4AJblYo28xgH3fAWqvwhBEWn6I43rT3SYsRRGJ5UQspTEn5bvfadfd6P8sgJIg/exec";
+    const API = "https://script.google.com/macros/s/AKfycbxm6qRDf4Y5iIMtGnfTBdBKRVj-sqWpkZTjh6Ah-CAqqkBbBPIXn8cGCanmTUko_pMusQ/exec";
     let scores = {}, houseColors = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
     async function boot() {
       const status = document.getElementById('sync-status');
-      const cache = localStorage.getItem('goats_cache'); if (cache) try { render(JSON.parse(cache)); } catch(e){}
-      status.innerText = "⌛";
+      status.innerText = "⌛ LOADING";
+      const cache = localStorage.getItem('goats_cache');
+      if (cache) try { render(JSON.parse(cache)); } catch(e){}
       try {
-        const ping = await fetch(API, { method:"POST", body: JSON.stringify({action:"ping"}) }).then(r => r.json());
-        if(ping.success) { status.innerText = "🟢 LIVE"; status.className = "status-live"; }
         const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"getAppData"}) }).then(r => r.json());
-        if(res && res.deptList) { localStorage.setItem('goats_cache', JSON.stringify(res)); render(res); }
+        if(res && res.deptList) {
+          localStorage.setItem('goats_cache', JSON.stringify(res));
+          render(res);
+          status.innerText = "🟢 LIVE"; status.className = "status-live";
+        } else {
+          throw new Error("Bad response");
+        }
       } catch(e) {
         status.innerText = "🔴 OFFLINE"; status.className = "status-offline";
-        showToast("⚠️ Cannot reach server");
+        if(!cache) showToast("⚠️ Cannot reach server — Redeploy Code.gs");
       }
     }
     function render(data) {
