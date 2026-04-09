@@ -15,16 +15,16 @@
     /* ── BG ── */
     .bg-overlay { position: fixed; inset: 0; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.2) blur(8px); transition: background-image 1s ease; }
     /* ── HEADER ── */
-    .header { padding: calc(12px + env(safe-area-inset-top)) 20px 12px; display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; z-index: 100; }
-    .header-logos { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-    .logo-img { height: 40px; object-fit: contain; }
-    .founder-img { height: 48px; width: 48px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; }
-    .header-title { flex: 1; }
-    .header-title h1 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--neon); line-height: 1; }
-    .header-title p { font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; }
-    #sync-status { font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 4px 8px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
-    .status-live { color: var(--green) !important; border-color: var(--green) !important; }
-    .status-offline { color: var(--red) !important; border-color: var(--red) !important; }
+    .header { padding: calc(10px + env(safe-area-inset-top)) 14px 12px; display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100; }
+    .logo-img { width: 54px; height: 54px; object-fit: contain; border-radius: 8px; }
+    .founder-img { width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; justify-self: end; }
+    .header-title { text-align: center; }
+    .header-title h1 { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: white; line-height: 1.2; }
+    .header-title p { font-size: 8px; color: var(--neon); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.9; }
+    .header-title small { font-size: 7.5px; color: rgba(255,255,255,0.35); letter-spacing: 1px; text-transform: uppercase; display: block; }
+    #sync-status { position: fixed; bottom: 12px; right: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 4px 8px; border-radius: 20px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); z-index: 200; }
+    .status-live { color: var(--green) !important; border-color: rgba(0,255,136,0.3) !important; }
+    .status-offline { color: var(--red) !important; border-color: rgba(255,65,108,0.3) !important; }
     /* ── DEPT GATE ── */
     #dept-gate { padding: 20px; max-width: 900px; margin: auto; }
     .gate-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: rgba(255,255,255,0.15); text-align: center; margin-bottom: 20px; }
@@ -104,15 +104,13 @@
   <div id="toast"></div>
   <!-- HEADER -->
   <div class="header">
-    <div class="header-logos">
-      <img id="m-logo" class="logo-img">
-      <img id="m-founder" class="founder-img">
-    </div>
+    <img id="m-logo" class="logo-img">
     <div class="header-title">
-      <h1>G.O.A.T.S</h1>
-      <p>Championship Portal</p>
+      <h1>DON BOSCO POLYTECHNIC COLLEGE</h1>
+      <p>G.O.A.T.S — Givers of All Talents Students</p>
+      <small>Championship Portal</small>
     </div>
-    <div id="sync-status">OFFLINE</div>
+    <img id="m-founder" class="founder-img">
   </div>
   <!-- DEPT GATE -->
   <div id="dept-gate">
@@ -178,7 +176,7 @@
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbyszDXGnfQdXvuUidkNoPgBuTEhFibQL_0w4RG5-lTPHSy1drZzAvIhM8p3dp3ro-UWBQ/exec";
+    const API = "https://script.google.com/macros/s/AKfycbxG8bAf1SVcA1gUNCZl62gvTi1PI3qacPH-LWsd3NjGuli2Dt99PF9Qcs1WxWGiCYUUqw/exec";
     let scores = {}, houseColors = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
     async function boot() {
       const status = document.getElementById('sync-status');
@@ -186,17 +184,17 @@
       const cache = localStorage.getItem('goats_cache');
       if (cache) try { render(JSON.parse(cache)); } catch(e){}
       try {
-        const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"getAppData"}) }).then(r => r.json());
+        const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"getAppData"}), headers: {"Content-Type":"text/plain"} }).then(r => r.json());
         if(res && res.deptList) {
           localStorage.setItem('goats_cache', JSON.stringify(res));
           render(res);
           status.innerText = "🟢 LIVE"; status.className = "status-live";
         } else {
-          throw new Error("Bad response");
+          throw new Error(res.error || "empty");
         }
       } catch(e) {
         status.innerText = "🔴 OFFLINE"; status.className = "status-offline";
-        if(!cache) showToast("⚠️ Cannot reach server — Redeploy Code.gs");
+        console.error("Boot error:", e.message);
       }
     }
     function render(data) {
