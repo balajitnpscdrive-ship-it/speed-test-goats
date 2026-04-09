@@ -93,7 +93,27 @@
     .upload-box label { font-size: 10px; color: var(--accent); display: block; margin-bottom: 6px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
     /* ── LOGOUT ── */
     .btn-logout { width: calc(100% - 32px); margin: 16px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: rgba(255,255,255,0.4); font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 1px; }
-    /* ── EMOJI / TOAST ── */
+    /* ── ADMIN LEADERBOARD MODAL ── */
+    #lb-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); display: none; flex-direction: column; z-index: 3000; overflow-y: auto; }
+    .lb-header { padding: 16px; background: rgba(0,0,0,0.8); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+    .lb-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; flex: 1; }
+    .lb-back { background: rgba(255,255,255,0.08); border: none; color: white; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; }
+    .lb-filters { display: flex; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
+    .lb-filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 8px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 12px; font-weight: 700; font-family: inherit; }
+    .lb-filter-btn.active { background: var(--neon); color: black; border-color: var(--neon); }
+    .lb-body { padding: 20px; }
+    .lb-podium { display: flex; gap: 10px; margin-bottom: 24px; align-items: flex-end; justify-content: center; }
+    .lb-podium-item { text-align: center; flex: 1; max-width: 100px; }
+    .lb-podium-bar { border-radius: 10px 10px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: rgba(0,0,0,0.7); min-height: 40px; }
+    .lb-podium-name { font-size: 11px; font-weight: 900; text-transform: uppercase; margin-top: 6px; color: rgba(255,255,255,0.8); }
+    .lb-podium-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--neon); }
+    .lb-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 8px; border-left: 4px solid #333; }
+    .lb-row-rank { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: rgba(255,255,255,0.3); width: 30px; text-align: center; }
+    .lb-row-name { flex: 1; font-weight: 900; font-size: 15px; text-transform: uppercase; }
+    .lb-row-pts { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--neon); }
+    .lb-row-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-top: 6px; }
+    .lb-row-fill { height: 4px; border-radius: 4px; transition: width 0.6s ease; }
+    .lb-loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px; }
     .emoji-pop { position: fixed; top: 50%; left: 50%; font-size: 160px; z-index: 9999; pointer-events: none; animation: popScale 0.9s ease-out forwards; }
     @keyframes popScale { 0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; } 25% { transform: translate(-50%,-50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%,-90%) scale(1.3); opacity: 0; } }
     #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: rgba(20,20,20,0.95); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 5000; font-weight: 600; font-size: 13px; backdrop-filter: blur(10px); }
@@ -111,6 +131,15 @@
       <small>Championship Portal</small>
     </div>
     <img id="m-founder" class="founder-img">
+  </div>
+  <!-- ADMIN LEADERBOARD MODAL -->
+  <div id="lb-modal">
+    <div class="lb-header">
+      <button class="lb-back" onclick="closeLb()">← BACK</button>
+      <h2 id="lb-title">LEADERBOARD</h2>
+    </div>
+    <div class="lb-filters" id="lb-cat-filters"></div>
+    <div class="lb-body" id="lb-body"><div class="lb-loading">Loading...</div></div>
   </div>
   <!-- DEPT GATE -->
   <div id="dept-gate">
@@ -176,7 +205,7 @@
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbxG8bAf1SVcA1gUNCZl62gvTi1PI3qacPH-LWsd3NjGuli2Dt99PF9Qcs1WxWGiCYUUqw/exec";
+    const API = "https://script.google.com/macros/s/AKfycbyeMTVhj8w658fIjLsh_NpdslLC9AirUCoMKh160hzGBJVhB8gVtEV1t2UFHMqws5ZXfw/exec";
     let scores = {}, houseColors = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
     async function boot() {
       const status = document.getElementById('sync-status');
@@ -197,14 +226,19 @@
         console.error("Boot error:", e.message);
       }
     }
+    const deptIcons = { 'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊' };
+    function getDeptIcon(dept) { const k = dept.toLowerCase().replace(/\s+/g,''); for(const key in deptIcons) { if(k.includes(key)) return deptIcons[key]; } return '📚'; }
+    let isAdminSession = false, adminCategories = [], currentLbDept = '', currentLbCat = 'ALL';
     function render(data) {
       if (!data) return;
       const { images, houseConfig, deptList, categories } = data;
+      adminCategories = categories || [];
       if(images && images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
       if(images && images.logo) document.getElementById('m-logo').src = images.logo;
       if(images && images.founder) document.getElementById('m-founder').src = images.founder;
       document.getElementById('dept-grid').innerHTML = deptList.map(d => `
-        <div class="dept-card" onclick="openLogin('${d}')">
+        <div class="dept-card" onclick="handleDeptClick('${d}')">
+          <div style="font-size:32px; margin-bottom:8px;">${getDeptIcon(d)}</div>
           <b>${d}</b>
           <div class="dept-card-bar"></div>
         </div>`).join('');
@@ -221,6 +255,9 @@
         animateAllGlow(houseConfig);
       }
       setMode('Positive');
+    }
+    function handleDeptClick(dept) {
+      if(isAdminSession) { openLb(dept); } else { openLogin(dept); }
     }
     function animateAllGlow(houses) {
       houses.forEach((h, i) => {
@@ -256,13 +293,19 @@
         currentDept = selectedDept;
         document.getElementById('dept-label').innerText = selectedDept;
         const isAdmin = res.role === 'Admin';
+        isAdminSession = isAdmin;
         document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
         ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id => {
           const el = document.getElementById(id); if(el) el.style.display = isAdmin ? 'none' : '';
         });
-        if(!isAdmin) {
+        if (!isAdmin) {
           document.getElementById('type-select').style.display = 'flex';
           document.getElementById('house-grid').style.display = 'grid';
+        } else {
+          // Admin: show dept gate after login for leaderboard
+          closeLogin();
+          document.getElementById('dept-gate').style.display = 'block';
+          document.getElementById('teacher-view').style.display = 'block';
         }
       } else { alert("❌ Wrong Password"); }
     }
@@ -326,7 +369,49 @@
     function logout() {
       document.getElementById('teacher-view').style.display = 'none';
       document.getElementById('dept-gate').style.display = 'block';
-      currentDept = ""; if(scanActive) stopCam();
+      currentDept = ""; isAdminSession = false; if(scanActive) stopCam();
+    }
+    // ── ADMIN LEADERBOARD ──
+    function openLb(dept) {
+      currentLbDept = dept;
+      currentLbCat = 'ALL';
+      document.getElementById('lb-title').innerText = dept === 'ALL' ? 'ALL DEPARTMENTS' : dept.toUpperCase();
+      const filtersEl = document.getElementById('lb-cat-filters');
+      const cats = ['ALL', ...adminCategories];
+      filtersEl.innerHTML = cats.map(c => `<button class="lb-filter-btn${c==='ALL'?' active':''}" onclick="setLbCat('${c}')">${c}</button>`).join('');
+      document.getElementById('lb-modal').style.display = 'flex';
+      loadLb();
+    }
+    function closeLb() { document.getElementById('lb-modal').style.display = 'none'; }
+    function setLbCat(cat) {
+      currentLbCat = cat;
+      document.querySelectorAll('.lb-filter-btn').forEach(b => b.classList.toggle('active', b.innerText === cat));
+      loadLb();
+    }
+    async function loadLb() {
+      const body = document.getElementById('lb-body');
+      body.innerHTML = '<div class="lb-loading">⌛ Loading weekly data...</div>';
+      const res = await fetch(API, { method:'POST', body: JSON.stringify({ action:'getDeptLeaderboard', dept: currentLbDept, category: currentLbCat }), headers:{"Content-Type":"text/plain"} }).then(r=>r.json());
+      if (!res.success || !res.leaderboard.length) { body.innerHTML = '<div class="lb-loading">No data for this week yet.</div>'; return; }
+      const lb = res.leaderboard;
+      const max = lb[0].pts || 1;
+      const medals = ['🥇','🥈','🥉'];
+      // Podium (top 3)
+      let podiumHTML = '<div class="lb-podium">';
+      const order = lb.length >= 3 ? [1, 0, 2] : lb.map((_,i)=>i);
+      order.filter(i=>lb[i]).forEach(i => {
+        const h = lb[i], color = houseColors[h.name] || '#888';
+        const ht = Math.max(60, Math.round((h.pts/max)*140));
+        podiumHTML += `<div class="lb-podium-item"><div class="lb-podium-bar" style="background:${color}; height:${ht}px;">${medals[i]||''}</div><div class="lb-podium-name">${h.name}</div><div class="lb-podium-score">${h.pts}</div></div>`;
+      });
+      podiumHTML += '</div>';
+      // Full list
+      let rowsHTML = lb.map((h, i) => {
+        const color = houseColors[h.name] || '#888';
+        const pct = Math.round((h.pts / max) * 100);
+        return `<div class="lb-row" style="border-left-color:${color}"><div class="lb-row-rank">${medals[i]||i+1}</div><div style="flex:1"><div class="lb-row-name">${h.name}</div><div class="lb-row-bar"><div class="lb-row-fill" style="width:${pct}%; background:${color}"></div></div></div><div class="lb-row-pts">${h.pts}</div></div>`;
+      }).join('');
+      body.innerHTML = `<div style="font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:2px; text-align:center; margin-bottom:16px; text-transform:uppercase;">📅 LAST 7 DAYS · ${currentLbCat === 'ALL' ? 'All Categories' : currentLbCat}</div>${podiumHTML}${rowsHTML}`;
     }
     function toggleBranding() { const b = document.getElementById('admin-branding'); b.style.display = b.style.display==='block'?'none':'block'; }
     async function forceSync() { showToast("🔄 Syncing..."); localStorage.removeItem('goats_cache'); await boot(); showToast("✅ Sync Complete"); }
