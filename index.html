@@ -178,7 +178,7 @@
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbzcg_jRFKzGHnxw62fh63PVzu_e-4nnFtZ17CBm_F8Sbhm-_QKrrsBpXJj3_hYL1_cB/exec";
+    const API = "https://script.google.com/macros/s/AKfycbwr1IHyEyyopH3WMONurkRWmgtpQsKsnyvNbnT_mc814XvZsooaPQQjD7NiTBoCkd7tMw/exec";
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL";
     // ── POST helper (no Content-Type to avoid CORS preflight redirect) ──
     function api(payload) {
@@ -241,20 +241,24 @@
     function closeLogin(){document.getElementById('login-modal').style.display='none';}
     async function handleLogin(){
       const p=document.getElementById('pass-input').value; if(!p) return;
-      const res=await api({action:"authenticate",user:selectedDept,pass:p});
-      if(res.success){
-        closeLogin();
-        isAdmin = res.role==='Admin';
-        currentDept=selectedDept;
-        document.getElementById('dept-label').innerText=selectedDept;
-        document.getElementById('dept-gate').style.display='block';
-        document.getElementById('teacher-view').style.display='block';
-        document.getElementById('admin-actions').style.display=isAdmin?'flex':'none';
-        ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id=>{
-          const el=document.getElementById(id);if(el) el.style.display=isAdmin?'none':'';
-        });
-        if(!isAdmin){document.getElementById('type-select').style.display='flex';document.getElementById('house-grid').style.display='grid';}
-      } else alert("❌ Wrong Password");
+      try {
+        const res=await api({action:"authenticate",user:selectedDept,pass:p});
+        if(res.success){
+          closeLogin();
+          isAdmin = res.role==='Admin';
+          currentDept=selectedDept;
+          document.getElementById('dept-label').innerText=selectedDept;
+          document.getElementById('dept-gate').style.display = isAdmin ? 'block' : 'none';
+          document.getElementById('teacher-view').style.display='block';
+          document.getElementById('admin-actions').style.display=isAdmin?'flex':'none';
+          ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id=>{
+            const el=document.getElementById(id);if(el) el.style.display=isAdmin?'none':'';
+          });
+          if(!isAdmin){document.getElementById('type-select').style.display='flex';document.getElementById('house-grid').style.display='grid';}
+        } else alert("❌ Wrong Password");
+      } catch(e) {
+        alert("❌ Login Error: " + e.message);
+      }
     }
     async function record(hInput,sName,sDept=null){
       const t=document.getElementById('t-name').value;
@@ -269,12 +273,12 @@
       else popEmoji('😢');
       try{
         const res=await api({action:"submitPoint",data:{dept:currentDept,studentDept:sDept,studentName:sName,teacherName:t,category:document.getElementById('p-cat').value,house:actualH,type:currentMode}});
-        if(!res||!res.success) throw new Error(res.error||"fail");
+        if(!res||!res.success) throw new Error(res.error||"No success response from server.");
       }catch(e){
         scores[actualH]-=pts;
         document.getElementById('s-'+actualH).innerText=scores[actualH];
         updateRanks();
-        alert("❌ SYNC FAILED for "+sName+". Please re-scan.");
+        alert("❌ SYNC FAILED for "+sName+". Reason: " + e.message);
       }
     }
     function popEmoji(e){const el=document.createElement('div');el.className='emoji-pop';el.innerText=e;document.body.appendChild(el);setTimeout(()=>el.remove(),900);}
