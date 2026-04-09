@@ -3,40 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>DB G.O.A.T.S | PORTAL</title>
+  <title>DB G.O.A.T.S | SPEED MODE</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     :root { --neon: #fbff00; --accent: #00d4ff; --bg: #000; }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Poppins', sans-serif; }
-    body { margin: 0; background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
-    .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.3) blur(5px); }
-    .header { padding: calc(20px + env(safe-area-inset-top)) 20px 20px 20px; text-align: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-    .logo-row { display: flex; gap: 15px; align-items: center; justify-content: center; } 
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
+    .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.3) blur(5px); transition: background 0.5s ease; }
+    
+    .header { padding: calc(20px + env(safe-area-inset-top)) 20px 20px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+    .logo-row { display: flex; gap: 15px; align-items: center; }
     .logo-img { height: 45px; } .founder-img { height: 55px; width: 55px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; }
+    
     #dept-gate { padding: 20px; max-width: 900px; margin: auto; }
-    .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-    .dept-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-    .dept-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-    #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; }
-    .modal-box { background: #111; border: 1px solid var(--neon); border-radius: 20px; padding: 30px; width: 100%; max-width: 350px; text-align: center; }
-    input, select { width: 100%; padding: 15px; margin: 10px 0; background: #000; color: white; border: 1px solid #333; border-radius: 12px; font-size: 16px; }
-    .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; margin-top: 10px; cursor: pointer; }
+    .gate-title { text-align: center; font-weight: 900; color: var(--neon); margin-bottom: 25px; font-size: 22px; letter-spacing: 1px; }
+    .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: env(safe-area-inset-bottom); }
+    .dept-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; }
+    .dept-card:active { transform: scale(0.92); background: rgba(255,255,255,0.1); }
+    .dept-card b { font-size: 18px; font-weight: 900; color: white; text-transform: uppercase; }
+    .dept-card i { font-size: 11px; color: var(--accent); margin-top: 5px; font-style: normal; opacity: 0.7; }
+    #login-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+    .modal-box { background: #111; border: 1px solid var(--neon); border-radius: 20px; padding: 30px; width: 100%; max-width: 350px; text-align: center; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+    input, select { width: 100%; padding: 15px; margin: 10px 0; background: #000; color: white; border: 1px solid #333; border-radius: 12px; font-size: 16px; font-family: inherit; }
+    input:focus { border-color: var(--neon); outline: none; }
+    .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; font-size: 16px; }
+    
     #teacher-view { display: none; padding: 20px; max-width: 600px; margin: auto; }
     .glass { background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; }
-    .score-row { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: none; }
-    .score-card { flex: 0 0 100px; background: #111; padding: 12px; border-radius: 12px; text-align: center; border-top: 4px solid #888; font-size: 11px; }
-    .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .house-btn { padding: 35px 10px; border-radius: 12px; border: none; font-weight: 900; color: black; cursor: pointer; }
-    .type-row { display: flex; gap: 10px; margin-bottom: 20px; } .type-btn { flex: 1; padding: 15px; border-radius: 10px; font-weight: 900; border: 3px solid transparent; cursor: pointer; }
+    .score-row { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .score-card { flex: 0 0 100px; background: #111; padding: 12px; border-radius: 15px; text-align: center; border-top: 4px solid #888; }
+    .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+    .house-btn { padding: 35px 10px; border-radius: 15px; border: none; font-weight: 900; color: black; cursor: pointer; font-size: 16px; }
+    .type-row { display: flex; gap: 10px; margin-bottom: 20px; }
+    .type-btn { flex: 1; padding: 15px; border-radius: 12px; font-weight: 900; border: 3px solid transparent; cursor: pointer; }
+    
+    #reader { width: 100%; border-radius: 15px; overflow:hidden; display: none; margin: 10px 0; border: 2px solid var(--neon); }
     #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--neon); color: black; padding: 15px 30px; border-radius: 50px; display: none; z-index: 5000; font-weight: 900; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     #sync-status { position: fixed; top: 10px; left: 10px; font-size: 9px; font-weight: 900; text-transform: uppercase; color: #444; z-index: 1000; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
     .status-live { color: #00ff88 !important; } .status-offline { color: #ff416c !important; }
-    .admin-branding { display: none; text-align: left; margin-top: 20px; border-top: 1px dashed #444; padding-top: 20px; }
+    
+    .emoji-pop { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 150px; z-index: 9999; pointer-events: none; animation: popScale 1s ease-out forwards; }
+    @keyframes popScale { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%, -80%) scale(1.5); opacity: 0; } }
+    
+    .admin-branding { display: none; margin-top: 20px; border-top: 1px dashed #444; padding-top: 20px; text-align: left; }
     .upload-box { background: #111; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #222; }
-    .upload-box label { font-size: 10px; color: var(--accent); display: block; margin-bottom: 5px; font-weight: 900; }
+    .upload-box label { display: block; font-size: 12px; color: var(--accent); margin-bottom: 10px; font-weight: 900; }
+    .file-input-wrapper { position: relative; }
+    .file-input-wrapper input { opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; }
+    .btn-upload { background: #222; border: 1px solid #444; color: white; padding: 10px; width: 100%; border-radius: 10px; font-weight: 600; font-size: 14px; text-align: center; }
   </style>
 </head>
 <body onload="boot()">
@@ -45,123 +64,198 @@
   <div id="toast"></div>
   <div class="header">
     <div class="logo-row"><img id="m-logo" class="logo-img"><img id="m-founder" class="founder-img"></div>
-    <div style="margin-top:10px;"><b style="font-size:13px;">DB POLYTECHNIC COLLEGE</b><br><span style="font-size:10px; color:var(--neon)">G.O.A.T.S CORE PORTAL</span></div>
+    <div style="margin-top:10px;"><b style="font-size:14px;">DB POLYTECHNIC COLLEGE</b><br><span style="font-size:10px; color:var(--neon)">G.O.A.T.S CORE PORTAL</span></div>
   </div>
-  <div id="dept-gate"><div id="dept-grid" class="dept-grid"></div></div>
+  <!-- Dept Selection View -->
+  <div id="dept-gate">
+    <h1 class="gate-title">SELECT DEPARTMENT</h1>
+    <div id="dept-grid" class="dept-grid">
+      <!-- Skeleton or Cache -->
+    </div>
+  </div>
+  <!-- Password Modal -->
   <div id="login-modal" onclick="if(event.target==this) closeLogin()">
-    <div class="modal-box"><h3 id="target-dept" style="color:var(--accent);"></h3><input type="password" id="pass-input" placeholder="Password"><button class="btn-main" onclick="handleLogin()">ENTER</button></div>
+    <div class="modal-box">
+      <h3 id="target-dept" style="margin:0 0 20px 0; color:var(--accent);"></h3>
+      <input type="password" id="pass-input" placeholder="Password" autocomplete="current-password">
+      <button class="btn-main" onclick="handleLogin()">ENTER</button>
+      <div style="margin-top:15px; font-size:12px; opacity:0.6; cursor:pointer;" onclick="closeLogin()">CANCEL</div>
+    </div>
   </div>
+  <!-- Teacher Operations View -->
   <div id="teacher-view">
     <div class="glass">
-      <div id="active-dept" style="text-align:center; color:var(--accent); font-weight:900; margin-bottom:15px;">---</div>
+      <div style="text-align:center; color:var(--accent); font-weight:900; margin-bottom:15px;" id="active-dept">---</div>
+      
       <div id="score-row" class="score-row"></div>
-      <div class="type-row" id="type-select">
+      
+      <div class="type-row">
         <button class="type-btn" id="btn-neg" onclick="setMode('Negative')" style="background:#ff416c; color:white;">-5</button>
         <button class="type-btn" id="btn-pos" onclick="setMode('Positive')" style="background:#00b09b; color:white;">+10</button>
       </div>
       <div id="house-grid" class="house-grid"></div>
-      <button id="cam-btn" onclick="toggleCam()" style="background:var(--neon); border:none; padding:18px; border-radius:50px; font-weight:900; width:100%; margin-bottom:15px; cursor:pointer;">📷 SCAN STUDENT QR</button>
-      <div id="reader" style="display:none; border-radius:15px; overflow:hidden; border:2px solid var(--neon); margin-bottom:15px;"></div>
-      <div id="manual-area">
-        <input type="text" id="man-name" placeholder="Student Name">
-        <select id="man-house"><option selected disabled>House</option></select>
-        <button onclick="submitManual()" style="width:100%; background:#222; color:white; border:none; padding:12px; border-radius:12px; margin-bottom:15px; cursor:pointer;">SUBMIT MANUAL</button>
-      </div>
-      <div id="teacher-meta"><input type="text" id="t-name" placeholder="Teacher Name"><select id="p-cat"></select></div>
+      <button id="cam-btn" onclick="toggleCam()" style="background:var(--neon); border:none; padding:18px; border-radius:50px; font-weight:900; width:100%; margin-bottom:15px;">📷 SCAN STUDENT QR</button>
+      <div id="reader"></div>
+      <input type="text" id="man-name" placeholder="Manual Student Name">
+      <select id="man-house"><option selected disabled>Select House</option></select>
+      <button onclick="submitManual()" style="width:100%; background:#222; color:white; border:none; padding:12px; border-radius:12px; margin-bottom:20px;">SUBMIT MANUAL</button>
+      <input type="text" id="t-name" placeholder="Teacher Name">
+      <select id="p-cat"></select>
+      
       <div id="admin-actions" style="display:none; margin-top:20px;">
         <button class="btn-main" style="background:#222; color:var(--accent); border:1px solid var(--accent); font-size:14px;" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
         <button class="btn-main" style="background:#222; color:var(--neon); border:1px solid var(--neon); font-size:14px; margin-top:10px;" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
-        <button class="btn-main" style="background:#222; color:white; border:1px solid #444; font-size:14px; margin-top:10px;" onclick="forceSync()">🔄 SYNC FROM SHEET</button>
+        <button class="btn-main" style="background:#222; color:var(--accent); border:1px solid var(--accent); font-size:14px; margin-top:10px;" onclick="forceSync()">🔄 SYNC DATA FROM SHEET</button>
       </div>
       <div id="admin-branding" class="admin-branding">
-        <div class="upload-box"><label>LOGO</label><input type="file" onchange="handleFile(this, 'Logo_ID')" accept="image/*"></div>
-        <div class="upload-box"><label>FOUNDER</label><input type="file" onchange="handleFile(this, 'Founder_ID')" accept="image/*"></div>
-        <div class="upload-box"><label>BACKGROUND</label><input type="file" onchange="handleFile(this, 'Background_ID')" accept="image/*"></div>
+        <h4 style="margin: 0 0 15px 0; color:var(--neon); text-align:center;">MANAGE BRANDING</h4>
+        
+        <div class="upload-box">
+          <label>APP LOGO</label>
+          <div class="file-input-wrapper">
+            <div class="btn-upload" id="lbl-Logo_ID">Choose Logo...</div>
+            <input type="file" onchange="handleFile(this, 'Logo_ID')" accept="image/*">
+          </div>
+        </div>
+        <div class="upload-box">
+          <label>FOUNDER IMAGE</label>
+          <div class="file-input-wrapper">
+            <div class="btn-upload" id="lbl-Founder_ID">Choose Founder Image...</div>
+            <input type="file" onchange="handleFile(this, 'Founder_ID')" accept="image/*">
+          </div>
+        </div>
+        <div class="upload-box">
+          <label>APP BACKGROUND</label>
+          <div class="file-input-wrapper">
+            <div class="btn-upload" id="lbl-Background_ID">Choose Background...</div>
+            <input type="file" onchange="handleFile(this, 'Background_ID')" accept="image/*">
+          </div>
+        </div>
+        
+        <div style="text-align:center; font-size:11px; opacity:0.5; margin-top:10px;">Select a file to upload automatically.</div>
       </div>
-      <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:15px;" onclick="logout()">LOGOUT</button>
+      
+      <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:20px;" onclick="logout()">LOGOUT</button>
     </div>
   </div>
   <script>
     const API = "https://script.google.com/macros/s/AKfycby7ixG_4AJblYo28xgH3fAWqvwhBEWn6I43rT3SYsRRGJ5UQspTEn5bvfadfd6P8sgJIg/exec";
-    let scores = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
-    
+    let scores = {}, currentMode = "Positive", currentDept = "", selectedDept = "";
+    let html5QrCode = null, scanActive = false;
     async function boot() {
       const status = document.getElementById('sync-status');
-      const cache = localStorage.getItem('goats_cache'); if (cache) try { render(JSON.parse(cache)); } catch(e){}
-      status.innerText = "⌛ PINGING...";
+      const cache = localStorage.getItem('goats_cache'); 
+      if (cache) try { render(JSON.parse(cache)); } catch(e){}
+      
+      status.innerText = "⌛ PINGING SCRIPT...";
       try {
         const ping = await fetch(API, { method: "POST", body: JSON.stringify({action: "ping"}) }).then(r => r.json());
-        if(ping.success) { status.innerText = "🟢 LIVE"; status.className = "status-live"; }
+        if(ping.success) {
+          status.innerText = "🟢 LIVE"; status.className = "status-live";
+        }
+        
         const res = await fetch(API, { method: "POST", body: JSON.stringify({action: "getAppData"}) }).then(r => r.json());
         if (res && res.deptList) { localStorage.setItem('goats_cache', JSON.stringify(res)); render(res); }
       } catch(e) { 
-        status.innerText = "🔴 DISCONNECTED"; status.className = "status-offline";
-        showToast("⚠️ ERROR: Check Deployment URL");
+        status.innerText = "🔴 SCRIPT UNREACHABLE"; status.className = "status-offline";
+        console.error("Boot failure:", e);
+        showToast("⚠️ CONNECTION FAILED: Check URL or Redeploy Script");
       }
     }
-
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
-
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
     function render(data) {
-      if (!data) return; const { images, houseConfig, deptList, categories } = data;
+      if (!data) return;
+      const { images, houseConfig, deptList, categories } = data;
+      
       if(images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
-      document.getElementById('m-logo').src = images.logo; document.getElementById('m-founder').src = images.founder;
-      document.getElementById('dept-grid').innerHTML = deptList.map(d => `<div class="dept-card" onclick="openLogin('${d}')"><b>${d}</b></div>`).join('');
-      if (categories) document.getElementById('p-cat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
+      document.getElementById('m-logo').src = images.logo;
+      document.getElementById('m-founder').src = images.founder;
+      const grid = document.getElementById('dept-grid');
+      grid.innerHTML = deptList.map(d => `
+        <div class="dept-card" onclick="openLogin('${d}')">
+          <b>${d}</b>
+          <i>Tap to enter</i>
+        </div>
+      `).join('');
+      if (Array.isArray(categories)) {
+        const catSel = document.getElementById('p-cat');
+        catSel.innerHTML = categories.map(c => `<option>${c}</option>`).join('');
+      }
       if(houseConfig) {
-        const row = document.getElementById('score-row'), grid = document.getElementById('house-grid'), sel = document.getElementById('man-house');
-        row.innerHTML = ""; grid.innerHTML = ""; sel.innerHTML = '<option selected disabled>House</option>';
+        const scRow = document.getElementById('score-row');
+        const hGrid = document.getElementById('house-grid');
+        const hSel = document.getElementById('man-house');
+        scRow.innerHTML = ""; hGrid.innerHTML = ""; hSel.innerHTML = '<option selected disabled>Select House</option>';
+        
         houseConfig.forEach(h => {
-          scores[h.name] = 0; row.innerHTML += `<div class="score-card" style="border-top-color:${h.color}">${h.name}<br><b id="s-${h.name}">0</b></div>`;
-          grid.innerHTML += `<button class="house-btn" style="background:${h.color}" onclick="record('${h.name}', 'WINNER')">${h.name}</button>`;
-          sel.add(new Option(h.name, h.name));
+          scores[h.name] = 0;
+          scRow.innerHTML += `<div class="score-card" style="border-top-color:${h.color}">${h.name}<br><b id="s-${h.name}">0</b></div>`;
+          hGrid.innerHTML += `<button class="house-btn" style="background:${h.color}" onclick="record('${h.name}', 'WINNER')">${h.name}</button>`;
+          hSel.add(new Option(h.name, h.name));
         });
       }
       setMode('Positive');
     }
-    function openLogin(d) { selectedDept = d; document.getElementById('target-dept').innerText = d; document.getElementById('login-modal').style.display = 'flex'; }
+    function openLogin(d) {
+      selectedDept = d;
+      document.getElementById('target-dept').innerText = d;
+      document.getElementById('login-modal').style.display = 'flex';
+      document.getElementById('pass-input').focus();
+    }
     function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
+    function logout() {
+      document.getElementById('teacher-view').style.display = 'none';
+      document.getElementById('dept-gate').style.display = 'block';
+      currentDept = "";
+      document.getElementById('pass-input').value = "";
+    }
     async function handleLogin() {
-      const p = document.getElementById('pass-input').value; if(!p) return;
-      const res = await fetch(API, { method: "POST", body: JSON.stringify({action: "authenticate", user: selectedDept, pass: p}) }).then(r => r.json());
-      if(res.success) {
+      const p = document.getElementById('pass-input').value;
+      if(!p) return;
+      const btn = document.querySelector('#login-modal .btn-main');
+      btn.innerText = "AUTHENTICATING...";
+      
+      const r = await fetch(API, { method: "POST", body: JSON.stringify({action: "authenticate", user: selectedDept, pass: p}) }).then(r => r.json());
+      if(r.success) {
         closeLogin(); document.getElementById('dept-gate').style.display = 'none'; document.getElementById('teacher-view').style.display = 'block';
         currentDept = selectedDept; document.getElementById('active-dept').innerText = selectedDept;
-        const isAdmin = res.role === 'Admin';
-        document.getElementById('admin-actions').style.display = isAdmin ? 'block' : 'none';
-        ['house-grid','cam-btn','manual-area','type-select','teacher-meta'].forEach(id => {
-          const el = document.getElementById(id); if(el) el.style.display = isAdmin ? 'none' : (id.includes('grid')?'grid':'block');
-        });
-        if(isAdmin) document.getElementById('type-select').style.display = 'none'; else document.getElementById('type-select').style.display = 'flex';
-      } else alert("Wrong Password");
+        
+        // Role-Based UI Tweaks
+        if(r.role === 'Admin') {
+          document.getElementById('admin-actions').style.display = 'block';
+          // Hide point-entry UI for Admins
+          document.getElementById('house-grid').style.display = 'none';
+          document.querySelector('button[onclick="toggleCam()"]').style.display = 'none';
+          document.getElementById('man-name').style.display = 'none';
+          document.getElementById('man-house').style.display = 'none';
+          document.querySelector('button[onclick="submitManual()"]').style.display = 'none';
+          document.getElementById('p-cat').style.display = 'none';
+          document.getElementById('t-name').style.display = 'none';
+        } else {
+          document.getElementById('admin-actions').style.display = 'none';
+          // Show point-entry UI for Teachers
+          document.getElementById('house-grid').style.display = 'grid';
+          document.querySelector('button[onclick="toggleCam()"]').style.display = 'block';
+          document.getElementById('man-name').style.display = 'block';
+          document.getElementById('man-house').style.display = 'block';
+          document.querySelector('button[onclick="submitManual()"]').style.display = 'block';
+          document.getElementById('p-cat').style.display = 'block';
+          document.getElementById('t-name').style.display = 'block';
+        }
+      } else { alert("Invalid Password"); btn.innerText = "ENTER"; }
     }
-    async function record(hInput, sName, sDept = null) {
-      const t = document.getElementById('t-name').value; if(!t) { alert("Enter Teacher Name first!"); return; }
-      const actualH = Object.keys(scores).find(k => k.toLowerCase() === hInput.trim().toLowerCase());
-      if(actualH) {
-        const pts = currentMode === 'Positive' ? 10 : -5;
-        showToast("⌛ SAVING...");
-        try {
-          const res = await fetch(API, { method: "POST", body: JSON.stringify({ action: "submitPoint", data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: t, category: document.getElementById('p-cat').value, house: actualH, type: currentMode } }) }).then(r => r.json());
-          if(res && res.success) {
-            scores[actualH] += pts; document.getElementById('s-'+actualH).innerText = scores[actualH];
-            showToast(`${sName} (${pts})`); if(pts > 0) confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
-          } else alert("❌ FAILED: " + (res.error || "Server Error"));
-        } catch(e) { alert("📡 NETWORK ERROR"); }
-      } else showToast("Unknown House");
-    }
-    async function forceSync() { showToast("🔄 SYNCING..."); localStorage.removeItem('goats_cache'); await boot(); showToast("✅ SYNCED"); }
-    async function toggleCam() {
-      if(!scanActive) {
-        document.getElementById('reader').style.display = 'block'; html5QrCode = new Html5Qrcode("reader");
-        await html5QrCode.start({ facingMode: "environment" }, { fps: 15, qrbox: 240 }, (t) => {
-          const p = t.split('|').map(x => x.trim()); if(p.length >= 3) { record(p[2], p[0], p[1]); stopCam(); }
-        }); scanActive = true;
-      } else stopCam();
-    }
-    async function stopCam() { if(html5QrCode) await html5QrCode.stop(); document.getElementById('reader').style.display = 'none'; scanActive = false; }
-    function submitManual() { record(document.getElementById('man-house').value, document.getElementById('man-name').value); }
     function toggleBranding() { const b = document.getElementById('admin-branding'); b.style.display = b.style.display==='block'?'none':'block'; }
+    
+    async function forceSync() {
+      showToast("🔄 SYNCING DATA...");
+      localStorage.removeItem('goats_cache');
+      await boot();
+      showToast("✅ SYNC COMPLETE");
+    }
     async function prepareBulkPrint() {
       showToast("LOADING STUDENTS...");
       const res = await fetch(API, { method: "POST", body: JSON.stringify({ action: "getStudentList" }) }).then(r => r.json());
@@ -173,7 +267,7 @@
           <title>Batch QR Cards</title>
           <style>
             body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; text-align: center; }
-            .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; }
+            .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
             .box { border: 1px solid #ddd; padding: 10px; text-align: center; page-break-inside: avoid; border-radius: 8px; }
             .qr { width: 110px; height: 110px; margin: 5px auto; background: #fff; }
             .qr img { margin: 0 auto; }
@@ -216,15 +310,89 @@
       pw.document.close();
     }
     function handleFile(input, key) {
-      if(!input.files[0]) return; const reader = new FileReader();
+      if(!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const lbl = document.getElementById('lbl-'+key);
+      const originalText = lbl.innerText;
+      lbl.innerText = "UPLOADING...";
+      lbl.style.borderColor = "var(--neon)";
+      
+      const reader = new FileReader();
       reader.onload = async (e) => {
-        showToast("UPLOADING...");
-        const res = await fetch(API, { method: "POST", body: JSON.stringify({ action: "uploadBranding", data: { key, name: input.files[0].name, file: e.target.result } }) }).then(r => r.json());
-        if(res.success) { localStorage.removeItem('goats_cache'); showToast("SUCCESS!"); setTimeout(()=>location.reload(), 1000); }
-      }; reader.readAsDataURL(input.files[0]);
+        const res = await fetch(API, { 
+          method: "POST", 
+          body: JSON.stringify({ action: "uploadBranding", data: { key, name: file.name, file: e.target.result } }) 
+        }).then(r => r.json());
+        
+        if(res.success) {
+          localStorage.removeItem('goats_cache'); // Force fresh fetch on reload
+          showToast("BRANDING UPDATED!");
+          lbl.innerText = "SUCCESS! REFRESHING...";
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          alert("Upload failed: " + res.error);
+          lbl.innerText = originalText;
+        }
+      };
+      reader.readAsDataURL(file);
     }
-    function setMode(m) { currentMode = m; document.getElementById('btn-pos').style.borderColor = m==='Positive'?'var(--neon)':'transparent'; document.getElementById('btn-neg').style.borderColor = m==='Negative'?'var(--neon)':'transparent'; }
-    function logout() { document.getElementById('teacher-view').style.display = 'none'; document.getElementById('dept-gate').style.display = 'block'; currentDept = ""; }
+    function setMode(m) {
+      currentMode = m;
+      document.getElementById('btn-pos').style.borderColor = m==='Positive'?'var(--neon)':'transparent';
+      document.getElementById('btn-neg').style.borderColor = m==='Negative'?'var(--neon)':'transparent';
+    }
+    async function toggleCam() {
+      if(!scanActive) {
+        document.getElementById('reader').style.display = 'block';
+        html5QrCode = new Html5Qrcode("reader");
+        await html5QrCode.start({ facingMode: "environment" }, { fps: 15, qrbox: 250 }, (t) => {
+          const p = t.split('|').map(x => x.trim()); 
+          if(p.length >= 3) { 
+            record(p[2], p[0], p[1]); // Record(House, Name, Dept)
+            stopCam(); 
+          } else {
+            showToast("Invalid QR Format");
+          }
+        });
+        scanActive = true;
+      } else stopCam();
+    }
+    async function stopCam() { if(html5QrCode) await html5QrCode.stop(); document.getElementById('reader').style.display = 'none'; scanActive = false; }
+    function submitManual() {
+      const n = document.getElementById('man-name').value, h = document.getElementById('man-house').value;
+      if(!n || h === "Select House") return alert("Name & House required");
+      record(h, n); document.getElementById('man-name').value = "";
+    }
+    async function record(hInput, sName, sDept = null) {
+      const t = document.getElementById('t-name').value; if(!t) { alert("Please Enter Teacher Name!"); return; }
+      const actualH = Object.keys(scores).find(k => k.toLowerCase() === hInput.trim().toLowerCase());
+      
+      if(actualH) {
+        const pts = currentMode === 'Positive' ? 10 : -5;
+        
+        // 1. OPTIMISTIC UPDATE (Instant)
+        scores[actualH] += pts;
+        document.getElementById('s-'+actualH).innerText = scores[actualH];
+        
+        // 2. VISUAL FEEDBACK (No Words)
+        if (pts > 0) confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
+        else popEmoji('😢');
+        
+        // 3. BACKGROUND SYNC
+        try {
+          const res = await fetch(API, { 
+            method: "POST", 
+            body: JSON.stringify({ action: "submitPoint", data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: t, category: document.getElementById('p-cat').value, house: actualH, type: currentMode } }) 
+          }).then(r => r.json());
+          
+          if(!res || !res.success) throw new Error(res.error || "Server Reject");
+        } catch(e) {
+      } else showToast("Unknown House: " + hInput);
+    }
+    function showToast(m) {
+      const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
+      setTimeout(() => t.style.display='none', 2500);
+    }
   </script>
 </body>
 </html>
