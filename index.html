@@ -9,120 +9,101 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    :root { --neon: #fbff00; --accent: #00d4ff; --green: #00ff88; --red: #ff416c; --bg: #050508; }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
-    /* ── BG ── */
-    .bg-overlay { position: fixed; inset: 0; z-index: -1; background-size: cover; background-position: center; filter: brightness(0.2) blur(8px); transition: background-image 1s ease; }
-    /* ── HEADER ── */
-    .header { padding: calc(10px + env(safe-area-inset-top)) 14px 12px; display: grid; grid-template-columns: 60px 1fr 60px; align-items: center; gap: 8px; background: rgba(0,0,0,0.75); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100; }
-    .logo-img { width: 54px; height: 54px; object-fit: contain; border-radius: 8px; }
-    .founder-img { width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; justify-self: end; }
-    .header-title { text-align: center; }
-    .header-title h1 { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: white; line-height: 1.2; }
-    .header-title p { font-size: 8px; color: var(--neon); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; opacity: 0.9; }
-    .header-title small { font-size: 7.5px; color: rgba(255,255,255,0.35); letter-spacing: 1px; text-transform: uppercase; display: block; }
-    #sync-status { position: fixed; bottom: 12px; right: 12px; font-size: 8px; font-weight: 900; text-transform: uppercase; padding: 4px 8px; border-radius: 20px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); z-index: 200; }
-    .status-live { color: var(--green) !important; border-color: rgba(0,255,136,0.3) !important; }
-    .status-offline { color: var(--red) !important; border-color: rgba(255,65,108,0.3) !important; }
-    /* ── DEPT GATE ── */
-    #dept-gate { padding: 20px; max-width: 900px; margin: auto; }
-    .gate-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: rgba(255,255,255,0.15); text-align: center; margin-bottom: 20px; }
-    .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; }
-    .dept-card { background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px 12px; text-align: center; cursor: pointer; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s; position: relative; overflow: hidden; }
-    .dept-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(251,255,0,0.06), transparent); opacity: 0; transition: opacity 0.2s; }
-    .dept-card:active { transform: scale(0.93); box-shadow: 0 0 20px rgba(251,255,0,0.15); }
-    .dept-card:active::before { opacity: 1; }
-    .dept-card b { display: block; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-    .dept-card-bar { height: 3px; background: linear-gradient(90deg, var(--neon), var(--accent)); border-radius: 3px; margin-top: 10px; opacity: 0.5; }
-    /* ── LOGIN MODAL ── */
-    #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-    .modal-box { background: rgba(20,20,25,0.9); border: 1px solid rgba(251,255,0,0.3); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 360px; text-align: center; animation: slideUp 0.3s ease; box-shadow: 0 0 60px rgba(251,255,0,0.08); }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-box h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--neon); letter-spacing: 3px; margin-bottom: 20px; }
-    input, select { width: 100%; padding: 14px 16px; margin: 8px 0; background: rgba(255,255,255,0.04); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 16px; font-family: inherit; transition: border-color 0.2s; }
-    input:focus, select:focus { border-color: var(--neon); outline: none; background: rgba(251,255,0,0.04); }
-    select option { background: #111; }
-    .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; cursor: pointer; font-size: 15px; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 18px; transition: transform 0.1s; }
-    .btn-main:active { transform: scale(0.97); }
-    /* ── TEACHER VIEW ── */
-    #teacher-view { display: none; max-width: 600px; margin: auto; padding-bottom: 40px; }
-    /* ── LIVE SCOREBOARD ── */
-    .scoreboard { padding: 16px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.07); }
-    .sb-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 10px; text-align: center; }
-    .score-strip { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
-    .score-chip { flex: 0 0 auto; min-width: 80px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 10px 14px; text-align: center; border-top: 3px solid #333; position: relative; transition: box-shadow 0.3s; }
-    .score-chip.leader { box-shadow: 0 0 20px var(--chip-color, #888); }
-    .score-chip .chip-name { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.6); }
-    .score-chip .chip-score { font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1.1; color: white; }
-    .score-chip .chip-rank { font-size: 14px; position: absolute; top: -8px; right: -4px; }
-    /* ── TEACHER PANEL ── */
-    .t-panel { margin: 16px; background: rgba(10,10,18,0.8); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 16px; }
-    /* ── MODE TOGGLE ── */
-    .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 4px; }
-    .mode-btn { flex: 1; padding: 12px; border-radius: 11px; border: none; font-weight: 900; font-size: 16px; cursor: pointer; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.3); font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; font-size: 18px; }
-    .mode-btn.active-pos { background: linear-gradient(135deg, #00b09b, #00ff88); color: black; box-shadow: 0 4px 20px rgba(0,255,136,0.3); }
-    .mode-btn.active-neg { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; box-shadow: 0 4px 20px rgba(255,65,108,0.3); }
-    /* ── HOUSE BUTTONS ── */
-    .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .house-btn { padding: 28px 10px; border-radius: 16px; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: black; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    .house-btn::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); opacity: 0; transition: opacity 0.15s; }
-    .house-btn:active { transform: scale(0.92); }
-    .house-btn:active::after { opacity: 1; }
-    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 12px var(--glow); } 50% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow); } }
-    /* ── SCAN BUTTON ── */
-    .scan-area { text-align: center; margin-bottom: 14px; }
-    #cam-btn { background: linear-gradient(135deg, var(--neon), #e8ff00); border: none; padding: 0; width: 80px; height: 80px; border-radius: 50%; font-size: 30px; cursor: pointer; position: relative; transition: transform 0.15s; box-shadow: 0 0 0 0 rgba(251,255,0,0.4); }
-    #cam-btn.scanning { animation: scanPulse 1.2s infinite; }
-    @keyframes scanPulse { 0% { box-shadow: 0 0 0 0 rgba(251,255,0,0.5); } 70% { box-shadow: 0 0 0 20px rgba(251,255,0,0); } 100% { box-shadow: 0 0 0 0 rgba(251,255,0,0); } }
-    #cam-btn:active { transform: scale(0.92); }
-    .scan-hint { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
-    #reader { border-radius: 16px; overflow: hidden; border: 2px solid var(--neon); display: none; margin-bottom: 14px; box-shadow: 0 0 30px rgba(251,255,0,0.15); }
-    /* ── MANUAL ── */
-    .manual-row { display: flex; gap: 8px; margin-bottom: 6px; }
-    .manual-row input, .manual-row select { margin: 0; flex: 1; }
-    .btn-sub { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; margin-bottom: 14px; letter-spacing: 1px; }
-    /* ── META ── */
-    .meta-row { display: flex; gap: 8px; }
-    .meta-row input, .meta-row select { margin: 0; flex: 1; }
-    /* ── ADMIN ── */
-    .admin-section { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-    .btn-admin { padding: 14px; border-radius: 12px; background: transparent; font-weight: 900; cursor: pointer; font-size: 13px; letter-spacing: 1px; font-family: inherit; }
-    .admin-branding { display: none; margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px; }
-    .upload-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; }
-    .upload-box label { font-size: 10px; color: var(--accent); display: block; margin-bottom: 6px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
-    /* ── LOGOUT ── */
-    .btn-logout { width: calc(100% - 32px); margin: 16px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: rgba(255,255,255,0.4); font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 1px; }
-    /* ── ADMIN LEADERBOARD MODAL ── */
-    #lb-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); display: none; flex-direction: column; z-index: 3000; overflow-y: auto; }
-    .lb-header { padding: 16px; background: rgba(0,0,0,0.8); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
-    .lb-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; flex: 1; }
-    .lb-back { background: rgba(255,255,255,0.08); border: none; color: white; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; }
-    .lb-filters { display: flex; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
-    .lb-filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 8px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 12px; font-weight: 700; font-family: inherit; }
-    .lb-filter-btn.active { background: var(--neon); color: black; border-color: var(--neon); }
-    .lb-body { padding: 20px; }
-    .lb-podium { display: flex; gap: 10px; margin-bottom: 24px; align-items: flex-end; justify-content: center; }
-    .lb-podium-item { text-align: center; flex: 1; max-width: 100px; }
-    .lb-podium-bar { border-radius: 10px 10px 0 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: rgba(0,0,0,0.7); min-height: 40px; }
-    .lb-podium-name { font-size: 11px; font-weight: 900; text-transform: uppercase; margin-top: 6px; color: rgba(255,255,255,0.8); }
-    .lb-podium-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--neon); }
-    .lb-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 8px; border-left: 4px solid #333; }
-    .lb-row-rank { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: rgba(255,255,255,0.3); width: 30px; text-align: center; }
-    .lb-row-name { flex: 1; font-weight: 900; font-size: 15px; text-transform: uppercase; }
-    .lb-row-pts { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--neon); }
-    .lb-row-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-top: 6px; }
-    .lb-row-fill { height: 4px; border-radius: 4px; transition: width 0.6s ease; }
-    .lb-loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px; }
-    .emoji-pop { position: fixed; top: 50%; left: 50%; font-size: 160px; z-index: 9999; pointer-events: none; animation: popScale 0.9s ease-out forwards; }
-    @keyframes popScale { 0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; } 25% { transform: translate(-50%,-50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%,-90%) scale(1.3); opacity: 0; } }
-    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: rgba(20,20,20,0.95); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 5000; font-weight: 600; font-size: 13px; backdrop-filter: blur(10px); }
+    :root{--neon:#fbff00;--accent:#00d4ff;--green:#00ff88;--red:#ff416c;--bg:#050508}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden}
+    .bg-overlay{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;filter:brightness(0.2) blur(8px);transition:background-image 1s ease}
+    .header{padding:calc(10px + env(safe-area-inset-top)) 14px 12px;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:8px;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
+    .logo-img{width:54px;height:54px;object-fit:contain;border-radius:8px}
+    .founder-img{width:54px;height:54px;border-radius:50%;border:2px solid var(--neon);object-fit:cover;justify-self:end}
+    .header-title{text-align:center}
+    .header-title h1{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:white;line-height:1.2}
+    .header-title p{font-size:8px;color:var(--neon);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;opacity:.9}
+    .header-title small{font-size:7.5px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;display:block}
+    #sync-status{position:fixed;bottom:12px;right:12px;font-size:8px;font-weight:900;text-transform:uppercase;padding:4px 8px;border-radius:20px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);z-index:200}
+    .status-live{color:var(--green)!important;border-color:rgba(0,255,136,.3)!important}
+    .status-offline{color:var(--red)!important;border-color:rgba(255,65,108,.3)!important}
+    #dept-gate{padding:20px;max-width:900px;margin:auto}
+    .gate-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:rgba(255,255,255,0.15);text-align:center;margin-bottom:20px}
+    .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+    .dept-card{background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s;position:relative;overflow:hidden}
+    .dept-card:active{transform:scale(0.93);box-shadow:0 0 20px rgba(251,255,0,.15)}
+    .dept-card b{display:block;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+    .dept-card-bar{height:3px;background:linear-gradient(90deg,var(--neon),var(--accent));border-radius:3px;margin-top:10px;opacity:.5}
+    #login-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
+    .modal-box{background:rgba(20,20,25,0.9);border:1px solid rgba(251,255,0,.3);border-radius:24px;padding:32px 24px;width:100%;max-width:360px;text-align:center;animation:slideUp .3s ease;box-shadow:0 0 60px rgba(251,255,0,.08)}
+    @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-box h2{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--neon);letter-spacing:3px;margin-bottom:20px}
+    input,select{width:100%;padding:14px 16px;margin:8px 0;background:rgba(255,255,255,0.04);color:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:16px;font-family:inherit;transition:border-color .2s}
+    input:focus,select:focus{border-color:var(--neon);outline:none;background:rgba(251,255,0,.04)}
+    select option{background:#111}
+    .btn-main{width:100%;padding:15px;border-radius:12px;background:var(--neon);color:black;font-weight:900;border:none;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:18px;transition:transform .1s}
+    .btn-main:active{transform:scale(0.97)}
+    #teacher-view{display:none;max-width:600px;margin:auto;padding-bottom:40px}
+    .scoreboard{padding:16px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.07)}
+    .sb-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;text-align:center}
+    .score-strip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+    .score-chip{flex:0 0 auto;min-width:80px;background:rgba(255,255,255,0.04);border-radius:14px;padding:10px 14px;text-align:center;border-top:3px solid #333;position:relative;transition:box-shadow .3s}
+    .score-chip.leader{box-shadow:0 0 20px var(--chip-color,#888)}
+    .chip-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.6)}
+    .chip-score{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1.1;color:white}
+    .chip-rank{font-size:14px;position:absolute;top:-8px;right:-4px}
+    .t-panel{margin:16px;background:rgba(10,10,18,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:16px}
+    .mode-toggle{display:flex;gap:8px;margin-bottom:16px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px}
+    .mode-btn{flex:1;padding:12px;border-radius:11px;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,0.3);font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:18px}
+    .mode-btn.active-pos{background:linear-gradient(135deg,#00b09b,#00ff88);color:black;box-shadow:0 4px 20px rgba(0,255,136,.3)}
+    .mode-btn.active-neg{background:linear-gradient(135deg,#ff416c,#ff4b2b);color:white;box-shadow:0 4px 20px rgba(255,65,108,.3)}
+    .house-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .house-btn{padding:28px 10px;border-radius:16px;border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:black;cursor:pointer;position:relative;overflow:hidden;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}
+    .house-btn:active{transform:scale(0.92)}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 0 12px var(--glow)}50%{box-shadow:0 0 30px var(--glow),0 0 60px var(--glow)}}
+    .scan-area{text-align:center;margin-bottom:14px}
+    #cam-btn{background:linear-gradient(135deg,var(--neon),#e8ff00);border:none;padding:0;width:80px;height:80px;border-radius:50%;font-size:30px;cursor:pointer;transition:transform .15s;box-shadow:0 0 0 0 rgba(251,255,0,.4)}
+    #cam-btn.scanning{animation:scanPulse 1.2s infinite}
+    @keyframes scanPulse{0%{box-shadow:0 0 0 0 rgba(251,255,0,.5)}70%{box-shadow:0 0 0 20px rgba(251,255,0,0)}100%{box-shadow:0 0 0 0 rgba(251,255,0,0)}}
+    #cam-btn:active{transform:scale(0.92)}
+    .scan-hint{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
+    #reader{border-radius:16px;overflow:hidden;border:2px solid var(--neon);display:none;margin-bottom:14px;box-shadow:0 0 30px rgba(251,255,0,.15)}
+    .manual-row{display:flex;gap:8px;margin-bottom:6px}
+    .manual-row input,.manual-row select{margin:0;flex:1}
+    .btn-sub{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;padding:14px;border-radius:12px;font-weight:900;cursor:pointer;width:100%;margin-bottom:14px;letter-spacing:1px}
+    .meta-row{display:flex;gap:8px}
+    .meta-row input,.meta-row select{margin:0;flex:1}
+    .admin-section{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+    .btn-admin{padding:14px;border-radius:12px;background:transparent;font-weight:900;cursor:pointer;font-size:13px;letter-spacing:1px;font-family:inherit}
+    .admin-branding{display:none;margin-top:10px;border-top:1px dashed rgba(255,255,255,.1);padding-top:16px}
+    .upload-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:12px 14px;border-radius:12px;margin-bottom:8px}
+    .upload-box label{font-size:10px;color:var(--accent);display:block;margin-bottom:6px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+    .btn-logout{width:calc(100% - 32px);margin:16px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.4);font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:1px}
+    #lb-modal{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;flex-direction:column;z-index:3000;overflow-y:auto}
+    .lb-header{padding:16px;background:rgba(0,0,0,0.9);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+    .lb-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;flex:1}
+    .lb-back{background:rgba(255,255,255,0.08);border:none;color:white;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:900;font-size:14px;font-family:inherit}
+    .lb-filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;scrollbar-width:none}
+    .lb-filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:700;font-family:inherit}
+    .lb-filter-btn.active{background:var(--neon);color:black;border-color:var(--neon)}
+    .lb-body{padding:20px}
+    .lb-podium{display:flex;gap:10px;margin-bottom:24px;align-items:flex-end;justify-content:center}
+    .lb-podium-item{text-align:center;flex:1;max-width:100px}
+    .lb-podium-bar{border-radius:10px 10px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(0,0,0,0.7);min-height:40px}
+    .lb-podium-name{font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,.8)}
+    .lb-podium-score{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--neon)}
+    .lb-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,0.04);border-radius:12px;margin-bottom:8px;border-left:4px solid #333}
+    .lb-row-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,.3);width:30px;text-align:center}
+    .lb-row-name{flex:1;font-weight:900;font-size:15px;text-transform:uppercase}
+    .lb-row-pts{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--neon)}
+    .lb-bar-bg{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;margin-top:6px}
+    .lb-bar-fill{height:4px;border-radius:4px;transition:width .6s ease}
+    .lb-empty{text-align:center;padding:40px;color:rgba(255,255,255,.4);font-size:14px}
+    .emoji-pop{position:fixed;top:50%;left:50%;font-size:160px;z-index:9999;pointer-events:none;animation:popScale .9s ease-out forwards}
+    @keyframes popScale{0%{transform:translate(-50%,-50%) scale(0.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-90%) scale(1.3);opacity:0}}
+    #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.1);color:white;padding:12px 24px;border-radius:50px;display:none;z-index:5000;font-weight:600;font-size:13px;backdrop-filter:blur(10px)}
   </style>
 </head>
 <body onload="boot()">
+  <div id="sync-status">OFFLINE</div>
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
-  <!-- HEADER -->
   <div class="header">
     <img id="m-logo" class="logo-img">
     <div class="header-title">
@@ -132,14 +113,14 @@
     </div>
     <img id="m-founder" class="founder-img">
   </div>
-  <!-- ADMIN LEADERBOARD MODAL -->
+  <!-- ADMIN LEADERBOARD -->
   <div id="lb-modal">
     <div class="lb-header">
       <button class="lb-back" onclick="closeLb()">← BACK</button>
       <h2 id="lb-title">LEADERBOARD</h2>
     </div>
     <div class="lb-filters" id="lb-cat-filters"></div>
-    <div class="lb-body" id="lb-body"><div class="lb-loading">Loading...</div></div>
+    <div class="lb-body" id="lb-body"><div class="lb-empty">Loading...</div></div>
   </div>
   <!-- DEPT GATE -->
   <div id="dept-gate">
@@ -147,37 +128,31 @@
     <div id="dept-grid" class="dept-grid"></div>
   </div>
   <!-- LOGIN MODAL -->
-  <div id="login-modal" onclick="if(event.target==this) closeLogin()">
+  <div id="login-modal" onclick="if(event.target==this)closeLogin()">
     <div class="modal-box">
       <h2 id="target-dept">DEPARTMENT</h2>
-      <input type="password" id="pass-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter') handleLogin()">
+      <input type="password" id="pass-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')handleLogin()">
       <button class="btn-main" onclick="handleLogin()">ENTER PORTAL</button>
     </div>
   </div>
   <!-- TEACHER VIEW -->
   <div id="teacher-view">
-    <!-- LIVE SCOREBOARD -->
     <div class="scoreboard">
       <div class="sb-label">🏆 LIVE HOUSE SCORES</div>
       <div id="score-strip" class="score-strip"></div>
     </div>
-    <!-- MAIN PANEL -->
     <div class="t-panel">
-      <div id="dept-label" style="font-size:11px; color:var(--accent); font-weight:900; letter-spacing:3px; text-transform:uppercase; margin-bottom:14px; text-align:center;"></div>
-      <!-- MODE TOGGLE -->
+      <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
       <div class="mode-toggle" id="type-select">
         <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
         <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
       </div>
-      <!-- HOUSE GRID -->
       <div id="house-grid" class="house-grid"></div>
-      <!-- SCAN BUTTON -->
       <div class="scan-area" id="cam-area">
         <button id="cam-btn" onclick="toggleCam()">📷</button>
         <div class="scan-hint" id="scan-hint">TAP TO SCAN QR</div>
       </div>
       <div id="reader"></div>
-      <!-- MANUAL ENTRY -->
       <div id="manual-area">
         <div class="manual-row">
           <input type="text" id="man-name" placeholder="Student Name">
@@ -185,16 +160,14 @@
         </div>
         <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
       </div>
-      <!-- TEACHER / CATEGORY META -->
       <div class="meta-row" id="teacher-meta">
         <input type="text" id="t-name" placeholder="Teacher Name">
         <select id="p-cat"></select>
       </div>
-      <!-- ADMIN ACTIONS -->
       <div id="admin-actions" class="admin-section" style="display:none;">
-        <button class="btn-admin" style="color:var(--accent); border:1px solid var(--accent);" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
-        <button class="btn-admin" style="color:var(--neon); border:1px solid var(--neon);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
-        <button class="btn-admin" style="color:white; border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC FROM SHEET</button>
+        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
+        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
+        <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC FROM SHEET</button>
         <div id="admin-branding" class="admin-branding">
           <div class="upload-box"><label>Logo</label><input type="file" onchange="handleFile(this,'Logo_ID')" accept="image/*"></div>
           <div class="upload-box"><label>Founder</label><input type="file" onchange="handleFile(this,'Founder_ID')" accept="image/*"></div>
@@ -205,265 +178,189 @@
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbyeMTVhj8w658fIjLsh_NpdslLC9AirUCoMKh160hzGBJVhB8gVtEV1t2UFHMqws5ZXfw/exec";
-    let scores = {}, houseColors = {}, currentMode = "Positive", currentDept = "", selectedDept = "", scanActive = false, html5QrCode = null;
+    const API = "https://script.google.com/macros/s/AKfycbzcg_jRFKzGHnxw62fh63PVzu_e-4nnFtZ17CBm_F8Sbhm-_QKrrsBpXJj3_hYL1_cB/exec";
+    let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL";
+    // ── POST helper (no Content-Type to avoid CORS preflight redirect) ──
+    function api(payload) {
+      return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json());
+    }
     async function boot() {
-      const status = document.getElementById('sync-status');
-      status.innerText = "⌛ LOADING";
+      const st = document.getElementById('sync-status');
+      st.innerText = "⌛";
       const cache = localStorage.getItem('goats_cache');
-      if (cache) try { render(JSON.parse(cache)); } catch(e){}
+      if(cache) try { render(JSON.parse(cache)); } catch(e){}
       try {
-        const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"getAppData"}), headers: {"Content-Type":"text/plain"} }).then(r => r.json());
+        const res = await api({action:"getAppData"});
         if(res && res.deptList) {
           localStorage.setItem('goats_cache', JSON.stringify(res));
           render(res);
-          status.innerText = "🟢 LIVE"; status.className = "status-live";
-        } else {
-          throw new Error(res.error || "empty");
-        }
+          st.innerText = "🟢 LIVE"; st.className = "status-live";
+        } else throw new Error(res.error||"empty");
       } catch(e) {
-        status.innerText = "🔴 OFFLINE"; status.className = "status-offline";
-        console.error("Boot error:", e.message);
+        st.innerText = "🔴 OFFLINE"; st.className = "status-offline";
+        console.error("boot:", e.message);
       }
     }
-    const deptIcons = { 'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊' };
-    function getDeptIcon(dept) { const k = dept.toLowerCase().replace(/\s+/g,''); for(const key in deptIcons) { if(k.includes(key)) return deptIcons[key]; } return '📚'; }
-    let isAdminSession = false, adminCategories = [], currentLbDept = '', currentLbCat = 'ALL';
-    function render(data) {
-      if (!data) return;
-      const { images, houseConfig, deptList, categories } = data;
-      adminCategories = categories || [];
-      if(images && images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
-      if(images && images.logo) document.getElementById('m-logo').src = images.logo;
-      if(images && images.founder) document.getElementById('m-founder').src = images.founder;
-      document.getElementById('dept-grid').innerHTML = deptList.map(d => `
-        <div class="dept-card" onclick="handleDeptClick('${d}')">
-          <div style="font-size:32px; margin-bottom:8px;">${getDeptIcon(d)}</div>
-          <b>${d}</b>
-          <div class="dept-card-bar"></div>
+    const deptIcons = {'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊'};
+    function getIcon(d){const k=d.toLowerCase().replace(/\s+/g,'');for(const key in deptIcons){if(k.includes(key))return deptIcons[key];}return '📚';}
+    function render(data){
+      if(!data) return;
+      const {images,houseConfig,deptList,categories}=data;
+      adminCats=categories||[];
+      if(images&&images.bg) document.getElementById('main-bg').style.backgroundImage=`url('${images.bg}')`;
+      if(images&&images.logo) document.getElementById('m-logo').src=images.logo;
+      if(images&&images.founder) document.getElementById('m-founder').src=images.founder;
+      document.getElementById('dept-grid').innerHTML=deptList.map(d=>`
+        <div class="dept-card" onclick="handleCard('${d}')">
+          <div style="font-size:30px;margin-bottom:6px;">${getIcon(d)}</div>
+          <b>${d}</b><div class="dept-card-bar"></div>
         </div>`).join('');
-      if(categories) document.getElementById('p-cat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
-      if(houseConfig) {
-        const strip = document.getElementById('score-strip'), grid = document.getElementById('house-grid'), sel = document.getElementById('man-house');
-        strip.innerHTML = ""; grid.innerHTML = ""; sel.innerHTML = '<option selected disabled>House</option>';
-        houseConfig.forEach(h => {
-          scores[h.name] = 0; houseColors[h.name] = h.color;
-          strip.innerHTML += `<div class="score-chip" id="chip-${h.name}" style="border-top-color:${h.color}; --chip-color:${h.color}"><div class="chip-rank" id="rank-${h.name}"></div><div class="chip-name">${h.name}</div><div class="chip-score" id="s-${h.name}">0</div></div>`;
-          grid.innerHTML += `<button class="house-btn" style="background:${h.color}; --glow:${h.color};" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
-          sel.add(new Option(h.name, h.name));
+      if(categories) document.getElementById('p-cat').innerHTML=categories.map(c=>`<option>${c}</option>`).join('');
+      if(houseConfig){
+        const strip=document.getElementById('score-strip'),grid=document.getElementById('house-grid'),sel=document.getElementById('man-house');
+        strip.innerHTML="";grid.innerHTML="";sel.innerHTML='<option selected disabled>House</option>';
+        houseConfig.forEach((h,i)=>{
+          scores[h.name]=0;houseColors[h.name]=h.color;
+          strip.innerHTML+=`<div class="score-chip" id="chip-${h.name}" style="border-top-color:${h.color};--chip-color:${h.color}"><div class="chip-rank" id="rank-${h.name}"></div><div class="chip-name">${h.name}</div><div class="chip-score" id="s-${h.name}">0</div></div>`;
+          grid.innerHTML+=`<button class="house-btn" style="background:${h.color};--glow:${h.color};animation:pulseGlow ${2+i*.3}s ease-in-out infinite" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
+          sel.add(new Option(h.name,h.name));
         });
-        animateAllGlow(houseConfig);
       }
       setMode('Positive');
     }
-    function handleDeptClick(dept) {
-      if(isAdminSession) { openLb(dept); } else { openLogin(dept); }
-    }
-    function animateAllGlow(houses) {
-      houses.forEach((h, i) => {
-        const btn = document.querySelectorAll('.house-btn')[i];
-        if(btn) btn.style.animation = `pulseGlow ${2 + i*0.3}s ease-in-out infinite`;
+    function updateRanks(){
+      const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+      const medals=['🥇','🥈','🥉'];
+      sorted.forEach(([name],i)=>{
+        document.getElementById('rank-'+name).innerText=medals[i]||'';
+        document.getElementById('chip-'+name).classList.toggle('leader',i===0);
       });
     }
-    function updateRanks() {
-      const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
-      const medals = ['🥇','🥈','🥉'];
-      sorted.forEach(([ name ], i) => {
-        const chip = document.getElementById('chip-'+name);
-        const rank = document.getElementById('rank-'+name);
-        if(rank) rank.innerText = medals[i] || '';
-        if(chip) chip.classList.toggle('leader', i === 0);
-      });
-    }
-    function openLogin(d) {
-      selectedDept = d;
-      document.getElementById('target-dept').innerText = d;
-      document.getElementById('pass-input').value = '';
-      document.getElementById('login-modal').style.display = 'flex';
-      setTimeout(() => document.getElementById('pass-input').focus(), 300);
-    }
-    function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
-    async function handleLogin() {
-      const p = document.getElementById('pass-input').value; if(!p) return;
-      const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"authenticate", user:selectedDept, pass:p}) }).then(r=>r.json());
-      if(res.success) {
+    function handleCard(d){ isAdmin ? openLb(d) : openLogin(d); }
+    function openLogin(d){selectedDept=d;document.getElementById('target-dept').innerText=d;document.getElementById('pass-input').value='';document.getElementById('login-modal').style.display='flex';setTimeout(()=>document.getElementById('pass-input').focus(),300);}
+    function closeLogin(){document.getElementById('login-modal').style.display='none';}
+    async function handleLogin(){
+      const p=document.getElementById('pass-input').value; if(!p) return;
+      const res=await api({action:"authenticate",user:selectedDept,pass:p});
+      if(res.success){
         closeLogin();
-        document.getElementById('dept-gate').style.display = 'none';
-        document.getElementById('teacher-view').style.display = 'block';
-        currentDept = selectedDept;
-        document.getElementById('dept-label').innerText = selectedDept;
-        const isAdmin = res.role === 'Admin';
-        isAdminSession = isAdmin;
-        document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
-        ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id => {
-          const el = document.getElementById(id); if(el) el.style.display = isAdmin ? 'none' : '';
+        isAdmin = res.role==='Admin';
+        currentDept=selectedDept;
+        document.getElementById('dept-label').innerText=selectedDept;
+        document.getElementById('dept-gate').style.display='block';
+        document.getElementById('teacher-view').style.display='block';
+        document.getElementById('admin-actions').style.display=isAdmin?'flex':'none';
+        ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id=>{
+          const el=document.getElementById(id);if(el) el.style.display=isAdmin?'none':'';
         });
-        if (!isAdmin) {
-          document.getElementById('type-select').style.display = 'flex';
-          document.getElementById('house-grid').style.display = 'grid';
-        } else {
-          // Admin: show dept gate after login for leaderboard
-          closeLogin();
-          document.getElementById('dept-gate').style.display = 'block';
-          document.getElementById('teacher-view').style.display = 'block';
-        }
-      } else { alert("❌ Wrong Password"); }
+        if(!isAdmin){document.getElementById('type-select').style.display='flex';document.getElementById('house-grid').style.display='grid';}
+      } else alert("❌ Wrong Password");
     }
-    async function record(hInput, sName, sDept = null) {
-      const t = document.getElementById('t-name').value;
-      if(!t) { alert("⚠️ Enter Teacher Name first!"); if(scanActive) stopCam(); return; }
-      const actualH = Object.keys(scores).find(k => k.toLowerCase() === hInput.trim().toLowerCase());
+    async function record(hInput,sName,sDept=null){
+      const t=document.getElementById('t-name').value;
+      if(!t){alert("⚠️ Enter Teacher Name first!");if(scanActive)stopCam();return;}
+      const actualH=Object.keys(scores).find(k=>k.toLowerCase()===hInput.trim().toLowerCase());
       if(!actualH) return;
-      const pts = currentMode === 'Positive' ? 10 : -5;
-      // 1. INSTANT LOCAL UPDATE
-      scores[actualH] += pts;
-      document.getElementById('s-'+actualH).innerText = scores[actualH];
+      const pts=currentMode==='Positive'?10:-5;
+      scores[actualH]+=pts;
+      document.getElementById('s-'+actualH).innerText=scores[actualH];
       updateRanks();
-      // 2. VISUAL FEEDBACK — NO WORDS
-      if(pts > 0) confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+      if(pts>0) confetti({particleCount:60,spread:70,origin:{y:0.6}});
       else popEmoji('😢');
-      // 3. BACKGROUND SYNC + ROLLBACK
-      try {
-        const res = await fetch(API, { method:"POST", body: JSON.stringify({ action:"submitPoint", data:{ dept:currentDept, studentDept:sDept, studentName:sName, teacherName:t, category:document.getElementById('p-cat').value, house:actualH, type:currentMode } }) }).then(r=>r.json());
-        if(!res || !res.success) throw new Error(res.error || "Server Reject");
-      } catch(e) {
-        scores[actualH] -= pts;
-        document.getElementById('s-'+actualH).innerText = scores[actualH];
+      try{
+        const res=await api({action:"submitPoint",data:{dept:currentDept,studentDept:sDept,studentName:sName,teacherName:t,category:document.getElementById('p-cat').value,house:actualH,type:currentMode}});
+        if(!res||!res.success) throw new Error(res.error||"fail");
+      }catch(e){
+        scores[actualH]-=pts;
+        document.getElementById('s-'+actualH).innerText=scores[actualH];
         updateRanks();
-        alert("❌ SYNC FAILED: Data for " + sName + " was NOT saved. Please re-scan.");
+        alert("❌ SYNC FAILED for "+sName+". Please re-scan.");
       }
     }
-    function popEmoji(emoji) {
-      const el = document.createElement('div'); el.className = 'emoji-pop'; el.innerText = emoji;
-      document.body.appendChild(el); setTimeout(() => el.remove(), 900);
-    }
-    async function toggleCam() {
-      const btn = document.getElementById('cam-btn'), hint = document.getElementById('scan-hint');
-      if(!scanActive) {
-        document.getElementById('reader').style.display = 'block';
-        btn.classList.add('scanning'); btn.innerText = '⏹'; hint.innerText = 'SCANNING...';
-        html5QrCode = new Html5Qrcode("reader");
-        await html5QrCode.start({ facingMode:"environment" }, { fps:15, qrbox:240 }, (t) => {
-          const p = t.split('|').map(x => x.trim());
-          if(p.length >= 3) { record(p[2], p[0], p[1]); stopCam(); }
-        }); scanActive = true;
+    function popEmoji(e){const el=document.createElement('div');el.className='emoji-pop';el.innerText=e;document.body.appendChild(el);setTimeout(()=>el.remove(),900);}
+    async function toggleCam(){
+      const btn=document.getElementById('cam-btn'),hint=document.getElementById('scan-hint');
+      if(!scanActive){
+        document.getElementById('reader').style.display='block';
+        btn.classList.add('scanning');btn.innerText='⏹';hint.innerText='SCANNING...';
+        html5QrCode=new Html5Qrcode("reader");
+        await html5QrCode.start({facingMode:"environment"},{fps:15,qrbox:240},(t)=>{
+          const p=t.split('|').map(x=>x.trim());
+          if(p.length>=3){record(p[2],p[0],p[1]);stopCam();}
+        });scanActive=true;
       } else stopCam();
     }
-    async function stopCam() {
+    async function stopCam(){
       if(html5QrCode) await html5QrCode.stop();
-      document.getElementById('reader').style.display = 'none';
-      const btn = document.getElementById('cam-btn'), hint = document.getElementById('scan-hint');
-      btn.classList.remove('scanning'); btn.innerText = '📷'; hint.innerText = 'TAP TO SCAN QR';
-      scanActive = false;
+      document.getElementById('reader').style.display='none';
+      const btn=document.getElementById('cam-btn'),hint=document.getElementById('scan-hint');
+      btn.classList.remove('scanning');btn.innerText='📷';hint.innerText='TAP TO SCAN QR';scanActive=false;
     }
-    function submitManual() {
-      const n = document.getElementById('man-name').value, h = document.getElementById('man-house').value;
-      if(!n || !h) { showToast("Fill student name & house"); return; }
-      record(h, n); document.getElementById('man-name').value = "";
-    }
-    function setMode(m) {
-      currentMode = m;
-      document.getElementById('btn-pos').className = 'mode-btn' + (m==='Positive' ? ' active-pos' : '');
-      document.getElementById('btn-neg').className = 'mode-btn' + (m==='Negative' ? ' active-neg' : '');
-    }
-    function logout() {
-      document.getElementById('teacher-view').style.display = 'none';
-      document.getElementById('dept-gate').style.display = 'block';
-      currentDept = ""; isAdminSession = false; if(scanActive) stopCam();
-    }
+    function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
+    function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
+    function logout(){document.getElementById('teacher-view').style.display='none';document.getElementById('dept-gate').style.display='block';isAdmin=false;currentDept="";if(scanActive)stopCam();}
+    function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
+    async function forceSync(){showToast("🔄 Syncing...");localStorage.removeItem('goats_cache');await boot();showToast("✅ Synced!");}
     // ── ADMIN LEADERBOARD ──
-    function openLb(dept) {
-      currentLbDept = dept;
-      currentLbCat = 'ALL';
-      document.getElementById('lb-title').innerText = dept === 'ALL' ? 'ALL DEPARTMENTS' : dept.toUpperCase();
-      const filtersEl = document.getElementById('lb-cat-filters');
-      const cats = ['ALL', ...adminCategories];
-      filtersEl.innerHTML = cats.map(c => `<button class="lb-filter-btn${c==='ALL'?' active':''}" onclick="setLbCat('${c}')">${c}</button>`).join('');
-      document.getElementById('lb-modal').style.display = 'flex';
+    function openLb(dept){
+      lbDept=dept; lbCat='ALL';
+      document.getElementById('lb-title').innerText=dept.toUpperCase()+' — WEEKLY';
+      const cats=['ALL',...adminCats];
+      document.getElementById('lb-cat-filters').innerHTML=cats.map(c=>`<button class="lb-filter-btn${c==='ALL'?' active':''}" onclick="setLbCat('${c}')">${c}</button>`).join('');
+      document.getElementById('lb-modal').style.display='flex';
       loadLb();
     }
-    function closeLb() { document.getElementById('lb-modal').style.display = 'none'; }
-    function setLbCat(cat) {
-      currentLbCat = cat;
-      document.querySelectorAll('.lb-filter-btn').forEach(b => b.classList.toggle('active', b.innerText === cat));
-      loadLb();
+    function closeLb(){document.getElementById('lb-modal').style.display='none';}
+    function setLbCat(cat){lbCat=cat;document.querySelectorAll('.lb-filter-btn').forEach(b=>b.classList.toggle('active',b.innerText===cat));loadLb();}
+    async function loadLb(){
+      const body=document.getElementById('lb-body');
+      body.innerHTML='<div class="lb-empty">⌛ Loading...</div>';
+      try{
+        const res=await api({action:"getDeptLeaderboard",dept:lbDept,category:lbCat});
+        if(!res.success||!res.leaderboard.length){body.innerHTML='<div class="lb-empty">No data this week yet.</div>';return;}
+        const lb=res.leaderboard, max=lb[0].pts||1, medals=['🥇','🥈','🥉'];
+        let pod='<div class="lb-podium">';
+        const order=lb.length>=3?[1,0,2]:lb.map((_,i)=>i);
+        order.filter(i=>lb[i]).forEach(i=>{
+          const h=lb[i],col=houseColors[h.name]||'#888',ht=Math.max(60,Math.round((h.pts/max)*140));
+          pod+=`<div class="lb-podium-item"><div class="lb-podium-bar" style="background:${col};height:${ht}px">${medals[i]||''}</div><div class="lb-podium-name">${h.name}</div><div class="lb-podium-score">${h.pts}</div></div>`;
+        });
+        pod+='</div>';
+        const rows=lb.map((h,i)=>{
+          const col=houseColors[h.name]||'#888',pct=Math.round((h.pts/max)*100);
+          return `<div class="lb-row" style="border-left-color:${col}"><div class="lb-row-rank">${medals[i]||i+1}</div><div style="flex:1"><div class="lb-row-name">${h.name}</div><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${pct}%;background:${col}"></div></div></div><div class="lb-row-pts">${h.pts}</div></div>`;
+        }).join('');
+        body.innerHTML=`<div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">📅 LAST 7 DAYS · ${lbCat==='ALL'?'All Categories':lbCat}</div>${pod}${rows}`;
+      }catch(e){body.innerHTML='<div class="lb-empty">Failed to load.</div>';}
     }
-    async function loadLb() {
-      const body = document.getElementById('lb-body');
-      body.innerHTML = '<div class="lb-loading">⌛ Loading weekly data...</div>';
-      const res = await fetch(API, { method:'POST', body: JSON.stringify({ action:'getDeptLeaderboard', dept: currentLbDept, category: currentLbCat }), headers:{"Content-Type":"text/plain"} }).then(r=>r.json());
-      if (!res.success || !res.leaderboard.length) { body.innerHTML = '<div class="lb-loading">No data for this week yet.</div>'; return; }
-      const lb = res.leaderboard;
-      const max = lb[0].pts || 1;
-      const medals = ['🥇','🥈','🥉'];
-      // Podium (top 3)
-      let podiumHTML = '<div class="lb-podium">';
-      const order = lb.length >= 3 ? [1, 0, 2] : lb.map((_,i)=>i);
-      order.filter(i=>lb[i]).forEach(i => {
-        const h = lb[i], color = houseColors[h.name] || '#888';
-        const ht = Math.max(60, Math.round((h.pts/max)*140));
-        podiumHTML += `<div class="lb-podium-item"><div class="lb-podium-bar" style="background:${color}; height:${ht}px;">${medals[i]||''}</div><div class="lb-podium-name">${h.name}</div><div class="lb-podium-score">${h.pts}</div></div>`;
-      });
-      podiumHTML += '</div>';
-      // Full list
-      let rowsHTML = lb.map((h, i) => {
-        const color = houseColors[h.name] || '#888';
-        const pct = Math.round((h.pts / max) * 100);
-        return `<div class="lb-row" style="border-left-color:${color}"><div class="lb-row-rank">${medals[i]||i+1}</div><div style="flex:1"><div class="lb-row-name">${h.name}</div><div class="lb-row-bar"><div class="lb-row-fill" style="width:${pct}%; background:${color}"></div></div></div><div class="lb-row-pts">${h.pts}</div></div>`;
-      }).join('');
-      body.innerHTML = `<div style="font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:2px; text-align:center; margin-bottom:16px; text-transform:uppercase;">📅 LAST 7 DAYS · ${currentLbCat === 'ALL' ? 'All Categories' : currentLbCat}</div>${podiumHTML}${rowsHTML}`;
-    }
-    function toggleBranding() { const b = document.getElementById('admin-branding'); b.style.display = b.style.display==='block'?'none':'block'; }
-    async function forceSync() { showToast("🔄 Syncing..."); localStorage.removeItem('goats_cache'); await boot(); showToast("✅ Sync Complete"); }
-    async function prepareBulkPrint() {
+    // ── BULK QR ──
+    async function prepareBulkPrint(){
       showToast("Loading students...");
-      const res = await fetch(API, { method:"POST", body: JSON.stringify({action:"getStudentList"}) }).then(r=>r.json());
-      const pw = window.open('', '_blank');
-      pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR Cards</title>
-        <style>
-          body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; }
-          .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-          .box { border: 1px solid #ddd; padding: 10px; text-align: center; page-break-inside: avoid; border-radius: 8px; }
-          .qr { width: 110px; height: 110px; margin: 5px auto; background: #fff; }
-          .lbl { font-size: 9px; font-weight: 900; text-transform: uppercase; line-height: 1.4; margin-top: 5px; color: #000; }
-          .btn { position: fixed; top: 10px; right: 10px; padding: 12px 24px; background: #000; color: #fbff00; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; z-index: 999; }
-          @media print { .btn { display: none; } @page { size: A4; margin: 1cm; } }
-        </style>
+      const res=await api({action:"getStudentList"});
+      const pw=window.open('','_blank');
+      pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title>
+        <style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style>
       </head><body>
         <button class="btn" onclick="window.print()">PRINT A4 SHEET</button>
-        <div class="grid" id="grid"></div>
+        <div class="grid" id="g"></div>
         <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
-        <script>
-          function generate() {
-            const ss = ${JSON.stringify(res.students)};
-            const g = document.getElementById('grid');
-            if (typeof QRCode === 'undefined') { setTimeout(generate, 100); return; }
-            ss.forEach(s => {
-              const b = document.createElement('div'); b.className = 'box';
-              const q = document.createElement('div'); q.className = 'qr';
-              const l = document.createElement('div'); l.className = 'lbl';
-              l.innerHTML = (s.name||'STUDENT') + '<br>' + (s.dept||'') + ' | ' + (s.house||'');
-              b.appendChild(q); b.appendChild(l); g.appendChild(b);
-              try { new QRCode(q, { text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''), width:110, height:110 }); } catch(e){}
-            });
-          }
-          generate();
-        <\/script>
+        <script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.className='lbl';l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script>
       </body></html>`);
       pw.document.close();
     }
-    function handleFile(input, key) {
+    // ── BRANDING UPLOAD ──
+    function handleFile(input,key){
       if(!input.files[0]) return;
-      const reader = new FileReader();
-      reader.onload = async (e) => {
+      const rd=new FileReader();
+      rd.onload=async(e)=>{
         showToast("Uploading...");
-        const res = await fetch(API, { method:"POST", body: JSON.stringify({ action:"uploadBranding", data:{ key, name:input.files[0].name, file:e.target.result } }) }).then(r=>r.json());
-        if(res.success) { localStorage.removeItem('goats_cache'); showToast("✅ Updated!"); setTimeout(()=>location.reload(), 1000); }
+        const res=await api({action:"uploadBranding",data:{key,name:input.files[0].name,file:e.target.result}});
+        if(res.success){localStorage.removeItem('goats_cache');showToast("✅ Updated!");setTimeout(()=>location.reload(),1000);}
         else showToast("❌ Upload Failed");
       };
-      reader.readAsDataURL(input.files[0]);
+      rd.readAsDataURL(input.files[0]);
     }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
+    function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
   </script>
 </body>
 </html>
