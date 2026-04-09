@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <link rel="manifest" href="/Ultimate-goats/manifest.json">
-<meta name="theme-color" content="#007bff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/Ultimate-goats/sw.js')
-        .then(reg => console.log('Service Worker Registered'))
-        .catch(err => console.log('Service Worker Failed', err));
-    });
-  }
-</script>
+  <meta name="theme-color" content="#007bff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/Ultimate-goats/sw.js')
+          .then(reg => console.log('Service Worker Registered'))
+          .catch(err => console.log('Service Worker Failed', err));
+      });
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>DB G.O.A.T.S | FINAL</title>
@@ -21,30 +21,40 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
-  <style id="dynamic-css">
-    :root { --neon: #fbff00; } /* Dynamic colors will be injected here */
-    body { font-family: 'Poppins', sans-serif; margin: 0; background: #000; background-size: cover; color: white; }
+  <style>
+    :root { --neon: #fbff00; } 
+    body { font-family: 'Poppins', sans-serif; margin: 0; background: #000; background-size: cover; background-attachment: fixed; color: white; transition: background 0.5s ease; }
     .glass { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin: 10px; }
-    .header { display: flex; flex-direction: column; align-items: center; padding: 15px; border-bottom: 2px solid var(--savio); background: #000; position: sticky; top: 0; z-index: 1000; }
+    .header { display: flex; flex-direction: column; align-items: center; padding: 15px; border-bottom: 2px solid #00d4ff; background: #000; position: sticky; top: 0; z-index: 1000; }
     .logo-img { height: 50px; } .founder-img { height: 65px; width: 65px; border-radius: 50%; border: 2px solid var(--neon); object-fit: cover; }
-    input, select { width: 100%; padding: 15px; margin: 10px 0; background: #111; color: white; border: 1px solid #333; border-radius: 12px; }
+    input, select { width: 100%; padding: 15px; margin: 10px 0; background: #111; color: white; border: 1px solid #333; border-radius: 12px; font-size: 16px; }
     .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-    .house-btn { padding: 30px 10px; border-radius: 15px; border: none; font-weight: 900; color: #000; cursor: pointer; }
-    .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; }
+    .house-btn { padding: 30px 10px; border-radius: 15px; border: none; font-weight: 900; color: #000; cursor: pointer; transition: transform 0.1s; }
+    .house-btn:active { transform: scale(0.95); }
+    .btn-main { width: 100%; padding: 15px; border-radius: 12px; background: var(--neon); color: black; font-weight: 900; border: none; cursor: pointer; font-size: 16px; }
     .type-btn { flex: 1; padding: 15px; border-radius: 12px; font-weight: 900; cursor: pointer; border: 3px solid transparent; }
     .stat-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 5px solid var(--neon); }
     .rank-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .btn-cert { background: transparent; border: 1px solid var(--neon); color: var(--neon); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; }
     #reader { width: 100%; border-radius: 15px; overflow:hidden; display: none; margin: 10px 0; border: 2px solid var(--neon); }
     #cert-template { width: 1122px; height: 794px; background: white; color: black; position: absolute; left: -9999px; padding: 60px; text-align: center; border: 25px double #8e6d10; box-sizing: border-box; }
-    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--neon); color: black; padding: 15px 30px; border-radius: 50px; display: none; z-index: 5000; font-weight: 900; }
+    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--neon); color: black; padding: 15px 30px; border-radius: 50px; display: none; z-index: 5000; font-weight: 900; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+    /* Loading skeletons */
+    .skeleton { background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+    @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   </style>
 </head>
 <body onload="initApp()">
   <div id="toast"></div>
   <div class="header">
-    <div style="display:flex; gap:20px; align-items:center;"><img id="main-logo" class="logo-img"><img id="main-founder" class="founder-img"></div>
-    <div style="font-weight:900; font-size:15px; margin-top:10px; text-align:center;">DON BOSCO POLYTECHNIC COLLEGE<br><span style="color:var(--neon); font-size:11px;">G.O.A.T.S MANAGEMENT</span></div>
+    <div style="display:flex; gap:20px; align-items:center;">
+      <img id="main-logo" class="logo-img">
+      <img id="main-founder" class="founder-img">
+    </div>
+    <div style="font-weight:900; font-size:15px; margin-top:10px; text-align:center;">
+      DON BOSCO POLYTECHNIC COLLEGE<br>
+      <span style="color:var(--neon); font-size:11px;">G.O.A.T.S MANAGEMENT</span>
+    </div>
   </div>
   <div id="login-view" class="glass" style="max-width:400px; margin: 40px auto;">
     <select id="user-select"><option disabled selected>Loading Departments...</option></select>
@@ -74,11 +84,11 @@
       <option>Quiz/Program</option><option>YouTube Contribution</option><option>Assembly Contribution</option>
       <option>Extra Activities</option><option>Discipline</option><option>Academics</option><option>Sports</option>
     </select>
-    <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:20px;" onclick="location.reload()">LOGOUT</button>
+    <button class="btn-main" style="background:transparent; border:1px solid #444; color:white; margin-top:20px;" onclick="logout()">LOGOUT</button>
   </div>
   <div id="admin-view" style="display:none; max-width:850px; margin: auto;" class="glass">
     <div id="admin-content"></div>
-    <button class="btn-main" onclick="location.reload()" style="margin-top:20px;">LOGOUT ADMIN</button>
+    <button class="btn-main" onclick="logout()" style="margin-top:20px;">LOGOUT ADMIN</button>
   </div>
   <div id="cert-template">
     <div style="display:flex; justify-content:space-between; align-items:center;"><img id="cert-logo" style="height:100px;"><img id="cert-founder" style="height:100px; width:100px; border-radius:50%;"></div>
@@ -97,62 +107,104 @@
     </div>
   </div>
   <script>
-    // Optimized API URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbwIey3QW9VVaHbLak6sevE1BCac9JmJdjC3sVt99apk39eKg_-f3qnkBHiPpViyikLYhw/exec"; 
+    const API_URL = "hhttps://script.google.com/macros/s/AKfycbwt_eeQgzEFVz-cWepJCuehXw7nkIUWliHpbz7hF-nOj9qXah3kqxPpu_SoKXmikYXyHg/exec"; 
     let html5QrCode = null, scanActive = false, currentMode = "Positive", currentDept = "";
     let scores = {};
+    let cachedData = null;
     async function callAPI(data) {
-      try { const r = await fetch(API_URL, { method: "POST", body: JSON.stringify(data) }); return await r.json(); } catch (e) { return {success: false}; }
+      try { 
+        const r = await fetch(API_URL, { method: "POST", body: JSON.stringify(data) }); 
+        return await r.json(); 
+      } catch (e) { 
+        console.error("API Error:", e);
+        return {success: false}; 
+      }
     }
     async function initApp() {
-      // BATCHED API CALL FOR PERFORMANCE
-      const assets = await callAPI({action: "getAssets"});
-      
-      const imgs = assets.images || {};
-      if(imgs.bg) document.body.style.backgroundImage = `url('${imgs.bg}')`;
-      document.getElementById('main-logo').src = imgs.logo;
-      document.getElementById('main-founder').src = imgs.founder;
-      document.getElementById('cert-logo').src = imgs.logo;
-      document.getElementById('cert-founder').src = imgs.founder;
-      document.getElementById('cert-sig').src = imgs.signature;
-      // House Config from batched assets
-      const houses = assets.houseConfig;
-      if(Array.isArray(houses)) {
+      // 1. Try to load from cache for instant response
+      const cache = localStorage.getItem('goats_app_data');
+      if (cache) {
+        try {
+          cachedData = JSON.parse(cache);
+          renderInitialData(cachedData);
+        } catch(e) { localStorage.removeItem('goats_app_data'); }
+      }
+      // 2. Fetch fresh data in one go (batched)
+      const freshData = await callAPI({action: "getAppData"});
+      if (freshData && freshData.images) {
+        localStorage.setItem('goats_app_data', JSON.stringify(freshData));
+        cachedData = freshData;
+        renderInitialData(freshData);
+      }
+    }
+    function renderInitialData(data) {
+      if (!data) return;
+      const { images, houseConfig, deptList } = data;
+      // Render Images
+      if(images.bg) document.body.style.backgroundImage = `url('${images.bg}')`;
+      document.getElementById('main-logo').src = images.logo;
+      document.getElementById('main-founder').src = images.founder;
+      document.getElementById('cert-logo').src = images.logo;
+      document.getElementById('cert-founder').src = images.founder;
+      document.getElementById('cert-sig').src = images.signature;
+      // Render House Config
+      if(Array.isArray(houseConfig)) {
         const scoreCont = document.getElementById('score-container');
         const gridCont = document.getElementById('house-grid-container');
         const houseSel = document.getElementById('m-house');
+        
         scoreCont.innerHTML = ""; gridCont.innerHTML = "";
+        houseSel.innerHTML = '<option disabled selected>Select House</option>';
+        
+        let styleTag = document.getElementById('dynamic-house-css');
+        if(!styleTag) {
+          styleTag = document.createElement('style');
+          styleTag.id = 'dynamic-house-css';
+          document.head.appendChild(styleTag);
+        }
         
         let css = ':root { ';
-        houses.forEach(h => {
-          scores[h.name] = 0;
+        houseConfig.forEach(h => {
+          if (!scores.hasOwnProperty(h.name)) scores[h.name] = 0;
           const hVar = `--h-${h.name.toLowerCase().replace(/\s+/g, '-')}`;
           css += `${hVar}: ${h.color}; `;
           
-          scoreCont.innerHTML += `<div style="text-align:center; font-size:11px; background:#111; padding:10px; border-radius:12px; border-top:4px solid var(${hVar})">${h.name.toUpperCase()}<br><b id="s-${h.name}" style="font-size:18px;">0</b></div>`;
+          scoreCont.innerHTML += `<div style="text-align:center; font-size:11px; background:#111; padding:10px; border-radius:12px; border-top:4px solid var(${hVar})">${h.name.toUpperCase()}<br><b id="s-${h.name}" style="font-size:18px;">${scores[h.name] || 0}</b></div>`;
           gridCont.innerHTML += `<button class="house-btn" style="background:var(${hVar})" onclick="processEntry('HOUSE_WINNER', '${h.name}')">${h.name.toUpperCase()}</button>`;
           houseSel.add(new Option(h.name, h.name));
         });
         css += ' }';
-        document.getElementById('dynamic-css').innerText = css;
-        
-        scoreCont.style.gridTemplateColumns = `repeat(${Math.min(houses.length, 4)}, 1fr)`;
+        styleTag.innerText = css;
+        scoreCont.style.gridTemplateColumns = `repeat(${Math.min(houseConfig.length, 4)}, 1fr)`;
       }
-      // Dept List from batched assets
-      const list = assets.deptList;
+      // Render Dept List
       const s = document.getElementById('user-select'); 
+      const currentVal = s.value;
       s.innerHTML = '<option disabled selected>Select Department</option>';
-      if(Array.isArray(list)) list.forEach(d => s.add(new Option(d, d)));
+      if(Array.isArray(deptList)) {
+        deptList.forEach(d => s.add(new Option(d, d)));
+        if (currentVal && Array.from(s.options).some(o => o.value === currentVal)) s.value = currentVal;
+      }
     }
     async function login() {
       const u = document.getElementById('user-select').value, p = document.getElementById('pass-input').value;
+      if(!u || u === "Select Department" || !p) return alert("Select Dept & Enter Password");
+      
       const r = await callAPI({action: "authenticate", user: u, pass: p});
       if(r.success) {
         document.getElementById('login-view').style.display='none';
-        if(r.role === 'Admin') { document.getElementById('admin-view').style.display='block'; loadAdmin(); } 
-        else { document.getElementById('teacher-view').style.display='block'; currentDept = r.dept; document.getElementById('active-dept-label').innerText = r.dept; setMode('Positive'); }
+        if(r.role === 'Admin') { 
+          document.getElementById('admin-view').style.display='block'; 
+          loadAdmin(); 
+        } else { 
+          document.getElementById('teacher-view').style.display='block'; 
+          currentDept = r.dept; 
+          document.getElementById('active-dept-label').innerText = r.dept; 
+          setMode('Positive'); 
+        }
       } else alert("Access Denied");
     }
+    function logout() { location.reload(); }
     function setMode(m) {
       currentMode = m;
       document.getElementById('btn-pos').style.borderColor = (m === 'Positive') ? 'var(--neon)' : 'transparent';
@@ -163,14 +215,13 @@
         document.getElementById('reader').style.display = 'block';
         html5QrCode = new Html5Qrcode("reader");
         await html5QrCode.start({ facingMode: "environment" }, { fps: 15, qrbox: 250 }, (t) => {
-          const parts = t.split('|');
+          const parts = t.split('|'); 
           if(parts.length >= 3) { processEntry(parts[0].trim(), parts[2].trim(), parts[1].trim()); stopCam(); }
         });
         scanActive = true;
       } else { stopCam(); }
     }
     async function stopCam() { if (html5QrCode) await html5QrCode.stop(); document.getElementById('reader').style.display = 'none'; scanActive = false; }
-    
     function submitManual() {
       const n = document.getElementById('m-student').value, h = document.getElementById('m-house').value;
       if(!n || h === "Select House") return alert("Fill Name/House");
@@ -179,20 +230,30 @@
     async function processEntry(sName, house, sDept = null) {
       const tName = document.getElementById('t-name').value; 
       if(!tName) return alert("Teacher Name Required");
-      const h = house;
+      const h = house; 
       const pts = (currentMode === 'Positive') ? 10 : -5;
       
       if(scores.hasOwnProperty(h)) {
-        scores[h] += pts; document.getElementById('s-' + h).innerText = scores[h];
+        scores[h] += pts; 
+        const el = document.getElementById('s-' + h);
+        if(el) el.innerText = scores[h];
         showToast(`${sName} (${pts})`);
         if(pts > 0) confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
-        await callAPI({action: "submitPoint", data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: tName, category: document.getElementById('p-cat').value, house: h, type: currentMode }});
+        
+        // Fire and forget submission for better UX (or handle bg)
+        callAPI({action: "submitPoint", data: { dept: currentDept, studentDept: sDept, studentName: sName, teacherName: tName, category: document.getElementById('p-cat').value, house: h, type: currentMode }});
       }
     }
     async function loadAdmin() {
+      const adminCont = document.getElementById('admin-content');
+      adminCont.innerHTML = '<div style="text-align:center; padding:50px;">Loading Dashboard Data...</div>';
+      
       const d = await callAPI({action: "getAdminData"});
+      if (!d || !d.yearlyHouses) return adminCont.innerHTML = "Error loading admin data.";
+      
       const yh = d.yearlyHouses;
-      let h = `<h2 style="color:var(--neon); text-align:center;">ADMIN DASHBOARD</h2>
+      let h = `
+        <h2 style="color:var(--neon); text-align:center;">ADMIN DASHBOARD</h2>
         <h4 style="color:#00d4ff;">🏆 ANNUAL HOUSE STANDINGS</h4>
         <div class="stat-card">
           <div class="rank-row" style="color:var(--neon);"><span>🥇 WINNER</span><b>${yh[0] ? yh[0][0] : '-'} (${yh[0] ? yh[0][1] : 0})</b></div>
@@ -215,18 +276,21 @@
         <div class="stat-card">
           ${d.yearEndToppers.map(w => `<div style="margin-bottom:10px;"><p style="color:#00d4ff; font-size:12px; margin:0;">${w.dept}</p>${w.toppers.map((t,i) => `<div class="rank-row" style="font-size:13px;"><span>${i+1}. ${t[0]}</span><b>${t[1]} PTS</b></div>`).join('')}</div>`).join('')}
         </div>`;
-      document.getElementById('admin-content').innerHTML = h;
+      adminCont.innerHTML = h;
     }
     async function genPDF(n, a) {
       document.getElementById('pdf-name').innerText = n.toUpperCase(); 
       document.getElementById('pdf-award').innerText = a;
       const canvas = await html2canvas(document.getElementById('cert-template'), { scale: 2, useCORS: true });
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('l', 'mm', 'a4');
+      const pdf = new jspdf.jsPDF('l', 'mm', 'a4');
       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 297, 210);
       pdf.save(`DB_Award_${n}.pdf`);
     }
-    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display='none', 2500); }
+    function showToast(m) { 
+      const t = document.getElementById('toast'); 
+      t.innerText = m; t.style.display = 'block'; 
+      setTimeout(() => t.style.display='none', 2500); 
+    }
   </script>
 </body>
 </html>
