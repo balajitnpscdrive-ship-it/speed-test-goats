@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DB G.O.A.T.S | CHAMPIONSHIP PORTAL</title>
+  <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -12,8 +13,13 @@
     :root{--neon:#fbff00;--accent:#00d4ff;--green:#00ff88;--red:#ff416c;--bg:#050508}
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
     body{font-family:'Poppins',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden}
+    
+    .preloader{position:fixed;inset:0;background:#050508;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease;backdrop-filter:blur(10px)}
+    .loader-pulse{animation:pulseLogo .8s infinite alternate}
+    @keyframes pulseLogo{from{transform:scale(0.9);opacity:0.6;filter:drop-shadow(0 0 10px rgba(251,255,0,0))}to{transform:scale(1.1);opacity:1;filter:drop-shadow(0 0 20px var(--neon))}}
+    
     .bg-overlay{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;filter:brightness(0.3) blur(6px);transition:background-image 1s ease}
-    .header{padding:calc(10px + env(safe-area-inset-top)) 14px 12px;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:8px;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
+    .header{padding:calc(10px + env(safe-area-inset-top)) 14px 12px;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:8px;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
     .logo-img{width:54px;height:54px;object-fit:contain;border-radius:8px}
     .founder-img{width:54px;height:54px;border-radius:50%;border:2px solid var(--neon);object-fit:cover;justify-self:end}
     .header-title{text-align:center}
@@ -28,7 +34,7 @@
     .gate-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:20px;text-shadow:0 4px 10px rgba(0,0,0,0.8)}
     .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
     
-    .dept-card{background:rgba(30,30,40,0.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s;box-shadow:0 8px 30px rgba(0,0,0,0.6);position:relative;overflow:hidden}
+    .dept-card{background:rgba(30,30,40,0.85);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s;box-shadow:0 8px 30px rgba(0,0,0,0.6);position:relative;overflow:hidden}
     .dept-card:active{transform:scale(0.93);box-shadow:0 0 20px rgba(251,255,0,.3)}
     .dept-card b{display:block;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
     .dept-card-bar{height:3px;background:linear-gradient(90deg,var(--neon),var(--accent));border-radius:3px;margin-top:10px;opacity:.8}
@@ -110,6 +116,13 @@
   </style>
 </head>
 <body onload="boot()">
+  
+  <div class="preloader" id="preloader">
+    <div class="loader-pulse" style="font-size:60px;margin-bottom:10px;">⚡</div>
+    <div style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px; color:var(--neon); font-size:24px;">G.O.A.T.S UPLINK</div>
+    <div style="font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:2px; margin-top:5px;">SECURE CONNECTION ESTABLISHING...</div>
+  </div>
+
   <div id="sync-status">OFFLINE</div>
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
@@ -173,7 +186,8 @@
       <div id="reader"></div>
       <div id="manual-area">
         <div class="manual-row">
-          <input type="text" id="man-name" placeholder="Student Name">
+          <input type="text" id="man-name" placeholder="Student Name" list="student-list">
+          <datalist id="student-list"></datalist>
           <select id="man-house"><option selected disabled>House</option></select>
         </div>
         <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
@@ -198,6 +212,9 @@
   </div>
 
   <script>
+    // PWA Service Worker Link
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
+
     // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
     const API = "https://script.google.com/macros/s/AKfycbzuDH6elABRTWoNGsFPRFiycYf53k1mM6tCTB3MsQIq6F54YTg9cYQho53BhlkG-lZ5Iw/exec";  
     
@@ -211,7 +228,6 @@
 
     async function boot() {
       const st = document.getElementById('sync-status');
-      st.innerText = "⌛";
       const cache = localStorage.getItem('goats_cache');
       if(cache) try { render(JSON.parse(cache)); } catch(e){}
       
@@ -226,6 +242,25 @@
           processQueue();
         } else throw new Error(res.error||"empty");
       } catch(e) { st.innerText = "🔴 OFFLINE"; st.className = "status-offline"; }
+      
+      // Clear Cinematic Preloader
+      const pl = document.getElementById('preloader');
+      if(pl) { pl.style.opacity='0'; setTimeout(()=>pl.style.display='none', 600); }
+
+      // Background Autocomplete Syncing
+      api({action:"getStudentList"}).then(res => {
+        if(res && res.success) {
+          const dl = document.getElementById('student-list');
+          dl.innerHTML = res.students.map(s => `<option value="${s.name}" data-house="${s.house}">`).join('');
+          document.getElementById('man-name').addEventListener('input', (e)=>{
+            const val = e.target.value.toUpperCase(), opt = Array.from(dl.options).find(o => o.value.toUpperCase() === val);
+            if(opt && opt.dataset.house) {
+              const hs = document.getElementById('man-house');
+              for(let i=0; i<hs.options.length; i++) { if(hs.options[i].value === opt.dataset.house) hs.selectedIndex = i; }
+            }
+          });
+        }
+      });
     }
 
     const deptIcons = {'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊'};
@@ -310,7 +345,6 @@
                 <b style="color:var(--neon)">OVERALL TOTALS</b><div class="dept-card-bar" style="background:var(--neon)"></div>
               </div>`;
               
-            // External App Links Cards
             const externalApps = globalAppLinks.map(app=>`
               <div class="dept-card" style="border-color:var(--accent); background:rgba(0,212,255,0.05); box-shadow: 0 0 15px rgba(0,212,255,0.15);" onclick="window.open('${app.url}', '_blank')">
                 <div style="font-size:30px;margin-bottom:6px;">${app.icon}</div>
@@ -383,7 +417,6 @@
     function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
     async function forceSync(){ showToast("🔄 Syncing queues..."); await processQueue(); localStorage.removeItem('goats_cache'); await boot(); }
     
-    // ── INTEGRATE EXTERNAL APP LINK ──
     async function promptNewApp() {
       const name = prompt("Enter App Name (e.g. 'TV Scoreboard' or 'Certificate Hub'):");
       if(!name) return;
