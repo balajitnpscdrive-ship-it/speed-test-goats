@@ -204,6 +204,7 @@
     const API = "https://script.google.com/macros/s/AKfycbynITGXOE-R-N6hpkV9gb854kEscqlmxqLpSaX3y6rYO1kxF6bmcRwg7KsiLVpRPmDsrA/exec";  
     
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
+    let globalDeptList = [];
     
     const sfxSuccess = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav");
     const sfxFail = new Audio("https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg");
@@ -236,11 +237,14 @@
       if(!data) return;
       const {images,houseConfig,deptList,categories}=data;
       adminCats=categories||[];
+      globalDeptList = deptList||[];
+      
       if(images&&images.bg) document.getElementById('main-bg').style.backgroundImage=`url('${images.bg}')`;
       if(images&&images.logo) document.getElementById('m-logo').src=images.logo;
       if(images&&images.founder) document.getElementById('m-founder').src=images.founder;
       
-      document.getElementById('dept-grid').innerHTML = deptList.filter(d => d.toLowerCase() !== 'admin').map(d=>`
+      // ADMIN IS RENDERED HERE SO YOU CAN LOG IN
+      document.getElementById('dept-grid').innerHTML = globalDeptList.map(d=>`
         <div class="dept-card" onclick="handleCard('${d}')">
           <div style="font-size:30px;margin-bottom:6px;">${getIcon(d)}</div>
           <b>${d}</b><div class="dept-card-bar"></div>
@@ -269,6 +273,7 @@
       });
     }
 
+    // Determine if we show login or leaderboard based on Role
     function handleCard(d){ isAdmin ? openLb(d) : openLogin(d); }
     function openLogin(d){ selectedDept=d; document.getElementById('target-dept').innerText=d; document.getElementById('pass-input').value=''; document.getElementById('login-modal').style.display='flex'; setTimeout(()=>document.getElementById('pass-input').focus(), 50); }
     function closeLogin(){ document.getElementById('login-modal').style.display='none'; }
@@ -294,14 +299,22 @@
             document.getElementById('type-select').style.display='flex'; document.getElementById('house-grid').style.display='grid';
             document.querySelector('.scoreboard').style.display='block'; document.getElementById('dept-label').style.display='block';
           } else {
+            // ADMIN DASHBOARD IS RENDERED HERE: ADMIN IS EXCLUDED FROM THE LEADERBOARDS
             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
-            const grid = document.getElementById('dept-grid');
-            if (!document.getElementById('card-all')) {
-              grid.innerHTML = `<div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
+            
+            const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
+            const gridHtml = leaderDepts.map(d=>`
+              <div class="dept-card" onclick="openLb('${d}')">
+                <div style="font-size:30px;margin-bottom:6px;">${getIcon(d)}</div>
+                <b>${d}</b><div class="dept-card-bar"></div>
+              </div>`).join('');
+              
+            const allCard = `<div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
                 <div style="font-size:30px;margin-bottom:6px;">👑</div>
                 <b style="color:var(--neon)">OVERALL TOTALS</b><div class="dept-card-bar" style="background:var(--neon)"></div>
-              </div>` + grid.innerHTML;
-            }
+              </div>`;
+            
+            document.getElementById('dept-grid').innerHTML = allCard + gridHtml;
             document.querySelector('.scoreboard').style.display='none'; document.getElementById('dept-label').style.display='none';
             document.getElementById('teacher-view').style.paddingBottom = "10px"; window.scrollTo(0, 0);
           }
@@ -362,7 +375,16 @@
     function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("⚠️ Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
     function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
     
-    function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); }
+    // LOGOUT RESTORES THE ADMIN CARD SO YOU CAN LOG BACK IN LATER
+    function logout(){ 
+      localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); 
+      document.getElementById('teacher-view').style.display='none'; 
+      document.getElementById('dept-gate').style.display='block'; 
+      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; 
+      isAdmin=false; currentDept=""; if(scanActive)stopCam(); 
+      if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache')));
+    }
+    
     function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
     async function forceSync(){ showToast("🔄 Syncing queues..."); await processQueue(); localStorage.removeItem('goats_cache'); await boot(); }
     
