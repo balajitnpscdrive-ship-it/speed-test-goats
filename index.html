@@ -85,12 +85,9 @@
     .lb-header{padding:16px;background:rgba(0,0,0,0.9);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
     .lb-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;flex:1}
     .lb-back{background:rgba(255,255,255,0.08);border:none;color:white;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:900;font-size:14px;font-family:inherit}
-    
-    /* TIME FILTER TOGGLES */
     .lb-period-toggle{display:flex;gap:10px;padding:16px 16px 4px 16px;}
     .period-btn{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:10px;border-radius:12px;cursor:pointer;font-weight:900;font-size:12px;font-family:inherit;transition:all .2s;}
     .period-btn.active{background:var(--neon);color:black;border-color:var(--neon);box-shadow:0 0 15px rgba(251,255,0,0.2);}
-    
     .lb-filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;scrollbar-width:none}
     .lb-filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:700;font-family:inherit}
     .lb-filter-btn.active{background:var(--neon);color:black;border-color:var(--neon)}
@@ -186,6 +183,7 @@
         <select id="p-cat"></select>
       </div>
       <div id="admin-actions" class="admin-section" style="display:none;">
+        <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;background:rgba(0,0,0,0.5)" onclick="promptNewApp()">🔗 ADD / INTEGRATE WEB APP</button>
         <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);background:rgba(0,0,0,0.5)" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
         <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);background:rgba(0,0,0,0.5)" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
         <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);background:rgba(0,0,0,0.5)" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
@@ -201,10 +199,10 @@
 
   <script>
     // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
-    const API = "https://script.google.com/macros/s/AKfycbzDcCCaAl7JKboZht-p7aWSQH5r5nYMNxXCsCfeZfkhAGjKACSjk2Lxb2igZfKxA58QYw/exec";  
+    const API = "https://script.google.com/macros/s/AKfycbzuDH6elABRTWoNGsFPRFiycYf53k1mM6tCTB3MsQIq6F54YTg9cYQho53BhlkG-lZ5Iw/exec";  
     
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
-    let globalDeptList = [];
+    let globalDeptList = [], globalAppLinks = [];
     
     const sfxSuccess = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav");
     const sfxFail = new Audio("https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg");
@@ -235,15 +233,15 @@
     
     function render(data){
       if(!data) return;
-      const {images,houseConfig,deptList,categories}=data;
+      const {images,houseConfig,deptList,categories,appLinks}=data;
       adminCats=categories||[];
       globalDeptList = deptList||[];
+      globalAppLinks = appLinks||[];
       
       if(images&&images.bg) document.getElementById('main-bg').style.backgroundImage=`url('${images.bg}')`;
       if(images&&images.logo) document.getElementById('m-logo').src=images.logo;
       if(images&&images.founder) document.getElementById('m-founder').src=images.founder;
       
-      // ADMIN IS RENDERED HERE SO YOU CAN LOG IN
       document.getElementById('dept-grid').innerHTML = globalDeptList.map(d=>`
         <div class="dept-card" onclick="handleCard('${d}')">
           <div style="font-size:30px;margin-bottom:6px;">${getIcon(d)}</div>
@@ -273,7 +271,6 @@
       });
     }
 
-    // Determine if we show login or leaderboard based on Role
     function handleCard(d){ isAdmin ? openLb(d) : openLogin(d); }
     function openLogin(d){ selectedDept=d; document.getElementById('target-dept').innerText=d; document.getElementById('pass-input').value=''; document.getElementById('login-modal').style.display='flex'; setTimeout(()=>document.getElementById('pass-input').focus(), 50); }
     function closeLogin(){ document.getElementById('login-modal').style.display='none'; }
@@ -299,7 +296,6 @@
             document.getElementById('type-select').style.display='flex'; document.getElementById('house-grid').style.display='grid';
             document.querySelector('.scoreboard').style.display='block'; document.getElementById('dept-label').style.display='block';
           } else {
-            // ADMIN DASHBOARD IS RENDERED HERE: ADMIN IS EXCLUDED FROM THE LEADERBOARDS
             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
             
             const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
@@ -313,8 +309,15 @@
                 <div style="font-size:30px;margin-bottom:6px;">👑</div>
                 <b style="color:var(--neon)">OVERALL TOTALS</b><div class="dept-card-bar" style="background:var(--neon)"></div>
               </div>`;
+              
+            // External App Links Cards
+            const externalApps = globalAppLinks.map(app=>`
+              <div class="dept-card" style="border-color:var(--accent); background:rgba(0,212,255,0.05); box-shadow: 0 0 15px rgba(0,212,255,0.15);" onclick="window.open('${app.url}', '_blank')">
+                <div style="font-size:30px;margin-bottom:6px;">${app.icon}</div>
+                <b style="color:var(--accent)">${app.name}</b><div class="dept-card-bar" style="background:var(--accent)"></div>
+              </div>`).join('');
             
-            document.getElementById('dept-grid').innerHTML = allCard + gridHtml;
+            document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
             document.querySelector('.scoreboard').style.display='none'; document.getElementById('dept-label').style.display='none';
             document.getElementById('teacher-view').style.paddingBottom = "10px"; window.scrollTo(0, 0);
           }
@@ -375,18 +378,27 @@
     function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("⚠️ Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
     function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
     
-    // LOGOUT RESTORES THE ADMIN CARD SO YOU CAN LOG BACK IN LATER
-    function logout(){ 
-      localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); 
-      document.getElementById('teacher-view').style.display='none'; 
-      document.getElementById('dept-gate').style.display='block'; 
-      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; 
-      isAdmin=false; currentDept=""; if(scanActive)stopCam(); 
-      if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache')));
-    }
+    function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); }
     
     function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
     async function forceSync(){ showToast("🔄 Syncing queues..."); await processQueue(); localStorage.removeItem('goats_cache'); await boot(); }
+    
+    // ── INTEGRATE EXTERNAL APP LINK ──
+    async function promptNewApp() {
+      const name = prompt("Enter App Name (e.g. 'TV Scoreboard' or 'Certificate Hub'):");
+      if(!name) return;
+      const url = prompt("Enter Web App Link (URL):");
+      if(!url) return;
+      const icon = prompt("Enter an Emoji Icon (e.g. 📺, 📜, 📊):") || "✨";
+      
+      showToast("Saving App Link...");
+      const res = await api({action:"saveAppLink", data: {name, url, icon}});
+      if(res.success) {
+         localStorage.removeItem('goats_cache');
+         showToast("✅ App Linked! Refreshing...");
+         setTimeout(()=>location.reload(), 1000);
+      } else showToast("❌ Failed to save.");
+    }
     
     // ── ADMIN LEADERBOARD ──
     function openLb(dept){ lbDept=dept; lbCat='ALL'; setLbPeriod('weekly'); document.getElementById('lb-title').innerText=dept.toUpperCase(); const cats=['ALL',...adminCats]; document.getElementById('lb-cat-filters').innerHTML=cats.map(c=>`<button class="lb-filter-btn${c==='ALL'?' active':''}" onclick="setLbCat('${c}')">${c}</button>`).join(''); document.getElementById('lb-modal').style.display='flex'; }
