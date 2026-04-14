@@ -117,6 +117,7 @@
 </head>
 <body onload="boot()">
   
+  <!-- CINEMATIC PRELOADER -->
   <div class="preloader" id="preloader">
     <div class="loader-pulse" style="font-size:60px;margin-bottom:10px;">⚡</div>
     <div style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px; color:var(--neon); font-size:24px;">G.O.A.T.S UPLINK</div>
@@ -196,11 +197,22 @@
         <input type="text" id="t-name" placeholder="Teacher Name">
         <select id="p-cat"></select>
       </div>
+      
+      <!-- ADMIN ACTIONS -->
       <div id="admin-actions" class="admin-section" style="display:none;">
-        <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;background:rgba(0,0,0,0.5)" onclick="promptNewApp()">🔗 ADD / INTEGRATE WEB APP</button>
-        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);background:rgba(0,0,0,0.5)" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
+        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);background:rgba(0,0,0,0.5)" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
+        <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;background:rgba(0,0,0,0.5)" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
         <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);background:rgba(0,0,0,0.5)" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
         <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);background:rgba(0,0,0,0.5)" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
+        
+        <!-- NEW WEB APP CONNECTION FORM -->
+        <div id="admin-webapp-form" class="admin-branding" style="border-top-color:var(--accent)">
+          <div class="upload-box"><label style="color:var(--accent)">App Name</label><input type="text" id="new-app-name" placeholder="e.g. TV Scoreboard"></div>
+          <div class="upload-box"><label style="color:var(--accent)">App URL Link</label><input type="text" id="new-app-url" placeholder="https://script.google.com/..."></div>
+          <div class="upload-box"><label style="color:var(--accent)">Icon (Emoji)</label><input type="text" id="new-app-icon" placeholder="📺"></div>
+          <button class="btn-sub" style="background:var(--accent);color:#000;margin-top:10px" onclick="saveNewApp()">UPLOAD LINK</button>
+        </div>
+
         <div id="admin-branding" class="admin-branding">
           <div class="upload-box"><label>Logo</label><input type="file" onchange="handleFile(this,'Logo_ID')" accept="image/*"></div>
           <div class="upload-box"><label>Founder</label><input type="file" onchange="handleFile(this,'Founder_ID')" accept="image/*"></div>
@@ -212,7 +224,6 @@
   </div>
 
   <script>
-    // PWA Service Worker Link
     if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
 
     // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
@@ -243,11 +254,9 @@
         } else throw new Error(res.error||"empty");
       } catch(e) { st.innerText = "🔴 OFFLINE"; st.className = "status-offline"; }
       
-      // Clear Cinematic Preloader
       const pl = document.getElementById('preloader');
       if(pl) { pl.style.opacity='0'; setTimeout(()=>pl.style.display='none', 600); }
 
-      // Background Autocomplete Syncing
       api({action:"getStudentList"}).then(res => {
         if(res && res.success) {
           const dl = document.getElementById('student-list');
@@ -414,20 +423,23 @@
     
     function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); }
     
-    function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
+    function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-webapp-form').style.display='none';}
+    function toggleWebAppForm(){const b=document.getElementById('admin-webapp-form');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-branding').style.display='none';}
+    
     async function forceSync(){ showToast("🔄 Syncing queues..."); await processQueue(); localStorage.removeItem('goats_cache'); await boot(); }
     
-    async function promptNewApp() {
-      const name = prompt("Enter App Name (e.g. 'TV Scoreboard' or 'Certificate Hub'):");
-      if(!name) return;
-      const url = prompt("Enter Web App Link (URL):");
-      if(!url) return;
-      const icon = prompt("Enter an Emoji Icon (e.g. 📺, 📜, 📊):") || "✨";
+    async function saveNewApp() {
+      const name = document.getElementById('new-app-name').value;
+      const url = document.getElementById('new-app-url').value;
+      const icon = document.getElementById('new-app-icon').value || "✨";
+      if(!name || !url){ showToast("⚠️ Name and URL required"); return; }
       
-      showToast("Saving App Link...");
+      showToast("Uploading App Link...");
       const res = await api({action:"saveAppLink", data: {name, url, icon}});
       if(res.success) {
          localStorage.removeItem('goats_cache');
+         document.getElementById('new-app-name').value='';
+         document.getElementById('new-app-url').value='';
          showToast("✅ App Linked! Refreshing...");
          setTimeout(()=>location.reload(), 1000);
       } else showToast("❌ Failed to save.");
