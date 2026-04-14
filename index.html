@@ -152,31 +152,6 @@
     .status-offline { color: var(--red) !important; border-color: rgba(255,65,108,.3) !important; }
 
     /* =======================
-       INSTALL PWA BUTTON 
-       ======================= */
-    .install-wrap {
-      padding: 14px;
-      background: rgba(20,20,30,0.5);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      text-align: center;
-    }
-
-    .install-btn {
-      width: 100%;
-      max-width: 400px;
-      background: #00ff88;
-      color: #000;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 2px;
-      padding: 12px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(0,255,136,0.3);
-    }
-
-    /* =======================
        DEPARTMENT CARDS GRID 
        ======================= */
     #dept-gate {
@@ -619,32 +594,45 @@
     .lb-filters {
       display: flex;
       gap: 12px;
-      padding: 14px 16px;
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      padding: 16px 16px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
       overflow-x: auto;
       scrollbar-width: none;
+      -ms-overflow-style: none;
       flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .lb-filters::-webkit-scrollbar {
+      display: none;
     }
 
     .lb-filter-btn {
+      -webkit-appearance: none;
+      appearance: none;
       background: rgba(255,255,255,0.15);
-      border: 1px solid #555;
-      color: #fff;
-      padding: 10px 18px;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #ffffff;
+      padding: 12px 20px;
       border-radius: 20px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 900;
       flex-shrink: 0;
       text-transform: uppercase;
       letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: normal;
+      min-height: 44px;
     }
 
     .lb-filter-btn.active {
       background: var(--accent);
-      color: black;
+      color: #000000;
       border-color: var(--accent);
-      box-shadow: 0 0 15px rgba(0,212,255,0.4);
+      box-shadow: 0 0 15px rgba(0,212,255,0.5);
     }
 
     .lb-body {
@@ -741,7 +729,7 @@
       text-align: center;
       box-shadow: 0 0 80px rgba(255,180,0,0.35), 0 0 200px rgba(0,0,0,0.95);
       pointer-events: none;
-      display: none; /* Hard-hidden until called */
+      display: none;
     }
 
     #paper-popup.show {
@@ -806,10 +794,6 @@
     <img id="m-founder" class="founder-img">
   </div>
 
-  <div class="install-wrap" id="install-wrap" style="display:none;">
-    <button class="install-btn" id="install-btn" onclick="installApp()">📲 INSTALL PORTAL TO HOME SCREEN</button>
-  </div>
-
   <!-- ADMIN LEADERBOARD MODAL (Securely Hidden by Default) -->
   <div id="lb-modal" style="display:none;">
     <div class="lb-header">
@@ -847,7 +831,6 @@
   <!-- ===============================
        TEACHER & ADMIN DASHBOARD SECTION
        =============================== -->
-  <!-- Strongly hidden by inline style -->
   <div id="teacher-view" style="display:none;">
     <div class="scoreboard" style="display:none;">
       <div class="sb-label">🏆 LIVE HOUSE SCORES</div>
@@ -857,7 +840,7 @@
     <div class="t-panel">
       <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
       
-      <!-- TEACHER TOOLS (Will be blocked for Admin) -->
+      <!-- TEACHER TOOLS (Blocked for Admin) -->
       <div class="mode-toggle" id="type-select">
         <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
         <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
@@ -888,7 +871,6 @@
       
       <!-- ADMIN ACTIONS (Only visible to Admin) -->
       <div id="admin-actions" class="admin-section" style="display:none;">
-        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);background:rgba(251,255,0,0.1);" onclick="installApp()">📲 FORCE PWA INSTALL</button>
         <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
         <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
         <button class="btn-admin" style="color:white;border:1px dashed rgba(255,255,255,0.4);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
@@ -922,45 +904,11 @@
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
     let globalDeptList = [], globalAppLinks = [];
 
-    // PWA Install Logic - Never hidden if available
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); 
-      deferredPrompt = e;
-      document.getElementById('install-wrap').style.display = 'block';
-    });
-
-    async function installApp() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          document.getElementById('install-wrap').style.display = 'none';
-        }
-        deferredPrompt = null;
-      } else {
-        // Fallback for iOS or already installed
-        alert("If you are on an iPhone/iPad, tap the 'Share' icon and then 'Add to Home Screen'. If you are on Android/Desktop usually clicking 'Install' in the address bar works.");
-      }
-    }
-
-    function checkiOS() {
-      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-      const isStandalone = ('standalone' in window.navigator) && window.navigator.standalone;
-      if (isIos && !isStandalone) {
-        document.getElementById('install-wrap').style.display = 'block';
-        const btn = document.getElementById('install-btn');
-        btn.innerText = "📲 TAP 'SHARE' AND 'ADD TO HOME SCREEN'";
-        btn.onclick = () => alert("Apple requires you to install manually:\n\n1. Tap the Share Icon at the bottom of Safari.\n2. Scroll down and tap 'Add to Home Screen'.");
-      }
-    }
-
     function api(payload) { 
       return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json()); 
     }
 
     async function boot() {
-      checkiOS();
       const st = document.getElementById('sync-status');
       const cache = localStorage.getItem('goats_cache');
       
@@ -1123,8 +1071,6 @@
           document.getElementById('teacher-view').style.display = 'block';
           document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
           
-          // DO NOT hide the install wrap anymore! Let them keep it!
-          
           if(!isAdmin) {
              // TEACHER ONLY - SHOW TEACHER TOOLS
              document.getElementById('type-select').style.display = 'flex'; 
@@ -1226,12 +1172,10 @@
       document.getElementById('s-'+actualH).innerText = scores[actualH]; 
       updateRanks();
       
-      // Vibration
       if(navigator.vibrate) { 
         try { navigator.vibrate(pts > 0 ? [60,60,60] : [250]); } catch(e){} 
       }
       
-      // Audio playback
       if(pts > 0) {
         confetti({particleCount: 60, spread: 70, origin: {y: 0.6}}); 
         const sfx = document.getElementById('sfx-success');
@@ -1241,7 +1185,6 @@
         if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>{}); }
       }
 
-      // Show Cinematic Screen-Shaking Popup
       const pop = document.getElementById('paper-popup');
       document.getElementById('pop-status').innerText = pts > 0 ? "🎉 POINT AWARDED 🎉" : "⚠️ POINT DEDUCTED ⚠️";
       document.getElementById('pop-status').style.color = pts > 0 ? "var(--neon)" : "var(--red)";
@@ -1256,11 +1199,10 @@
       document.getElementById('pop-house').style.background = houseColors[actualH] || "#fff";
       
       pop.classList.remove('show');
-      void pop.offsetWidth; // Force replay animation
+      void pop.offsetWidth; 
       pop.classList.add('show');
       setTimeout(() => pop.classList.remove('show'), 3500);
 
-      // Save Data
       const payload = {
         dept: currentDept, 
         studentDept: sDept, 
@@ -1354,8 +1296,6 @@
       
       if(scanActive) stopCam(); 
       if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); 
-      
-      checkiOS(); 
     }
     
     function toggleBranding(){
