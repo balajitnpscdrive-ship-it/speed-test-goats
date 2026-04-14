@@ -9,139 +9,761 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
+
   <style>
-    :root{--neon:#fbff00;--accent:#00d4ff;--green:#00ff88;--red:#ff416c;--bg:#050508}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-    body{font-family:'Poppins',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden}
-    
-    .preloader{position:fixed;top:0;left:0;right:0;bottom:0;background:#050508;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease}
-    .loader-pulse{animation:pulseLogo .8s infinite alternate}
-    @keyframes pulseLogo{from{transform:scale(0.9);filter:drop-shadow(0 0 10px rgba(251,255,0,0))}to{transform:scale(1.1);filter:drop-shadow(0 0 20px var(--neon))}}
-    
-    .bg-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;background-size:cover;background-position:center;filter:brightness(0.2) blur(6px)}
-    
-    .header{padding:calc(10px + env(safe-area-inset-top)) 14px 12px;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:8px;background:rgba(0,0,0,0.9);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
-    .logo-img{width:54px;height:54px;object-fit:contain;border-radius:8px}
-    .founder-img{width:54px;height:54px;border-radius:50%;border:2px solid var(--neon);object-fit:cover;justify-self:end}
-    .header-title{text-align:center}
-    .header-title h1{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:white;line-height:1.2}
-    .header-title p{font-size:8px;color:var(--neon);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;opacity:.9}
-    .header-title small{font-size:7.5px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;display:block}
-    
-    #sync-status{position:fixed;bottom:12px;right:12px;font-size:8px;font-weight:900;text-transform:uppercase;padding:4px 8px;border-radius:20px;background:rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.08);z-index:200}
-    .status-live{color:var(--green)!important;border-color:rgba(0,255,136,.3)!important}
-    .status-offline{color:var(--red)!important;border-color:rgba(255,65,108,.3)!important}
-    
-    .install-wrap{display:none;padding:14px;background:rgba(20,20,30,0.5);border-bottom:1px solid rgba(255,255,255,0.05);text-align:center}
-    .install-btn{width:100%;max-width:400px;background:#00ff88;color:#000;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;padding:12px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(0,255,136,0.3)}
-    
-    #dept-gate{padding:20px 14px;max-width:900px;margin:auto}
-    .gate-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:20px;text-shadow:0 4px 10px rgba(0,0,0,0.8)}
-    .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
-    
-    .dept-card{background:rgba(20,20,25,0.95);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:22px 10px;text-align:center;cursor:pointer;transition:transform .15s;box-shadow:0 8px 30px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
-    .dept-card:active{transform:scale(0.95);box-shadow:0 0 20px rgba(251,255,0,.3)}
-    .dept-card-icon{font-size:32px;margin-bottom:8px;line-height:1}
-    .dept-card b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1.2;width:100%;word-wrap:break-word}
-    .dept-card-bar{height:3px;background:linear-gradient(90deg,var(--neon),var(--accent));border-radius:3px;margin-top:10px;width:80%;opacity:.8}
-    
-    #login-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
-    .modal-box{background:rgba(20,20,25,1);border:1px solid rgba(251,255,0,.4);border-radius:24px;padding:32px 24px;width:100%;max-width:360px;text-align:center;animation:slideUp .3s ease;box-shadow:0 0 60px rgba(251,255,0,.15)}
-    @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-    .modal-box h2{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--neon);letter-spacing:3px;margin-bottom:20px;word-wrap:break-word}
-    input,select{width:100%;padding:14px 16px;margin:8px 0;background:rgba(255,255,255,0.06);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-size:16px;font-family:inherit;transition:border-color .2s}
-    input:focus,select:focus{border-color:var(--neon);outline:none;background:rgba(251,255,0,.08)}
-    select option{background:#111}
-    .btn-main{width:100%;padding:16px;border-radius:12px;background:var(--neon);color:black;font-weight:900;border:none;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:18px;margin-top:5px;transition:transform .1s}
-    .btn-main:active{transform:scale(0.97)}
-    
-    #teacher-view{display:none;max-width:600px;margin:auto;padding-bottom:40px}
-    .scoreboard{padding:16px;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.07)}
-    .sb-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;text-align:center}
-    .score-strip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-    .score-chip{flex:0 0 auto;min-width:80px;background:rgba(255,255,255,0.04);border-radius:14px;padding:10px 14px;text-align:center;border-top:3px solid #333;position:relative}
-    .score-chip.leader{box-shadow:0 0 20px var(--chip-color,#888)}
-    .chip-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.6)}
-    .chip-score{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1.1;color:white}
-    .chip-rank{font-size:14px;position:absolute;top:-8px;right:-4px}
-    
-    .t-panel{margin:16px;background:rgba(10,10,18,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:16px 14px;box-shadow:0 10px 40px rgba(0,0,0,0.7)}
-    .mode-toggle{display:flex;gap:8px;margin-bottom:16px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px}
-    .mode-btn{flex:1;padding:14px 4px;border-radius:11px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,0.3);font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:16px}
-    .mode-btn.active-pos{background:linear-gradient(135deg,#00b09b,#00ff88);color:black;box-shadow:0 4px 20px rgba(0,255,136,.3)}
-    .mode-btn.active-neg{background:linear-gradient(135deg,#ff416c,#ff4b2b);color:white;box-shadow:0 4px 20px rgba(255,65,108,.3)}
-    .house-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-    .house-btn{padding:28px 4px;border-radius:16px;border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:black;cursor:pointer;position:relative;overflow:hidden}
-    .house-btn:active{transform:scale(0.94)}
-    @keyframes pulseGlow{0%,100%{box-shadow:0 0 12px var(--glow)}50%{box-shadow:0 0 30px var(--glow),0 0 60px var(--glow)}}
-    .scan-area{text-align:center;margin-bottom:14px}
-    #cam-btn{background:linear-gradient(135deg,var(--neon),#e8ff00);border:none;padding:0;width:80px;height:80px;border-radius:50%;font-size:30px;cursor:pointer;box-shadow:0 0 0 0 rgba(251,255,0,.4)}
-    #cam-btn.scanning{animation:scanPulse 1.2s infinite}
-    @keyframes scanPulse{0%{box-shadow:0 0 0 0 rgba(251,255,0,.5)}70%{box-shadow:0 0 0 20px rgba(251,255,0,0)}100%{box-shadow:0 0 0 0 rgba(251,255,0,0)}}
-    .scan-hint{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
-    #reader{border-radius:16px;overflow:hidden;border:2px solid var(--neon);display:none;margin-bottom:14px}
-    .manual-row{display:flex;gap:8px;margin-bottom:6px}
-    .manual-row input,.manual-row select{margin:0;flex:1;min-width:0}
-    .btn-sub{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:14px;border-radius:12px;font-weight:900;cursor:pointer;width:100%;margin-bottom:14px;letter-spacing:1px}
-    .meta-row{display:flex;gap:8px}
-    .meta-row input,.meta-row select{margin:0;flex:1;min-width:0}
-    
-    .admin-section{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-    .btn-admin{padding:14px 10px;border-radius:12px;background:transparent;font-weight:900;cursor:pointer;font-size:12px;letter-spacing:1px;font-family:inherit;word-wrap:break-word}
-    .admin-branding{display:none;margin-top:4px;border-top:1px dashed rgba(255,255,255,.2);padding-top:16px}
-    .upload-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:12px 14px;border-radius:12px;margin-bottom:8px}
-    .upload-box label{font-size:10px;color:var(--accent);display:block;margin-bottom:6px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
-    .btn-logout{width:calc(100% - 32px);margin:16px;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.7);font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:1px}
-    
-    /* LEADERBOARD (SOLID BACKGROUND prevents overlap bleed) */
-    #lb-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:#050508;display:none;flex-direction:column;z-index:3000;overflow-x:hidden;overflow-y:auto}
-    .lb-header{padding:16px;background:rgba(0,0,0,1);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
-    .lb-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .lb-back{background:rgba(255,255,255,0.15);border:none;color:white;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:900;font-size:13px;font-family:inherit;flex-shrink:0}
-    .lb-period-toggle{display:flex;gap:10px;padding:16px 16px 4px 16px}
-    .period-btn{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);padding:10px 4px;border-radius:12px;cursor:pointer;font-weight:900;font-size:11px;font-family:inherit;transition:all .2s;text-align:center}
-    .period-btn.active{background:var(--neon);color:black;border-color:var(--neon);box-shadow:0 0 15px rgba(251,255,0,0.2)}
-    .lb-filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.1);overflow-x:auto;scrollbar-width:none}
-    .lb-filter-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.9);padding:8px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:11px;font-weight:700;font-family:inherit;flex-shrink:0}
-    .lb-filter-btn.active{background:var(--accent);color:black;border-color:var(--accent)}
-    .lb-body{padding:20px 14px}
-    .lb-podium{display:flex;gap:8px;margin-bottom:24px;align-items:flex-end;justify-content:center}
-    .lb-podium-item{text-align:center;flex:1;max-width:90px}
-    .lb-podium-bar{border-radius:10px 10px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(0,0,0,0.8);min-height:36px;box-shadow:inset 0 2px 4px rgba(255,255,255,0.4)}
-    .lb-podium-name{font-size:10px;font-weight:900;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .lb-podium-score{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--neon)}
-    .lb-row{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,0.06);border-radius:12px;margin-bottom:10px;border-left:4px solid #333}
-    .lb-row-rank{font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(255,255,255,.5);width:26px;text-align:center;flex-shrink:0}
-    .lb-row-name{font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-    .lb-row-pts{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--neon);flex-shrink:0}
-    .lb-bar-bg{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-top:6px;width:100%}
-    .lb-bar-fill{height:4px;border-radius:4px;transition:width .6s ease}
-    .lb-empty{text-align:center;padding:40px;color:rgba(255,255,255,.6);font-size:14px}
-    
-    /* CINEMATIC TEACHER POPUP */
+    /* =======================
+       GLOBAL VARIABLES 
+       ======================= */
+    :root {
+      --neon: #fbff00;
+      --accent: #00d4ff;
+      --green: #00ff88;
+      --red: #ff416c;
+      --bg: #050508;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: white;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* =======================
+       PRELOADER & OVERLAYS 
+       ======================= */
+    .preloader {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #050508;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease;
+    }
+
+    .loader-pulse {
+      animation: pulseLogo 0.8s infinite alternate;
+    }
+
+    @keyframes pulseLogo {
+      from { transform: scale(0.9); filter: drop-shadow(0 0 10px rgba(251,255,0,0)); }
+      to { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--neon)); }
+    }
+
+    .bg-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.2) blur(6px);
+    }
+
+    /* =======================
+       HEADER SECTION 
+       ======================= */
+    .header {
+      padding: calc(10px + env(safe-area-inset-top)) 14px 12px;
+      display: grid;
+      grid-template-columns: 60px 1fr 60px;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .founder-img {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid var(--neon);
+      object-fit: cover;
+      justify-self: end;
+    }
+
+    .header-title {
+      text-align: center;
+    }
+
+    .header-title h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .header-title p {
+      font-size: 8px;
+      color: var(--neon);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      opacity: .9;
+    }
+
+    .header-title small {
+      font-size: 7.5px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    /* =======================
+       WIFI SYNC STATUS 
+       ======================= */
+    #sync-status {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      font-size: 8px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+      z-index: 200;
+    }
+
+    .status-live { color: var(--green) !important; border-color: rgba(0,255,136,.3) !important; }
+    .status-offline { color: var(--red) !important; border-color: rgba(255,65,108,.3) !important; }
+
+    /* =======================
+       INSTALL PWA BUTTON 
+       ======================= */
+    .install-wrap {
+      padding: 14px;
+      background: rgba(20,20,30,0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+    }
+
+    .install-btn {
+      width: 100%;
+      max-width: 400px;
+      background: #00ff88;
+      color: #000;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,255,136,0.3);
+    }
+
+    /* =======================
+       DEPARTMENT CARDS GRID 
+       ======================= */
+    #dept-gate {
+      padding: 20px 14px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .gate-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .dept-card {
+      background: rgba(20,20,25,0.95);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 22px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+
+    .dept-card:active {
+      transform: scale(0.92);
+      box-shadow: 0 0 20px rgba(251,255,0,.3);
+    }
+
+    .dept-card-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .dept-card b {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      width: 100%;
+      word-wrap: break-word;
+    }
+
+    .dept-card-bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--neon), var(--accent));
+      border-radius: 3px;
+      margin: 10px auto 0;
+      width: 80%;
+      opacity: .8;
+    }
+
+    /* =======================
+       LOGIN MODAL 
+       ======================= */
+    #login-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: rgba(20,20,25,1);
+      border: 1px solid rgba(251,255,0,.4);
+      border-radius: 24px;
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(251,255,0,.15);
+    }
+
+    .modal-box h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: var(--neon);
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--neon);
+      outline: none;
+      background: rgba(251,255,0,.08);
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--neon);
+      color: black;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+      font-size: 18px;
+      margin-top: 5px;
+    }
+
+    /* =======================
+       TEACHER VIEW LOGIC 
+       ======================= */
+    #teacher-view {
+      max-width: 600px;
+      margin: auto;
+      padding-bottom: 40px;
+    }
+
+    .scoreboard {
+      padding: 16px;
+      background: rgba(0,0,0,0.85);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .sb-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .score-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+
+    .score-chip {
+      flex: 0 0 auto;
+      min-width: 80px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      border-top: 3px solid #333;
+      position: relative;
+    }
+
+    .score-chip.leader {
+      box-shadow: 0 0 20px var(--chip-color, #888);
+    }
+
+    .chip-name {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .chip-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      line-height: 1.1;
+      color: white;
+    }
+
+    .chip-rank {
+      font-size: 14px;
+      position: absolute;
+      top: -8px;
+      right: -4px;
+    }
+
+    .t-panel {
+      margin: 16px;
+      background: rgba(10,10,18,0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 16px 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 14px 4px;
+      border-radius: 11px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: rgba(255,255,255,0.3);
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+      font-size: 16px;
+    }
+
+    .mode-btn.active-pos {
+      background: linear-gradient(135deg, #00b09b, #00ff88);
+      color: black;
+      box-shadow: 0 4px 20px rgba(0,255,136,.3);
+    }
+
+    .mode-btn.active-neg {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      box-shadow: 0 4px 20px rgba(255,65,108,.3);
+    }
+
+    .house-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .house-btn {
+      padding: 28px 4px;
+      border-radius: 16px;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      color: black;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .house-btn:active {
+      transform: scale(0.94);
+    }
+
+    .scan-area {
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    #cam-btn {
+      background: linear-gradient(135deg, var(--neon), #e8ff00);
+      border: none;
+      padding: 0;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      font-size: 30px;
+      cursor: pointer;
+    }
+
+    .scan-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    #reader {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--neon);
+      margin-bottom: 14px;
+    }
+
+    .manual-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .btn-sub {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* =======================
+       ADMIN ACTIONS DASHBOARD 
+       ======================= */
+    .admin-section {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-admin {
+      padding: 14px 10px;
+      border-radius: 12px;
+      background: transparent;
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-family: inherit;
+    }
+
+    .upload-box {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .upload-box label {
+      font-size: 10px;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .btn-logout {
+      width: calc(100% - 32px);
+      margin: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    /* =======================
+       LEADERBOARD MODAL 
+       ======================= */
+    #lb-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #050508; /* NO TRANSPARENCY - SOLID BLACK */
+      flex-direction: column;
+      z-index: 3000;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .lb-header {
+      padding: 16px;
+      background: rgba(0,0,0,1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .lb-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      flex: 1;
+    }
+
+    .lb-back {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .lb-period-toggle {
+      display: flex;
+      gap: 10px;
+      padding: 16px 16px 4px 16px;
+    }
+
+    .period-btn {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      padding: 10px 4px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 900;
+      font-size: 11px;
+    }
+
+    .period-btn.active {
+      background: var(--neon);
+      color: black;
+      border-color: var(--neon);
+      box-shadow: 0 0 15px rgba(251,255,0,0.2);
+    }
+
+    .lb-filters {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .lb-filter-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9);
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .lb-filter-btn.active {
+      background: var(--accent);
+      color: black;
+      border-color: var(--accent);
+    }
+
+    .lb-body {
+      padding: 20px 14px;
+    }
+
+    .lb-podium {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .lb-podium-item {
+      text-align: center;
+      flex: 1;
+      max-width: 90px;
+    }
+
+    .lb-podium-bar {
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 8px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: rgba(0,0,0,0.8);
+      min-height: 36px;
+    }
+
+    .lb-podium-name {
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-top: 6px;
+      color: rgba(255,255,255,1);
+    }
+
+    .lb-podium-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      color: var(--neon);
+    }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 4px solid #333;
+    }
+
+    .lb-row-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: rgba(255,255,255,0.5);
+      width: 26px;
+      text-align: center;
+    }
+
+    .lb-row-name {
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .lb-row-pts {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      color: var(--neon);
+    }
+
+    /* =======================
+       CINEMATIC PAPER POPUP 
+       ======================= */
     #paper-popup {
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%) scale(0) perspective(800px) rotateX(45deg);
-      opacity:0; width:90%; max-width:400px;
-      background:linear-gradient(160deg,#1a1200,#0a0800);
-      border:2px solid rgba(255,215,0,0.6);
-      color:white; padding:30px;
-      border-radius:24px; z-index:100000; text-align:center;
-      box-shadow:0 0 80px rgba(255,180,0,0.35),0 0 200px rgba(0,0,0,0.95);
-      pointer-events:none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0) perspective(800px) rotateX(45deg);
+      opacity: 0;
+      width: 90%;
+      max-width: 400px;
+      background: linear-gradient(160deg, #1a1200, #0a0800);
+      border: 2px solid rgba(255,215,0,0.6);
+      color: white;
+      padding: 30px;
+      border-radius: 24px;
+      z-index: 100000;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(255,180,0,0.35), 0 0 200px rgba(0,0,0,0.95);
+      pointer-events: none;
+      display: none; /* Hard-hidden until called */
     }
-    #paper-popup.show { animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+    #paper-popup.show {
+      display: block;
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
     @keyframes popIn {
-      0% { transform:translate(-50%,-20%) scale(0.5) perspective(800px) rotateX(60deg); opacity:0; }
-      100% { transform:translate(-50%,-50%) scale(1) perspective(800px) rotateX(0deg); opacity:1; }
+      0% { transform: translate(-50%, -20%) scale(0.5) perspective(800px) rotateX(60deg); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1) perspective(800px) rotateX(0deg); opacity: 1; }
     }
-    #pop-pts { animation: ptsPulse 1s ease-in-out infinite alternate; display:inline-block; }
-    @keyframes ptsPulse {
-      0% { text-shadow: 0 0 10px rgba(255,215,0,0.5); transform:scale(1); }
-      100% { text-shadow: 0 0 40px rgba(255,215,0,1), 0 0 80px rgba(255,69,0,0.8); transform:scale(1.1); }
+
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10,10,10,0.95);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      display: none;
+      z-index: 5000;
+      font-weight: 600;
+      font-size: 14px;
     }
-    
-    #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(10,10,10,0.95);border:1px solid rgba(255,255,255,0.3);color:white;padding:12px 24px;border-radius:50px;display:none;z-index:5000;font-weight:600;font-size:14px;backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.8)}
   </style>
 </head>
 <body onload="boot()">
@@ -156,11 +778,11 @@
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
   
-  <!-- HTML5 Audio Elements mapped explicitly for mobile bypass -->
+  <!-- HTML5 Audio Elements directly in body for bypass logic -->
   <audio id="sfx-success" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav" preload="auto"></audio>
   <audio id="sfx-fail" src="https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg" preload="auto"></audio>
   
-  <!-- CINEMATIC POPUP -->
+  <!-- CINEMATIC POPUP (Securely Hidden by Default) -->
   <div id="paper-popup">
     <div style="font-size:16px;font-weight:900;color:var(--neon);letter-spacing:2px;text-transform:uppercase;" id="pop-status">🎉 POINT AWARDED 🎉</div>
     <div id="pop-name" style="font-family:'Bebas Neue',sans-serif;font-size:40px;margin:12px 0;line-height:1.1;word-wrap:break-word;color:white;text-shadow:0 2px 10px #000;">STUDENT</div>
@@ -179,12 +801,12 @@
     <img id="m-founder" class="founder-img">
   </div>
 
-  <div class="install-wrap" id="install-wrap">
+  <div class="install-wrap" id="install-wrap" style="display:none;">
     <button class="install-btn" id="install-btn" onclick="installApp()">📲 INSTALL PORTAL TO HOME SCREEN</button>
   </div>
 
-  <!-- ADMIN LEADERBOARD MODAL -->
-  <div id="lb-modal">
+  <!-- ADMIN LEADERBOARD MODAL (Securely Hidden by Default) -->
+  <div id="lb-modal" style="display:none;">
     <div class="lb-header">
       <button class="lb-back" onclick="closeLb()">← BACK</button>
       <h2 id="lb-title">LEADERBOARD</h2>
@@ -194,17 +816,19 @@
         <button id="btn-period-annually" class="period-btn" onclick="setLbPeriod('annually')">🏆 ANNUALLY</button>
     </div>
     <div class="lb-filters" id="lb-cat-filters"></div>
-    <div class="lb-body" id="lb-body"><div class="lb-empty">Loading...</div></div>
+    <div class="lb-body" id="lb-body">
+      <div class="lb-empty">Loading...</div>
+    </div>
   </div>
 
-  <!-- DEPT GATE -->
-  <div id="dept-gate">
+  <!-- MAIN DEPT GATE -->
+  <div id="dept-gate" style="display:block;">
     <p class="gate-title">SELECT DEPARTMENT</p>
     <div id="dept-grid" class="dept-grid"></div>
   </div>
 
   <!-- LOGIN MODAL -->
-  <div id="login-modal" onclick="if(event.target==this)closeLogin()">
+  <div id="login-modal" style="display:none;" onclick="if(event.target==this)closeLogin()">
     <div class="modal-box">
       <h2 id="target-dept">DEPARTMENT</h2>
       <input type="password" id="pass-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')handleLogin()">
@@ -212,24 +836,33 @@
     </div>
   </div>
 
-  <!-- TEACHER VIEW -->
-  <div id="teacher-view">
-    <div class="scoreboard">
+  <!-- ===============================
+       TEACHER & ADMIN DASHBOARD SECTION
+       =============================== -->
+  <!-- Strongly hidden by inline style -->
+  <div id="teacher-view" style="display:none;">
+    <div class="scoreboard" style="display:none;">
       <div class="sb-label">🏆 LIVE HOUSE SCORES</div>
       <div id="score-strip" class="score-strip"></div>
     </div>
+    
     <div class="t-panel">
       <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
+      
       <div class="mode-toggle" id="type-select">
         <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
         <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
       </div>
+      
       <div id="house-grid" class="house-grid"></div>
+      
       <div class="scan-area" id="cam-area">
         <button id="cam-btn" onclick="toggleCam()">📷</button>
         <div class="scan-hint" id="scan-hint">TAP TO SCAN QR</div>
       </div>
-      <div id="reader"></div>
+      
+      <div id="reader" style="display:none;"></div>
+      
       <div id="manual-area">
         <div class="manual-row">
           <input type="text" id="man-name" placeholder="Student Name" list="student-list">
@@ -238,27 +871,27 @@
         </div>
         <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
       </div>
+      
       <div class="meta-row" id="teacher-meta">
         <input type="text" id="t-name" placeholder="Teacher Name">
         <select id="p-cat"></select>
       </div>
       
-      <!-- ADMIN ACTIONS -->
+      <!-- ADMIN ACTIONS (Only visible to Admin) -->
       <div id="admin-actions" class="admin-section" style="display:none;">
-        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);background:rgba(0,0,0,0.5)" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
-        <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;background:rgba(0,0,0,0.5)" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
-        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);background:rgba(0,0,0,0.5)" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
-        <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);background:rgba(0,0,0,0.5)" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
+        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
+        <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
+        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
+        <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
         
-        <!-- NEW WEB APP FORM -->
-        <div id="admin-webapp-form" class="admin-branding" style="border-top-color:var(--accent)">
-          <div class="upload-box"><label style="color:var(--accent)">App Name</label><input type="text" id="new-app-name" placeholder="e.g. Scoreboard"></div>
-          <div class="upload-box"><label style="color:var(--accent)">URL Link</label><input type="text" id="new-app-url" placeholder="https://..."></div>
-          <div class="upload-box"><label style="color:var(--accent)">Icon (Emoji)</label><input type="text" id="new-app-icon" placeholder="📺"></div>
-          <button class="btn-sub" style="background:var(--accent);color:#000;margin-top:10px" onclick="saveNewApp()">UPLOAD LINK</button>
+        <div id="admin-webapp-form" style="display:none; margin-top:4px; padding-top:16px; border-top:1px dashed rgba(255,255,255,.2);">
+          <div class="upload-box"><label>App Name</label><input type="text" id="new-app-name" placeholder="e.g. Scoreboard"></div>
+          <div class="upload-box"><label>URL Link</label><input type="text" id="new-app-url" placeholder="https://..."></div>
+          <div class="upload-box"><label>Icon (Emoji)</label><input type="text" id="new-app-icon" placeholder="📺"></div>
+          <button class="btn-sub" style="background:var(--accent);color:#000;margin-top:10px;" onclick="saveNewApp()">UPLOAD LINK</button>
         </div>
 
-        <div id="admin-branding" class="admin-branding">
+        <div id="admin-branding" style="display:none; margin-top:4px; padding-top:16px; border-top:1px dashed rgba(255,255,255,.2);">
           <div class="upload-box"><label>Logo</label><input type="file" onchange="handleFile(this,'Logo_ID')" accept="image/*"></div>
           <div class="upload-box"><label>Founder</label><input type="file" onchange="handleFile(this,'Founder_ID')" accept="image/*"></div>
           <div class="upload-box"><label>Background</label><input type="file" onchange="handleFile(this,'Background_ID')" accept="image/*"></div>
@@ -269,7 +902,9 @@
   </div>
 
   <script>
-    if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
 
     // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
     const API = "https://script.google.com/macros/s/AKfycbyyY63WqLuZvsFtx5rD2iUWabvZqVpl9Dvu2zbst8dR3ET_Ilu3P_oW8pTGL3pcvnQYyA/exec";  
@@ -279,17 +914,22 @@
 
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); deferredPrompt = e;
+      e.preventDefault(); 
+      deferredPrompt = e;
       document.getElementById('install-wrap').style.display = 'block';
     });
+
     async function installApp() {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') document.getElementById('install-wrap').style.display = 'none';
+        if (outcome === 'accepted') {
+          document.getElementById('install-wrap').style.display = 'none';
+        }
         deferredPrompt = null;
       }
     }
+
     function checkiOS() {
       const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
       const isStandalone = ('standalone' in window.navigator) && window.navigator.standalone;
@@ -301,38 +941,62 @@
       }
     }
 
-    function api(payload) { return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json()); }
+    function api(payload) { 
+      return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json()); 
+    }
 
     async function boot() {
       checkiOS();
       const st = document.getElementById('sync-status');
       const cache = localStorage.getItem('goats_cache');
-      if(cache) try { render(JSON.parse(cache)); } catch(e){}
+      
+      if(cache) {
+        try { render(JSON.parse(cache)); } catch(e){}
+      }
       
       try {
-        const res = await api({action:"getAppData"});
+        const res = await api({action: "getAppData"});
         if(res && res.deptList) {
           localStorage.setItem('goats_cache', JSON.stringify(res));
           render(res);
-          st.innerText = "🟢 LIVE"; st.className = "status-live";
-          const savedUser = localStorage.getItem('goats_user'), savedPass = localStorage.getItem('goats_pass');
-          if (savedUser && savedPass) { selectedDept = savedUser; document.getElementById('pass-input').value = savedPass; handleLogin(true); }
+          st.innerText = "🟢 LIVE"; 
+          st.className = "status-live";
+          
+          const savedUser = localStorage.getItem('goats_user');
+          const savedPass = localStorage.getItem('goats_pass');
+          if (savedUser && savedPass) { 
+            selectedDept = savedUser; 
+            document.getElementById('pass-input').value = savedPass; 
+            handleLogin(true); 
+          }
           processQueue();
-        } else throw new Error(res.error||"empty");
-      } catch(e) { st.innerText = "🔴 OFFLINE"; st.className = "status-offline"; }
+        } else {
+          throw new Error(res.error || "empty");
+        }
+      } catch(e) { 
+        st.innerText = "🔴 OFFLINE"; 
+        st.className = "status-offline"; 
+      }
       
       const pl = document.getElementById('preloader');
-      if(pl) { pl.style.opacity='0'; setTimeout(()=>pl.style.display='none', 600); }
+      if(pl) { 
+        pl.style.opacity = '0'; 
+        setTimeout(() => pl.style.display = 'none', 600); 
+      }
 
-      api({action:"getStudentList"}).then(res => {
+      api({action: "getStudentList"}).then(res => {
         if(res && res.success) {
           const dl = document.getElementById('student-list');
           dl.innerHTML = res.students.map(s => `<option value="${s.name}" data-house="${s.house}">`).join('');
-          document.getElementById('man-name').addEventListener('input', (e)=>{
-            const val = e.target.value.toUpperCase(), opt = Array.from(dl.options).find(o => o.value.toUpperCase() === val);
+          
+          document.getElementById('man-name').addEventListener('input', (e) => {
+            const val = e.target.value.toUpperCase();
+            const opt = Array.from(dl.options).find(o => o.value.toUpperCase() === val);
             if(opt && opt.dataset.house) {
               const hs = document.getElementById('man-house');
-              for(let i=0; i<hs.options.length; i++) { if(hs.options[i].value === opt.dataset.house) hs.selectedIndex = i; }
+              for(let i=0; i<hs.options.length; i++) { 
+                if(hs.options[i].value === opt.dataset.house) hs.selectedIndex = i; 
+              }
             }
           });
         }
@@ -340,72 +1004,117 @@
     }
 
     const deptIcons = {'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊'};
-    function getIcon(d){const k=d.toLowerCase().replace(/\s+/g,'');for(const key in deptIcons){if(k.includes(key))return deptIcons[key];}return '📚';}
+    function getIcon(d){
+      const k = d.toLowerCase().replace(/\s+/g,'');
+      for(const key in deptIcons) {
+        if(k.includes(key)) return deptIcons[key];
+      }
+      return '📚';
+    }
     
     function render(data){
       if(!data) return;
-      const {images,houseConfig,deptList,categories,appLinks}=data;
-      adminCats=categories||[];
-      globalDeptList = deptList||[];
-      globalAppLinks = appLinks||[];
+      const {images, houseConfig, deptList, categories, appLinks} = data;
+      adminCats = categories || [];
+      globalDeptList = deptList || [];
+      globalAppLinks = appLinks || [];
       
-      if(images&&images.bg) document.getElementById('main-bg').style.backgroundImage=`url('${images.bg}')`;
-      if(images&&images.logo) document.getElementById('m-logo').src=images.logo;
-      if(images&&images.founder) document.getElementById('m-founder').src=images.founder;
+      if(images && images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
+      if(images && images.logo) document.getElementById('m-logo').src = images.logo;
+      if(images && images.founder) document.getElementById('m-founder').src = images.founder;
       
       document.getElementById('dept-grid').innerHTML = globalDeptList.map(d=>`
         <div class="dept-card" onclick="handleCard('${d}')">
           <div class="dept-card-icon">${getIcon(d)}</div>
-          <b>${d}</b><div class="dept-card-bar"></div>
-        </div>`).join('');
+          <b>${d}</b>
+          <div class="dept-card-bar"></div>
+        </div>
+      `).join('');
         
-      if(categories) document.getElementById('p-cat').innerHTML=categories.map(c=>`<option>${c}</option>`).join('');
+      if(categories) {
+        document.getElementById('p-cat').innerHTML = categories.map(c=>`<option>${c}</option>`).join('');
+      }
+
       if(houseConfig){
-        const strip=document.getElementById('score-strip'),grid=document.getElementById('house-grid'),sel=document.getElementById('man-house');
-        strip.innerHTML="";grid.innerHTML="";sel.innerHTML='<option selected disabled>House</option>';
-        houseConfig.forEach((h,i)=>{
-          scores[h.name]=0;houseColors[h.name]=h.color;
-          strip.innerHTML+=`<div class="score-chip" id="chip-${h.name}" style="border-top-color:${h.color};--chip-color:${h.color}"><div class="chip-rank" id="rank-${h.name}"></div><div class="chip-name">${h.name}</div><div class="chip-score" id="s-${h.name}">0</div></div>`;
-          grid.innerHTML+=`<button class="house-btn" style="background:${h.color};--glow:${h.color};animation:pulseGlow ${2+i*.3}s ease-in-out infinite" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
-          sel.add(new Option(h.name,h.name));
+        const strip = document.getElementById('score-strip');
+        const grid = document.getElementById('house-grid');
+        const sel = document.getElementById('man-house');
+        
+        strip.innerHTML = "";
+        grid.innerHTML = "";
+        sel.innerHTML = '<option selected disabled>House</option>';
+        
+        houseConfig.forEach((h, i)=>{
+          scores[h.name] = 0;
+          houseColors[h.name] = h.color;
+          
+          strip.innerHTML += `
+            <div class="score-chip" id="chip-${h.name}" style="border-top-color:${h.color};--chip-color:${h.color}">
+              <div class="chip-rank" id="rank-${h.name}"></div>
+              <div class="chip-name">${h.name}</div>
+              <div class="chip-score" id="s-${h.name}">0</div>
+            </div>`;
+            
+          grid.innerHTML += `
+            <button class="house-btn" style="background:${h.color};--glow:${h.color};animation:pulseGlow ${2+i*.3}s ease-in-out infinite" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
+            
+          sel.add(new Option(h.name, h.name));
         });
       }
       setMode('Positive');
     }
 
     function updateRanks(){
-      const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-      const medals=['🥇','🥈','🥉'];
-      sorted.forEach(([name],i)=>{
-        document.getElementById('rank-'+name).innerText=medals[i]||'';
-        document.getElementById('chip-'+name).classList.toggle('leader',i===0);
+      const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+      const medals = ['🥇','🥈','🥉'];
+      sorted.forEach(([name], i) => {
+        document.getElementById('rank-'+name).innerText = medals[i] || '';
+        document.getElementById('chip-'+name).classList.toggle('leader', i===0);
       });
     }
 
-    function handleCard(d){ isAdmin ? openLb(d) : openLogin(d); }
-    function openLogin(d){ selectedDept=d; document.getElementById('target-dept').innerText=d; document.getElementById('pass-input').value=''; document.getElementById('login-modal').style.display='flex'; setTimeout(()=>document.getElementById('pass-input').focus(), 50); }
-    function closeLogin(){ document.getElementById('login-modal').style.display='none'; }
+    function handleCard(d) { 
+      if (isAdmin) { openLb(d); } else { openLogin(d); }
+    }
+    
+    function openLogin(d) { 
+      selectedDept = d; 
+      document.getElementById('target-dept').innerText = d; 
+      document.getElementById('pass-input').value = ''; 
+      document.getElementById('login-modal').style.display = 'flex'; 
+      setTimeout(() => document.getElementById('pass-input').focus(), 50); 
+    }
+    
+    function closeLogin() { 
+      document.getElementById('login-modal').style.display = 'none'; 
+    }
     
     async function handleLogin(isSilent = false){
-      const p = document.getElementById('pass-input').value; if(!p) return;
+      const p = document.getElementById('pass-input').value; 
+      if(!p) return;
+
       try {
-        const res=await api({action:"authenticate",user:selectedDept,pass:p});
+        const res = await api({action: "authenticate", user: selectedDept, pass: p});
+        
         if(res.success){
           closeLogin();
           localStorage.setItem('goats_user', selectedDept);
           localStorage.setItem('goats_pass', p);
           
-          isAdmin = res.role==='Admin';
-          currentDept=selectedDept;
-          document.getElementById('dept-label').innerText=selectedDept;
-          document.getElementById('dept-gate').style.display = isAdmin ? 'block' : 'none';
-          document.getElementById('teacher-view').style.display='block';
-          document.getElementById('admin-actions').style.display=isAdmin?'flex':'none';
-          document.getElementById('install-wrap').style.display='none'; 
+          isAdmin = (res.role === 'Admin');
+          currentDept = selectedDept;
           
-          if(!isAdmin){
-            document.getElementById('type-select').style.display='flex'; document.getElementById('house-grid').style.display='grid';
-            document.querySelector('.scoreboard').style.display='block'; document.getElementById('dept-label').style.display='block';
+          document.getElementById('dept-label').innerText = selectedDept;
+          document.getElementById('dept-gate').style.display = isAdmin ? 'block' : 'none';
+          document.getElementById('teacher-view').style.display = 'block';
+          document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
+          document.getElementById('install-wrap').style.display = 'none'; 
+          
+          if(!isAdmin) {
+            document.getElementById('type-select').style.display = 'flex'; 
+            document.getElementById('house-grid').style.display = 'grid';
+            document.querySelector('.scoreboard').style.display = 'block'; 
+            document.getElementById('dept-label').style.display = 'block';
           } else {
             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
             
@@ -413,156 +1122,360 @@
             const gridHtml = leaderDepts.map(d=>`
               <div class="dept-card" onclick="openLb('${d}')">
                 <div class="dept-card-icon">${getIcon(d)}</div>
-                <b>${d}</b><div class="dept-card-bar"></div>
+                <b>${d}</b>
+                <div class="dept-card-bar"></div>
               </div>`).join('');
               
-            const allCard = `<div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
+            const allCard = `
+              <div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
                 <div class="dept-card-icon">👑</div>
-                <b style="color:var(--neon)">OVERALL TOTALS</b><div class="dept-card-bar" style="background:var(--neon)"></div>
+                <b style="color:var(--neon)">OVERALL TOTALS</b>
+                <div class="dept-card-bar" style="background:var(--neon)"></div>
               </div>`;
               
             const externalApps = globalAppLinks.map(app=>`
               <div class="dept-card" style="border-color:var(--accent); background:rgba(0,212,255,0.05); box-shadow: 0 0 15px rgba(0,212,255,0.15);" onclick="window.open('${app.url}', '_blank')">
                 <div class="dept-card-icon">${app.icon}</div>
-                <b style="color:var(--accent)">${app.name}</b><div class="dept-card-bar" style="background:var(--accent)"></div>
+                <b style="color:var(--accent)">${app.name}</b>
+                <div class="dept-card-bar" style="background:var(--accent)"></div>
               </div>`).join('');
             
             document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
-            document.querySelector('.scoreboard').style.display='none'; document.getElementById('dept-label').style.display='none';
-            document.getElementById('teacher-view').style.paddingBottom = "10px"; window.scrollTo(0, 0);
+            document.querySelector('.scoreboard').style.display = 'none'; 
+            document.getElementById('dept-label').style.display = 'none';
+            document.getElementById('teacher-view').style.paddingBottom = "10px"; 
+            window.scrollTo(0, 0);
           }
         } else {
-          localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass');
+          localStorage.removeItem('goats_user'); 
+          localStorage.removeItem('goats_pass');
           if(!isSilent) showToast("❌ Wrong Password");
         }
-      } catch(e) { if(!isSilent) showToast("❌ Login Error!"); }
+      } catch(e) { 
+        if(!isSilent) showToast("❌ Login Error!"); 
+      }
     }
 
     async function processQueue() {
       const q = JSON.parse(localStorage.getItem('goats_queue') || '[]');
       if(q.length === 0) return;
+      
       showToast("📡 Syncing " + q.length + " offline points...");
       let failed = [];
-      for(const item of q) { try { const r = await api({action:"submitPoint", data:item}); if(!r || !r.success) throw new Error(); } catch(e) { failed.push(item); } }
+      
+      for(const item of q) { 
+        try { 
+          const r = await api({action: "submitPoint", data: item}); 
+          if(!r || !r.success) throw new Error(); 
+        } catch(e) { 
+          failed.push(item); 
+        } 
+      }
+      
       localStorage.setItem('goats_queue', JSON.stringify(failed));
-      if(failed.length === 0) showToast("✅ All offline points synced!"); else showToast("⚠️ Some offline points still pending.");
+      
+      if(failed.length === 0) {
+        showToast("✅ All offline points synced!"); 
+      } else {
+        showToast("⚠️ Some offline points still pending.");
+      }
     }
 
-    async function record(hInput,sName,sDept=null){
-      const t=document.getElementById('t-name').value;
-      if(!t){showToast("⚠️ Enter Teacher Name first!");if(scanActive)stopCam();return;}
-      const actualH=Object.keys(scores).find(k=>k.toLowerCase()===hInput.trim().toLowerCase());
+    async function record(hInput, sName, sDept=null) {
+      const t = document.getElementById('t-name').value;
+      if(!t) {
+        showToast("⚠️ Enter Teacher Name first!");
+        if(scanActive) stopCam();
+        return;
+      }
+      
+      const actualH = Object.keys(scores).find(k => k.toLowerCase() === hInput.trim().toLowerCase());
       if(!actualH) return;
-      const pts=currentMode==='Positive'?10:-5;
       
-      scores[actualH]+=pts; document.getElementById('s-'+actualH).innerText=scores[actualH]; updateRanks();
+      const pts = currentMode === 'Positive' ? 10 : -5;
       
-      // ✅ 1. Vibration
-      if(navigator.vibrate) { try { navigator.vibrate(pts>0 ? [60,60,60] : [250]); } catch(e){} }
+      scores[actualH] += pts; 
+      document.getElementById('s-'+actualH).innerText = scores[actualH]; 
+      updateRanks();
       
-      // ✅ 2. Audio playback via built-in tags to bypass mobile blockers
-      if(pts>0) {
-        confetti({particleCount:60,spread:70,origin:{y:0.6}}); 
+      // Vibration
+      if(navigator.vibrate) { 
+        try { navigator.vibrate(pts > 0 ? [60,60,60] : [250]); } catch(e){} 
+      }
+      
+      // Audio playback
+      if(pts > 0) {
+        confetti({particleCount: 60, spread: 70, origin: {y: 0.6}}); 
         const sfx = document.getElementById('sfx-success');
-        if(sfx) { sfx.currentTime=0; sfx.play().catch(e=>{}); }
+        if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>{}); }
       } else {
         const sfx = document.getElementById('sfx-fail');
-        if(sfx) { sfx.currentTime=0; sfx.play().catch(e=>{}); }
+        if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>{}); }
       }
 
-      // ✅ 3. Cinematic Screen-Shaking Popup
+      // Show Cinematic Screen-Shaking Popup
       const pop = document.getElementById('paper-popup');
-      document.getElementById('pop-status').innerText = pts>0 ? "🎉 POINT AWARDED 🎉" : "⚠️ POINT DEDUCTED ⚠️";
-      document.getElementById('pop-status').style.color = pts>0 ? "var(--neon)" : "var(--red)";
+      document.getElementById('pop-status').innerText = pts > 0 ? "🎉 POINT AWARDED 🎉" : "⚠️ POINT DEDUCTED ⚠️";
+      document.getElementById('pop-status').style.color = pts > 0 ? "var(--neon)" : "var(--red)";
+      
       document.getElementById('pop-name').innerText = sName || "STUDENT";
       document.getElementById('pop-dept').innerText = currentDept.toUpperCase();
-      document.getElementById('pop-pts').innerText = pts>0 ? "+10" : "-5";
-      document.getElementById('pop-pts').style.color = pts>0 ? "var(--neon)" : "var(--red)";
+      
+      document.getElementById('pop-pts').innerText = pts > 0 ? "+10" : "-5";
+      document.getElementById('pop-pts').style.color = pts > 0 ? "var(--neon)" : "var(--red)";
+      
       document.getElementById('pop-house').innerText = actualH;
       document.getElementById('pop-house').style.background = houseColors[actualH] || "#fff";
       
       pop.classList.remove('show');
       void pop.offsetWidth; // Force replay animation
       pop.classList.add('show');
-      setTimeout(()=>pop.classList.remove('show'), 3500);
+      setTimeout(() => pop.classList.remove('show'), 3500);
 
-      // Async Background Save
-      const payload = {dept:currentDept,studentDept:sDept,studentName:sName,teacherName:t,category:document.getElementById('p-cat').value,house:actualH,type:currentMode};
-      try{
+      // Save Data
+      const payload = {
+        dept: currentDept, 
+        studentDept: sDept, 
+        studentName: sName, 
+        teacherName: t, 
+        category: document.getElementById('p-cat').value, 
+        house: actualH, 
+        type: currentMode
+      };
+      
+      try {
         if(!navigator.onLine) throw new Error("Offline");
-        const res=await api({action:"submitPoint",data:payload});
-        if(!res||!res.success) throw new Error();
-      }catch(e){
-        const q = JSON.parse(localStorage.getItem('goats_queue') || '[]'); q.push(payload); localStorage.setItem('goats_queue', JSON.stringify(q));
+        const res = await api({action: "submitPoint", data: payload});
+        if(!res || !res.success) throw new Error();
+      } catch(e) {
+        const q = JSON.parse(localStorage.getItem('goats_queue') || '[]'); 
+        q.push(payload); 
+        localStorage.setItem('goats_queue', JSON.stringify(q));
       }
     }
     
     async function toggleCam(){
-      const btn=document.getElementById('cam-btn'),hint=document.getElementById('scan-hint');
-      if(!scanActive){
-        document.getElementById('reader').style.display='block';
-        btn.classList.add('scanning');btn.innerText='⏹';hint.innerText='SCANNING...';
-        html5QrCode=new Html5Qrcode("reader");
-        await html5QrCode.start({facingMode:"environment"},{fps:15,qrbox:240},(t)=>{ const p=t.split('|').map(x=>x.trim()); if(p.length>=3){record(p[2],p[0],p[1]);stopCam();} });scanActive=true;
-      } else stopCam();
+      const btn = document.getElementById('cam-btn');
+      const hint = document.getElementById('scan-hint');
+      
+      if(!scanActive) {
+        document.getElementById('reader').style.display = 'block';
+        btn.classList.add('scanning');
+        btn.innerText = '⏹';
+        hint.innerText = 'SCANNING...';
+        
+        html5QrCode = new Html5Qrcode("reader");
+        await html5QrCode.start(
+          {facingMode: "environment"},
+          {fps: 15, qrbox: 240},
+          (t) => { 
+            const p = t.split('|').map(x => x.trim()); 
+            if(p.length >= 3){
+              record(p[2], p[0], p[1]);
+              stopCam();
+            } 
+          }
+        );
+        scanActive = true;
+      } else {
+        stopCam();
+      }
     }
     
-    async function stopCam(){ if(html5QrCode) await html5QrCode.stop(); document.getElementById('reader').style.display='none'; document.getElementById('cam-btn').classList.remove('scanning');document.getElementById('cam-btn').innerText='📷';document.getElementById('scan-hint').innerText='TAP TO SCAN QR';scanActive=false; }
-    function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("⚠️ Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
-    function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
+    async function stopCam(){ 
+      if(html5QrCode) await html5QrCode.stop(); 
+      document.getElementById('reader').style.display = 'none'; 
+      document.getElementById('cam-btn').classList.remove('scanning');
+      document.getElementById('cam-btn').innerText = '📷';
+      document.getElementById('scan-hint').innerText = 'TAP TO SCAN QR';
+      scanActive = false; 
+    }
     
-    function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); checkiOS(); }
+    function submitManual(){
+      const n = document.getElementById('man-name').value;
+      const h = document.getElementById('man-house').value;
+      
+      if(!n || !h){
+        showToast("⚠️ Fill name & house");
+        return;
+      }
+      
+      record(h, n);
+      document.getElementById('man-name').value = "";
+    }
     
-    function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-webapp-form').style.display='none';}
-    function toggleWebAppForm(){const b=document.getElementById('admin-webapp-form');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-branding').style.display='none';}
+    function setMode(m){
+      currentMode = m;
+      document.getElementById('btn-pos').className = 'mode-btn' + (m === 'Positive' ? ' active-pos' : '');
+      document.getElementById('btn-neg').className = 'mode-btn' + (m === 'Negative' ? ' active-neg' : '');
+    }
     
-    async function forceSync(){ showToast("🔄 Syncing queues..."); await processQueue(); localStorage.removeItem('goats_cache'); await boot(); }
+    function logout(){ 
+      localStorage.removeItem('goats_user'); 
+      localStorage.removeItem('goats_pass'); 
+      
+      document.getElementById('teacher-view').style.display = 'none'; 
+      document.getElementById('dept-gate').style.display = 'block'; 
+      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; 
+      
+      const allCard = document.getElementById('card-all'); 
+      if(allCard) allCard.remove(); 
+      
+      isAdmin = false; 
+      currentDept = ""; 
+      
+      if(scanActive) stopCam(); 
+      if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); 
+      
+      checkiOS(); 
+    }
+    
+    function toggleBranding(){
+      const b = document.getElementById('admin-branding');
+      b.style.display = (b.style.display === 'block') ? 'none' : 'block'; 
+      document.getElementById('admin-webapp-form').style.display = 'none';
+    }
+    
+    function toggleWebAppForm(){
+      const b = document.getElementById('admin-webapp-form');
+      b.style.display = (b.style.display === 'block') ? 'none' : 'block'; 
+      document.getElementById('admin-branding').style.display = 'none';
+    }
+    
+    async function forceSync(){ 
+      showToast("🔄 Syncing queues..."); 
+      await processQueue(); 
+      localStorage.removeItem('goats_cache'); 
+      await boot(); 
+    }
     
     async function saveNewApp() {
       const name = document.getElementById('new-app-name').value;
       const url = document.getElementById('new-app-url').value;
       const icon = document.getElementById('new-app-icon').value || "✨";
+      
       if(!name || !url){ showToast("⚠️ Name and URL required"); return; }
       
       showToast("Uploading App Link...");
-      const res = await api({action:"saveAppLink", data: {name, url, icon}});
+      const res = await api({action: "saveAppLink", data: {name, url, icon}});
+      
       if(res.success) {
          localStorage.removeItem('goats_cache');
-         document.getElementById('new-app-name').value='';
-         document.getElementById('new-app-url').value='';
+         document.getElementById('new-app-name').value = '';
+         document.getElementById('new-app-url').value = '';
          showToast("✅ App Linked! Refreshing...");
-         setTimeout(()=>location.reload(), 1000);
-      } else showToast("❌ Failed to save.");
+         setTimeout(() => location.reload(), 1000);
+      } else {
+        showToast("❌ Failed to save.");
+      }
     }
     
-    // ── ADMIN LEADERBOARD ──
-    function openLb(dept){ lbDept=dept; lbCat='ALL'; setLbPeriod('weekly'); document.getElementById('lb-title').innerText=dept.toUpperCase(); const cats=['ALL',...adminCats]; document.getElementById('lb-cat-filters').innerHTML=cats.map(c=>`<button class="lb-filter-btn${c==='ALL'?' active':''}" onclick="setLbCat('${c}')">${c}</button>`).join(''); document.getElementById('lb-modal').style.display='flex'; }
-    function closeLb(){document.getElementById('lb-modal').style.display='none';}
-    function setLbCat(cat){lbCat=cat;document.querySelectorAll('.lb-filter-btn').forEach(b=>b.classList.toggle('active',b.innerText===cat));loadLb();}
-    function setLbPeriod(p){ lbPeriod=p; document.getElementById('btn-period-weekly').className='period-btn'+(p==='weekly'?' active':''); document.getElementById('btn-period-annually').className='period-btn'+(p==='annually'?' active':''); loadLb(); }
+    // ── ADMIN LEADERBOARD MODAL ──
+    function openLb(dept){ 
+      lbDept = dept; 
+      lbCat = 'ALL'; 
+      setLbPeriod('weekly'); 
+      
+      document.getElementById('lb-title').innerText = dept.toUpperCase(); 
+      
+      const cats = ['ALL', ...adminCats]; 
+      document.getElementById('lb-cat-filters').innerHTML = cats.map(c=>`
+        <button class="lb-filter-btn${c === 'ALL' ? ' active' : ''}" onclick="setLbCat('${c}')">${c}</button>
+      `).join(''); 
+      
+      document.getElementById('lb-modal').style.display = 'flex'; 
+    }
+    
+    function closeLb(){
+      document.getElementById('lb-modal').style.display = 'none';
+    }
+    
+    function setLbCat(cat){
+      lbCat = cat;
+      document.querySelectorAll('.lb-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText === cat);
+      });
+      loadLb();
+    }
+    
+    function setLbPeriod(p){ 
+      lbPeriod = p; 
+      document.getElementById('btn-period-weekly').className = 'period-btn' + (p === 'weekly' ? ' active' : ''); 
+      document.getElementById('btn-period-annually').className = 'period-btn' + (p === 'annually' ? ' active' : ''); 
+      loadLb(); 
+    }
     
     async function loadLb(){
-      const body=document.getElementById('lb-body'); body.innerHTML='<div class="lb-empty">⌛ Loading...</div>';
-      try{
-        const res=await api({action:"getDeptLeaderboard",dept:lbDept,category:lbCat,period:lbPeriod});
-        if(!res.success||!res.leaderboard.length){body.innerHTML='<div class="lb-empty">No data for this timeframe.</div>';return;}
-        const lb=res.leaderboard, max=lb[0].pts||1, medals=['🥇','🥈','🥉']; let pod='<div class="lb-podium">'; const order=lb.length>=3?[1,0,2]:lb.map((_,i)=>i);
-        order.filter(i=>lb[i]).forEach(i=>{ const h=lb[i],col=houseColors[h.name]||'#888',ht=Math.max(60,Math.round((h.pts/max)*140)); pod+=`<div class="lb-podium-item"><div class="lb-podium-bar" style="background:${col};height:${ht}px">${medals[i]||''}</div><div class="lb-podium-name">${h.name}</div><div class="lb-podium-score">${h.pts}</div></div>`; }); pod+='</div>';
+      const body = document.getElementById('lb-body'); 
+      body.innerHTML = '<div class="lb-empty">⌛ Loading...</div>';
+      
+      try {
+        const res = await api({action: "getDeptLeaderboard", dept: lbDept, category: lbCat, period: lbPeriod});
+        
+        if(!res.success || !res.leaderboard.length){
+          body.innerHTML = '<div class="lb-empty">No data for this timeframe.</div>';
+          return;
+        }
+        
+        const lb = res.leaderboard;
+        const max = lb[0].pts || 1;
+        const medals = ['🥇', '🥈', '🥉']; 
+        
+        let pod = '<div class="lb-podium">'; 
+        const order = lb.length >= 3 ? [1, 0, 2] : lb.map((_, i) => i);
+        
+        order.filter(i => lb[i]).forEach(i => { 
+          const h = lb[i];
+          const col = houseColors[h.name] || '#888';
+          const ht = Math.max(60, Math.round((h.pts / max) * 140)); 
+          
+          pod += `
+            <div class="lb-podium-item">
+              <div class="lb-podium-bar" style="background:${col}; height:${ht}px">${medals[i] || ''}</div>
+              <div class="lb-podium-name">${h.name}</div>
+              <div class="lb-podium-score">${h.pts}</div>
+            </div>`; 
+        }); 
+        pod += '</div>';
         
         let rowsHtml = '';
-        lb.forEach((h,i) => { 
-          const col=houseColors[h.name]||'#888';
-          let pct = 0; if (max > 0 && h.pts > 0) pct = Math.round((h.pts/max)*100);
-          rowsHtml += `<div class="lb-row" style="border-left-color:${col}"><div class="lb-row-rank">${medals[i]||i+1}</div><div style="flex:1;min-width:0;"><div class="lb-row-name">${h.name}</div><div class="lb-bar-bg"><div class="lb-bar-fill" style="width:${pct}%;background:${col}"></div></div></div><div class="lb-row-pts">${h.pts}</div></div>`;
+        lb.forEach((h, i) => { 
+          const col = houseColors[h.name] || '#888';
+          let pct = 0; 
+          if (max > 0 && h.pts > 0) pct = Math.round((h.pts / max) * 100);
+          
+          rowsHtml += `
+            <div class="lb-row" style="border-left-color:${col}">
+              <div class="lb-row-rank">${medals[i] || i + 1}</div>
+              <div style="flex:1; min-width:0;">
+                <div class="lb-row-name">${h.name}</div>
+                <div class="lb-bar-bg">
+                  <div class="lb-bar-fill" style="width:${pct}%; background:${col}"></div>
+                </div>
+              </div>
+              <div class="lb-row-pts">${h.pts}</div>
+            </div>`;
         });
-        body.innerHTML=`<div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">${lbPeriod==='weekly'?'📅 LAST 7 DAYS':'🏆 ANNUAL SCORES'} · ${lbCat==='ALL'?'All Categories':lbCat}</div>${pod}${rowsHtml}`;
-      }catch(e){body.innerHTML='<div class="lb-empty">Failed to load.</div>';}
+        
+        const subtitle = lbPeriod === 'weekly' ? '📅 LAST 7 DAYS' : '🏆 ANNUAL SCORES';
+        const catTitle = lbCat === 'ALL' ? 'All Categories' : lbCat;
+        
+        body.innerHTML = `
+          <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">
+            ${subtitle} · ${catTitle}
+          </div>
+          ${pod}
+          ${rowsHtml}`;
+          
+      } catch(e) {
+        body.innerHTML = '<div class="lb-empty">Failed to load.</div>';
+      }
     }
     
     async function prepareBulkPrint(){
       showToast("Loading students...");
-      const res=await api({action:"getStudentList"});
-      const pw=window.open('','_blank');
+      const res = await api({action: "getStudentList"});
+      const pw = window.open('','_blank');
       pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title>
         <style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style>
       </head><body>
@@ -574,19 +1487,29 @@
       pw.document.close();
     }
     
-    function handleFile(input,key){
+    function handleFile(input, key){
       if(!input.files[0]) return;
-      const rd=new FileReader();
-      rd.onload=async(e)=>{
+      const rd = new FileReader();
+      rd.onload = async(e) => {
         showToast("Uploading...");
-        const res=await api({action:"uploadBranding",data:{key,name:input.files[0].name,file:e.target.result}});
-        if(res.success){localStorage.removeItem('goats_cache');showToast("✅ Updated!");setTimeout(()=>location.reload(),1000);}
-        else showToast("❌ Upload Failed");
+        const res = await api({action: "uploadBranding", data: {key, name: input.files[0].name, file: e.target.result}});
+        if(res.success){
+          localStorage.removeItem('goats_cache');
+          showToast("✅ Updated!");
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showToast("❌ Upload Failed");
+        }
       };
       rd.readAsDataURL(input.files[0]);
     }
     
-    function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3200);
+    }
   </script>
 </body>
 </html>
