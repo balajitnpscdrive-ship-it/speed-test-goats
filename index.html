@@ -1,3 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>DB G.O.A.T.S | CHAMPIONSHIP PORTAL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    :root{--neon:#fbff00;--accent:#00d4ff;--green:#00ff88;--red:#ff416c;--bg:#050508}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden}
+    .bg-overlay{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;filter:brightness(0.2) blur(8px);transition:background-image 1s ease}
+    .header{padding:calc(10px + env(safe-area-inset-top)) 14px 12px;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:8px;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100}
+    .logo-img{width:54px;height:54px;object-fit:contain;border-radius:8px}
+    .founder-img{width:54px;height:54px;border-radius:50%;border:2px solid var(--neon);object-fit:cover;justify-self:end}
+    .header-title{text-align:center}
+    .header-title h1{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:white;line-height:1.2}
+    .header-title p{font-size:8px;color:var(--neon);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;opacity:.9}
+    .header-title small{font-size:7.5px;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;display:block}
+    #sync-status{position:fixed;bottom:12px;right:12px;font-size:8px;font-weight:900;text-transform:uppercase;padding:4px 8px;border-radius:20px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);z-index:200}
+    .status-live{color:var(--green)!important;border-color:rgba(0,255,136,.3)!important}
+    .status-offline{color:var(--red)!important;border-color:rgba(255,65,108,.3)!important}
+    #dept-gate{padding:20px;max-width:900px;margin:auto}
+    .gate-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:rgba(255,255,255,0.15);text-align:center;margin-bottom:20px}
+    .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+    .dept-card{background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s;position:relative;overflow:hidden}
+    .dept-card:active{transform:scale(0.93);box-shadow:0 0 20px rgba(251,255,0,.15)}
+    .dept-card b{display:block;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+    .dept-card-bar{height:3px;background:linear-gradient(90deg,var(--neon),var(--accent));border-radius:3px;margin-top:10px;opacity:.5}
+    #login-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
+    .modal-box{background:rgba(20,20,25,0.9);border:1px solid rgba(251,255,0,.3);border-radius:24px;padding:32px 24px;width:100%;max-width:360px;text-align:center;animation:slideUp .3s ease;box-shadow:0 0 60px rgba(251,255,0,.08)}
+    @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-box h2{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--neon);letter-spacing:3px;margin-bottom:20px}
+    input,select{width:100%;padding:14px 16px;margin:8px 0;background:rgba(255,255,255,0.04);color:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:16px;font-family:inherit;transition:border-color .2s}
+    input:focus,select:focus{border-color:var(--neon);outline:none;background:rgba(251,255,0,.04)}
+    select option{background:#111}
+    .btn-main{width:100%;padding:15px;border-radius:12px;background:var(--neon);color:black;font-weight:900;border:none;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:18px;transition:transform .1s}
+    .btn-main:active{transform:scale(0.97)}
+    #teacher-view{display:none;max-width:600px;margin:auto;padding-bottom:40px}
+    .scoreboard{padding:16px;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.07)}
+    .sb-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;text-align:center}
+    .score-strip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+    .score-chip{flex:0 0 auto;min-width:80px;background:rgba(255,255,255,0.04);border-radius:14px;padding:10px 14px;text-align:center;border-top:3px solid #333;position:relative;transition:box-shadow .3s}
+    .score-chip.leader{box-shadow:0 0 20px var(--chip-color,#888)}
+    .chip-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.6)}
+    .chip-score{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1.1;color:white}
+    .chip-rank{font-size:14px;position:absolute;top:-8px;right:-4px}
+    .t-panel{margin:16px;background:rgba(10,10,18,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:16px}
+    .mode-toggle{display:flex;gap:8px;margin-bottom:16px;background:rgba(255,255,255,0.04);border-radius:14px;padding:4px}
+    .mode-btn{flex:1;padding:12px;border-radius:11px;border:none;cursor:pointer;transition:all .2s;background:transparent;color:rgba(255,255,255,0.3);font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:18px}
+    .mode-btn.active-pos{background:linear-gradient(135deg,#00b09b,#00ff88);color:black;box-shadow:0 4px 20px rgba(0,255,136,.3)}
+    .mode-btn.active-neg{background:linear-gradient(135deg,#ff416c,#ff4b2b);color:white;box-shadow:0 4px 20px rgba(255,65,108,.3)}
+    .house-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .house-btn{padding:28px 10px;border-radius:16px;border:none;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:black;cursor:pointer;position:relative;overflow:hidden;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}
+    .house-btn:active{transform:scale(0.92)}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 0 12px var(--glow)}50%{box-shadow:0 0 30px var(--glow),0 0 60px var(--glow)}}
+    .scan-area{text-align:center;margin-bottom:14px}
+    #cam-btn{background:linear-gradient(135deg,var(--neon),#e8ff00);border:none;padding:0;width:80px;height:80px;border-radius:50%;font-size:30px;cursor:pointer;transition:transform .15s;box-shadow:0 0 0 0 rgba(251,255,0,.4)}
+    #cam-btn.scanning{animation:scanPulse 1.2s infinite}
+    @keyframes scanPulse{0%{box-shadow:0 0 0 0 rgba(251,255,0,.5)}70%{box-shadow:0 0 0 20px rgba(251,255,0,0)}100%{box-shadow:0 0 0 0 rgba(251,255,0,0)}}
+    #cam-btn:active{transform:scale(0.92)}
+    .scan-hint{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
+    #reader{border-radius:16px;overflow:hidden;border:2px solid var(--neon);display:none;margin-bottom:14px;box-shadow:0 0 30px rgba(251,255,0,.15)}
+    .manual-row{display:flex;gap:8px;margin-bottom:6px}
+    .manual-row input,.manual-row select{margin:0;flex:1}
+    .btn-sub{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;padding:14px;border-radius:12px;font-weight:900;cursor:pointer;width:100%;margin-bottom:14px;letter-spacing:1px}
+    .meta-row{display:flex;gap:8px}
+    .meta-row input,.meta-row select{margin:0;flex:1}
+    .admin-section{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+    .btn-admin{padding:14px;border-radius:12px;background:transparent;font-weight:900;cursor:pointer;font-size:13px;letter-spacing:1px;font-family:inherit}
+    .admin-branding{display:none;margin-top:10px;border-top:1px dashed rgba(255,255,255,.1);padding-top:16px}
+    .upload-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:12px 14px;border-radius:12px;margin-bottom:8px}
+    .upload-box label{font-size:10px;color:var(--accent);display:block;margin-bottom:6px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+    .btn-logout{width:calc(100% - 32px);margin:16px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:rgba(255,255,255,0.4);font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:1px}
+    #lb-modal{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;flex-direction:column;z-index:3000;overflow-y:auto}
+    .lb-header{padding:16px;background:rgba(0,0,0,0.9);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10}
+    .lb-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;flex:1}
+    .lb-back{background:rgba(255,255,255,0.08);border:none;color:white;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:900;font-size:14px;font-family:inherit}
+    .lb-filters{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;scrollbar-width:none}
+    .lb-filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:700;font-family:inherit}
+    .lb-filter-btn.active{background:var(--neon);color:black;border-color:var(--neon)}
+    .lb-body{padding:20px}
+    .lb-podium{display:flex;gap:10px;margin-bottom:24px;align-items:flex-end;justify-content:center}
+    .lb-podium-item{text-align:center;flex:1;max-width:100px}
+    .lb-podium-bar{border-radius:10px 10px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(0,0,0,0.7);min-height:40px}
+    .lb-podium-name{font-size:11px;font-weight:900;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,.8)}
+    .lb-podium-score{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--neon)}
+    .lb-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,0.04);border-radius:12px;margin-bottom:8px;border-left:4px solid #333}
+    .lb-row-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,.3);width:30px;text-align:center}
+    .lb-row-name{flex:1;font-weight:900;font-size:15px;text-transform:uppercase}
+    .lb-row-pts{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--neon)}
+    .lb-bar-bg{height:4px;background:rgba(255,255,255,0.05);border-radius:4px;margin-top:6px}
+    .lb-bar-fill{height:4px;border-radius:4px;transition:width .6s ease}
+    .lb-empty{text-align:center;padding:40px;color:rgba(255,255,255,.4);font-size:14px}
+    .emoji-pop{position:fixed;top:50%;left:50%;font-size:160px;z-index:9999;pointer-events:none;animation:popScale .9s ease-out forwards}
+    @keyframes popScale{0%{transform:translate(-50%,-50%) scale(0.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-90%) scale(1.3);opacity:0}}
+    #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.1);color:white;padding:12px 24px;border-radius:50px;display:none;z-index:5000;font-weight:600;font-size:13px;backdrop-filter:blur(10px)}
+  </style>
+</head>
+<body onload="boot()">
+  <div id="sync-status">OFFLINE</div>
+  <div class="bg-overlay" id="main-bg"></div>
+  <div id="toast"></div>
+  
+  <div class="header">
+    <img id="m-logo" class="logo-img">
+    <div class="header-title">
+      <h1>DON BOSCO POLYTECHNIC COLLEGE</h1>
+      <p>G.O.A.T.S — Givers of All Talents Students</p>
+      <small>Championship Portal</small>
+    </div>
+    <img id="m-founder" class="founder-img">
+  </div>
+
+  <!-- ADMIN LEADERBOARD -->
+  <div id="lb-modal">
+    <div class="lb-header">
+      <button class="lb-back" onclick="closeLb()">← BACK</button>
+      <h2 id="lb-title">LEADERBOARD</h2>
+    </div>
+    <div class="lb-filters" id="lb-cat-filters"></div>
+    <div class="lb-body" id="lb-body"><div class="lb-empty">Loading...</div></div>
+  </div>
+
+  <!-- DEPT GATE -->
+  <div id="dept-gate">
+    <p class="gate-title">SELECT DEPARTMENT</p>
+    <div id="dept-grid" class="dept-grid"></div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div id="login-modal" onclick="if(event.target==this)closeLogin()">
+    <div class="modal-box">
+      <h2 id="target-dept">DEPARTMENT</h2>
+      <input type="password" id="pass-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')handleLogin()">
+      <button class="btn-main" onclick="handleLogin()">ENTER PORTAL</button>
+    </div>
+  </div>
+
+  <!-- TEACHER VIEW -->
+  <div id="teacher-view">
+    <div class="scoreboard">
+      <div class="sb-label">🏆 LIVE HOUSE SCORES</div>
+      <div id="score-strip" class="score-strip"></div>
+    </div>
+    <div class="t-panel">
+      <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
+      <div class="mode-toggle" id="type-select">
+        <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
+        <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
+      </div>
+      <div id="house-grid" class="house-grid"></div>
+      <div class="scan-area" id="cam-area">
+        <button id="cam-btn" onclick="toggleCam()">📷</button>
+        <div class="scan-hint" id="scan-hint">TAP TO SCAN QR</div>
+      </div>
+      <div id="reader"></div>
+      <div id="manual-area">
+        <div class="manual-row">
+          <input type="text" id="man-name" placeholder="Student Name">
+          <select id="man-house"><option selected disabled>House</option></select>
+        </div>
+        <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
+      </div>
+      <div class="meta-row" id="teacher-meta">
+        <input type="text" id="t-name" placeholder="Teacher Name">
+        <select id="p-cat"></select>
+      </div>
+      <div id="admin-actions" class="admin-section" style="display:none;">
+        <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
+        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
+        <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC FROM SHEET</button>
+        <div id="admin-branding" class="admin-branding">
+          <div class="upload-box"><label>Logo</label><input type="file" onchange="handleFile(this,'Logo_ID')" accept="image/*"></div>
+          <div class="upload-box"><label>Founder</label><input type="file" onchange="handleFile(this,'Founder_ID')" accept="image/*"></div>
+          <div class="upload-box"><label>Background</label><input type="file" onchange="handleFile(this,'Background_ID')" accept="image/*"></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">← LOGOUT</button>
+  </div>
+
   <script>
     const API = "https://script.google.com/macros/s/AKfycbxuSxEXBvUAyoTOFIB0_V9hs35ejHC4zrnRlZnu55en80oFyGdjcUyKGN9lesrM6s5ItQ/exec";
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL";
@@ -303,3 +488,5 @@
     
     function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
   </script>
+</body>
+</html>
