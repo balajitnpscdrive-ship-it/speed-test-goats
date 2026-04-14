@@ -200,7 +200,8 @@
   </div>
 
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbynITGXOE-R-N6hpkV9gb854kEscqlmxqLpSaX3y6rYO1kxF6bmcRwg7KsiLVpRPmDsrA/exec";  /* <--- PASTE NEW G-SCRIPT LINK HERE */
+    // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
+    const API = "https://script.google.com/macros/s/AKfycbynITGXOE-R-N6hpkV9gb854kEscqlmxqLpSaX3y6rYO1kxF6bmcRwg7KsiLVpRPmDsrA/exec";  
     
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
     
@@ -383,8 +384,33 @@
       }catch(e){body.innerHTML='<div class="lb-empty">Failed to load.</div>';}
     }
     
-    async function prepareBulkPrint(){ ... }
-    function handleFile(input,key){ ... }
+    async function prepareBulkPrint(){
+      showToast("Loading students...");
+      const res=await api({action:"getStudentList"});
+      const pw=window.open('','_blank');
+      pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title>
+        <style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style>
+      </head><body>
+        <button class="btn" onclick="window.print()">PRINT A4 SHEET</button>
+        <div class="grid" id="g"></div>
+        <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+        <script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.className='lbl';l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script>
+      </body></html>`);
+      pw.document.close();
+    }
+    
+    function handleFile(input,key){
+      if(!input.files[0]) return;
+      const rd=new FileReader();
+      rd.onload=async(e)=>{
+        showToast("Uploading...");
+        const res=await api({action:"uploadBranding",data:{key,name:input.files[0].name,file:e.target.result}});
+        if(res.success){localStorage.removeItem('goats_cache');showToast("✅ Updated!");setTimeout(()=>location.reload(),1000);}
+        else showToast("❌ Upload Failed");
+      };
+      rd.readAsDataURL(input.files[0]);
+    }
+    
     function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
   </script>
 </body>
