@@ -113,11 +113,12 @@
     .emoji-pop{position:fixed;top:50%;left:50%;font-size:160px;z-index:9999;pointer-events:none;animation:popScale .9s ease-out forwards}
     @keyframes popScale{0%{transform:translate(-50%,-50%) scale(0.3);opacity:0}25%{transform:translate(-50%,-50%) scale(1.1);opacity:1}100%{transform:translate(-50%,-90%) scale(1.3);opacity:0}}
     #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(10,10,10,0.95);border:1px solid rgba(255,255,255,0.2);color:white;padding:12px 24px;border-radius:50px;display:none;z-index:5000;font-weight:600;font-size:14px;backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.8)}
+    
+    #install-btn{display:none;width:92%;max-width:400px;margin:20px auto;background:#00ff88;color:#000;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;padding:16px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 0 20px rgba(0,255,136,0.3);text-align:center}
   </style>
 </head>
 <body onload="boot()">
   
-  <!-- CINEMATIC PRELOADER -->
   <div class="preloader" id="preloader">
     <div class="loader-pulse" style="font-size:60px;margin-bottom:10px;">⚡</div>
     <div style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px; color:var(--neon); font-size:24px;">G.O.A.T.S UPLINK</div>
@@ -137,6 +138,9 @@
     </div>
     <img id="m-founder" class="founder-img">
   </div>
+
+  <!-- PWA INSTALL BUTTON (Only shows if device allows it) -->
+  <button id="install-btn" onclick="installApp()">📲 INSTALL PORTAL TO HOME SCREEN</button>
 
   <!-- ADMIN LEADERBOARD -->
   <div id="lb-modal">
@@ -224,10 +228,11 @@
   </div>
 
   <script>
+    // PWA Service Worker Link
     if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(console.error);
 
     // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
-    const API = "https://script.google.com/macros/s/AKfycbzuDH6elABRTWoNGsFPRFiycYf53k1mM6tCTB3MsQIq6F54YTg9cYQho53BhlkG-lZ5Iw/exec";  
+    const API = "https://script.google.com/macros/s/AKfycbyyY63WqLuZvsFtx5rD2iUWabvZqVpl9Dvu2zbst8dR3ET_Ilu3P_oW8pTGL3pcvnQYyA/exec";  
     
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
     let globalDeptList = [], globalAppLinks = [];
@@ -235,9 +240,39 @@
     const sfxSuccess = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav");
     const sfxFail = new Audio("https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg");
 
+    // ===== INSTALL PWA LOGIC =====
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-btn').style.display = 'block';
+    });
+
+    async function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') document.getElementById('install-btn').style.display = 'none';
+        deferredPrompt = null;
+      }
+    }
+
+    // Check if iOS (Apple blocks automatic prompts, we must physically instruct them)
+    function checkiOS() {
+      const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+      const isStandalone = ('standalone' in window.navigator) && window.navigator.standalone;
+      if (isIos && !isStandalone) {
+        const btn = document.getElementById('install-btn');
+        btn.style.display = 'block';
+        btn.innerText = "📲 TAP 'SHARE' AND 'ADD TO HOME SCREEN'";
+        btn.onclick = () => alert("Apple requires you to install manually:\n\n1. Tap the Share Icon at the bottom of Safari.\n2. Scroll down and tap 'Add to Home Screen'.");
+      }
+    }
+
     function api(payload) { return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json()); }
 
     async function boot() {
+      checkiOS();
       const st = document.getElementById('sync-status');
       const cache = localStorage.getItem('goats_cache');
       if(cache) try { render(JSON.parse(cache)); } catch(e){}
@@ -335,6 +370,7 @@
           document.getElementById('teacher-view').style.display='block';
           document.getElementById('admin-actions').style.display=isAdmin?'flex':'none';
           ['house-grid','cam-area','manual-area','type-select','teacher-meta'].forEach(id=>{ const el=document.getElementById(id);if(el) el.style.display=isAdmin?'none':''; });
+          document.getElementById('install-btn').style.display='none'; // Hide install button when working
           
           if(!isAdmin){
             document.getElementById('type-select').style.display='flex'; document.getElementById('house-grid').style.display='grid';
@@ -421,7 +457,7 @@
     function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("⚠️ Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
     function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
     
-    function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); }
+    function logout(){ localStorage.removeItem('goats_user'); localStorage.removeItem('goats_pass'); document.getElementById('teacher-view').style.display='none'; document.getElementById('dept-gate').style.display='block'; document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; const allCard = document.getElementById('card-all'); if(allCard) allCard.remove(); isAdmin=false; currentDept=""; if(scanActive)stopCam(); if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); checkiOS(); }
     
     function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-webapp-form').style.display='none';}
     function toggleWebAppForm(){const b=document.getElementById('admin-webapp-form');b.style.display=b.style.display==='block'?'none':'block'; document.getElementById('admin-branding').style.display='none';}
