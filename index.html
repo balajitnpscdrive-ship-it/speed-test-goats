@@ -553,7 +553,7 @@
     #lb-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: #050508; /* NO TRANSPARENCY - SOLID BLACK */
+      background: #050508;
       flex-direction: column;
       z-index: 3000;
       overflow-x: hidden;
@@ -615,31 +615,36 @@
       box-shadow: 0 0 15px rgba(251,255,0,0.2);
     }
 
+    /* FIXED FILTER BUTTONS */
     .lb-filters {
       display: flex;
-      gap: 8px;
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
       overflow-x: auto;
       scrollbar-width: none;
+      flex-wrap: nowrap;
     }
 
     .lb-filter-btn {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.9);
-      padding: 8px 14px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid #555;
+      color: #fff;
+      padding: 10px 18px;
       border-radius: 20px;
       cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 900;
       flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .lb-filter-btn.active {
       background: var(--accent);
       color: black;
       border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(0,212,255,0.4);
     }
 
     .lb-body {
@@ -815,7 +820,10 @@
         <button id="btn-period-weekly" class="period-btn active" onclick="setLbPeriod('weekly')">📅 WEEKLY</button>
         <button id="btn-period-annually" class="period-btn" onclick="setLbPeriod('annually')">🏆 ANNUALLY</button>
     </div>
+    
+    <!-- CATEGORY FILTERS NOW BOLD AND BRIGHT -->
     <div class="lb-filters" id="lb-cat-filters"></div>
+    
     <div class="lb-body" id="lb-body">
       <div class="lb-empty">Loading...</div>
     </div>
@@ -849,6 +857,7 @@
     <div class="t-panel">
       <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
       
+      <!-- TEACHER TOOLS (Will be blocked for Admin) -->
       <div class="mode-toggle" id="type-select">
         <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
         <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
@@ -879,9 +888,10 @@
       
       <!-- ADMIN ACTIONS (Only visible to Admin) -->
       <div id="admin-actions" class="admin-section" style="display:none;">
+        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);background:rgba(251,255,0,0.1);" onclick="installApp()">📲 FORCE PWA INSTALL</button>
         <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
         <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
-        <button class="btn-admin" style="color:var(--neon);border:1px solid var(--neon);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
+        <button class="btn-admin" style="color:white;border:1px dashed rgba(255,255,255,0.4);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
         <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
         
         <div id="admin-webapp-form" style="display:none; margin-top:4px; padding-top:16px; border-top:1px dashed rgba(255,255,255,.2);">
@@ -912,6 +922,7 @@
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
     let globalDeptList = [], globalAppLinks = [];
 
+    // PWA Install Logic - Never hidden if available
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault(); 
@@ -927,6 +938,9 @@
           document.getElementById('install-wrap').style.display = 'none';
         }
         deferredPrompt = null;
+      } else {
+        // Fallback for iOS or already installed
+        alert("If you are on an iPhone/iPad, tap the 'Share' icon and then 'Add to Home Screen'. If you are on Android/Desktop usually clicking 'Install' in the address bar works.");
       }
     }
 
@@ -1108,43 +1122,55 @@
           document.getElementById('dept-gate').style.display = isAdmin ? 'block' : 'none';
           document.getElementById('teacher-view').style.display = 'block';
           document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
-          document.getElementById('install-wrap').style.display = 'none'; 
+          
+          // DO NOT hide the install wrap anymore! Let them keep it!
           
           if(!isAdmin) {
-            document.getElementById('type-select').style.display = 'flex'; 
-            document.getElementById('house-grid').style.display = 'grid';
-            document.querySelector('.scoreboard').style.display = 'block'; 
-            document.getElementById('dept-label').style.display = 'block';
+             // TEACHER ONLY - SHOW TEACHER TOOLS
+             document.getElementById('type-select').style.display = 'flex'; 
+             document.getElementById('house-grid').style.display = 'grid';
+             document.getElementById('cam-area').style.display = 'block'; 
+             document.getElementById('manual-area').style.display = 'block'; 
+             document.getElementById('teacher-meta').style.display = 'flex'; 
+             document.querySelector('.scoreboard').style.display = 'block'; 
+             document.getElementById('dept-label').style.display = 'block';
           } else {
-            document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
+             // ADMIN ONLY - HIDE TEACHER TOOLS FIRMLY
+             document.getElementById('type-select').style.display = 'none'; 
+             document.getElementById('house-grid').style.display = 'none';
+             document.getElementById('cam-area').style.display = 'none'; 
+             document.getElementById('manual-area').style.display = 'none'; 
+             document.getElementById('teacher-meta').style.display = 'none'; 
+             document.querySelector('.scoreboard').style.display = 'none'; 
+             document.getElementById('dept-label').style.display = 'none';
+             
+             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
             
-            const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
-            const gridHtml = leaderDepts.map(d=>`
+             const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
+             const gridHtml = leaderDepts.map(d=>`
               <div class="dept-card" onclick="openLb('${d}')">
                 <div class="dept-card-icon">${getIcon(d)}</div>
                 <b>${d}</b>
                 <div class="dept-card-bar"></div>
               </div>`).join('');
               
-            const allCard = `
+             const allCard = `
               <div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
                 <div class="dept-card-icon">👑</div>
                 <b style="color:var(--neon)">OVERALL TOTALS</b>
                 <div class="dept-card-bar" style="background:var(--neon)"></div>
               </div>`;
               
-            const externalApps = globalAppLinks.map(app=>`
+             const externalApps = globalAppLinks.map(app=>`
               <div class="dept-card" style="border-color:var(--accent); background:rgba(0,212,255,0.05); box-shadow: 0 0 15px rgba(0,212,255,0.15);" onclick="window.open('${app.url}', '_blank')">
                 <div class="dept-card-icon">${app.icon}</div>
                 <b style="color:var(--accent)">${app.name}</b>
                 <div class="dept-card-bar" style="background:var(--accent)"></div>
               </div>`).join('');
             
-            document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
-            document.querySelector('.scoreboard').style.display = 'none'; 
-            document.getElementById('dept-label').style.display = 'none';
-            document.getElementById('teacher-view').style.paddingBottom = "10px"; 
-            window.scrollTo(0, 0);
+             document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
+             document.getElementById('teacher-view').style.paddingBottom = "10px"; 
+             window.scrollTo(0, 0);
           }
         } else {
           localStorage.removeItem('goats_user'); 
@@ -1182,6 +1208,8 @@
     }
 
     async function record(hInput, sName, sDept=null) {
+      if(isAdmin) return; // Admins CANNOT give points!
+      
       const t = document.getElementById('t-name').value;
       if(!t) {
         showToast("⚠️ Enter Teacher Name first!");
