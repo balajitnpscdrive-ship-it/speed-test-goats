@@ -2,6 +2,10 @@
     const API = "https://script.google.com/macros/s/AKfycbwr1IHyEyyopH3WMONurkRWmgtpQsKsnyvNbnT_mc814XvZsooaPQQjD7NiTBoCkd7tMw/exec";
     let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL";
     
+    // -- WORLD CLASS AUDIO SFX --
+    const sfxSuccess = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav");
+    const sfxFail = new Audio("https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg");
+
     function api(payload) {
       return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json());
     }
@@ -11,6 +15,7 @@
       st.innerText = "⌛";
       const cache = localStorage.getItem('goats_cache');
       if(cache) try { render(JSON.parse(cache)); } catch(e){}
+      
       try {
         const res = await api({action:"getAppData"});
         if(res && res.deptList) {
@@ -24,8 +29,12 @@
           if (savedUser && savedPass) {
              selectedDept = savedUser;
              document.getElementById('pass-input').value = savedPass;
-             handleLogin(true); // Silent login bypass
+             handleLogin(true);
           }
+          
+          // PROCESS OFFLINE QUEUE UPON RECONNECT
+          processQueue();
+
         } else throw new Error(res.error||"empty");
       } catch(e) {
         st.innerText = "🔴 OFFLINE"; st.className = "status-offline";
@@ -77,7 +86,7 @@
       document.getElementById('target-dept').innerText=d;
       document.getElementById('pass-input').value='';
       document.getElementById('login-modal').style.display='flex';
-      setTimeout(()=>document.getElementById('pass-input').focus(), 50); // Speed boosted
+      setTimeout(()=>document.getElementById('pass-input').focus(), 50);
     }
     
     function closeLogin(){document.getElementById('login-modal').style.display='none';}
@@ -88,8 +97,6 @@
         const res=await api({action:"authenticate",user:selectedDept,pass:p});
         if(res.success){
           closeLogin();
-          
-          // Save for Auto-Login
           localStorage.setItem('goats_user', selectedDept);
           localStorage.setItem('goats_pass', p);
           
@@ -107,7 +114,6 @@
             document.getElementById('type-select').style.display='flex';
             document.getElementById('house-grid').style.display='grid';
           } else {
-            // ADMIN DASHBOARD UPGRADES
             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
             const grid = document.getElementById('dept-grid');
             if (!document.getElementById('card-all')) {
@@ -117,37 +123,73 @@
               </div>` + grid.innerHTML;
             }
             document.getElementById('teacher-view').style.paddingBottom = "10px";
-            window.scrollTo(0, 0); // Jump automatically to the top
+            window.scrollTo(0, 0);
           }
         } else {
           localStorage.removeItem('goats_user');
           localStorage.removeItem('goats_pass');
-          if(!isSilent) alert("❌ Wrong Password");
+          if(!isSilent) showToast("❌ Wrong Password");
         }
       } catch(e) {
-        if(!isSilent) alert("❌ Login Error: " + e.message);
+        if(!isSilent) showToast("❌ Login Error!");
+      }
+    }
+
+    // ── OFFLINE QUEUE MANAGER ──
+    async function processQueue() {
+      const q = JSON.parse(localStorage.getItem('goats_queue') || '[]');
+      if(q.length === 0) return;
+      showToast("📡 Syncing " + q.length + " offline points...");
+      let failed = [];
+      for(const item of q) {
+         try {
+           const r = await api({action:"submitPoint", data:item});
+           if(!r || !r.success) throw new Error();
+         } catch(e) { failed.push(item); }
+      }
+      localStorage.setItem('goats_queue', JSON.stringify(failed));
+      if(failed.length === 0) {
+         showToast("✅ All offline points synced!");
+      } else {
+         showToast("⚠️ Some offline points still pending.");
       }
     }
 
     async function record(hInput,sName,sDept=null){
       const t=document.getElementById('t-name').value;
-      if(!t){alert("⚠️ Enter Teacher Name first!");if(scanActive)stopCam();return;}
+      if(!t){showToast("⚠️ Enter Teacher Name first!");if(scanActive)stopCam();return;}
       const actualH=Object.keys(scores).find(k=>k.toLowerCase()===hInput.trim().toLowerCase());
       if(!actualH) return;
       const pts=currentMode==='Positive'?10:-5;
+      
+      // Update UI Immediately
       scores[actualH]+=pts;
       document.getElementById('s-'+actualH).innerText=scores[actualH];
       updateRanks();
-      if(pts>0) confetti({particleCount:60,spread:70,origin:{y:0.6}});
-      else popEmoji('😢');
+      
+      // HAPTICS & AUDIO FEEDBACK
+      if(navigator.vibrate) navigator.vibrate(pts>0 ? [60,60,60] : [250]); // 3 light bursts, or 1 angry buzz
+      if(pts>0) {
+        confetti({particleCount:60,spread:70,origin:{y:0.6}});
+        try{ sfxSuccess.currentTime=0; sfxSuccess.play().catch(()=>{}); }catch(e){}
+      } else {
+        popEmoji('😢');
+        try{ sfxFail.currentTime=0; sfxFail.play().catch(()=>{}); }catch(e){}
+      }
+
+      const payload = {dept:currentDept,studentDept:sDept,studentName:sName,teacherName:t,category:document.getElementById('p-cat').value,house:actualH,type:currentMode};
+      
       try{
-        const res=await api({action:"submitPoint",data:{dept:currentDept,studentDept:sDept,studentName:sName,teacherName:t,category:document.getElementById('p-cat').value,house:actualH,type:currentMode}});
+        if(!navigator.onLine) throw new Error("Offline"); // Force catch if no internet
+        const res=await api({action:"submitPoint",data:payload});
         if(!res||!res.success) throw new Error(res.error||"No success response from server.");
+        showToast("✅ Point Saved: " + sName);
       }catch(e){
-        scores[actualH]-=pts;
-        document.getElementById('s-'+actualH).innerText=scores[actualH];
-        updateRanks();
-        alert("❌ SYNC FAILED for "+sName+". Reason: " + e.message);
+        // HALLWAY MODE (Offline Queueing)
+        const q = JSON.parse(localStorage.getItem('goats_queue') || '[]');
+        q.push(payload);
+        localStorage.setItem('goats_queue', JSON.stringify(q));
+        showToast("📡 Offline Mode! Point queued for " + sName);
       }
     }
     
@@ -173,7 +215,7 @@
       btn.classList.remove('scanning');btn.innerText='📷';hint.innerText='TAP TO SCAN QR';scanActive=false;
     }
     
-    function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
+    function submitManual(){const n=document.getElementById('man-name').value,h=document.getElementById('man-house').value;if(!n||!h){showToast("⚠️ Fill name & house");return;}record(h,n);document.getElementById('man-name').value="";}
     function setMode(m){currentMode=m;document.getElementById('btn-pos').className='mode-btn'+(m==='Positive'?' active-pos':'');document.getElementById('btn-neg').className='mode-btn'+(m==='Negative'?' active-neg':'');}
     
     function logout(){
@@ -181,14 +223,20 @@
       localStorage.removeItem('goats_pass');
       document.getElementById('teacher-view').style.display='none';
       document.getElementById('dept-gate').style.display='block';
-      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; // Reset for logged out state
+      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT";
       const allCard = document.getElementById('card-all');
       if(allCard) allCard.remove();
       isAdmin=false; currentDept=""; if(scanActive)stopCam();
     }
     
     function toggleBranding(){const b=document.getElementById('admin-branding');b.style.display=b.style.display==='block'?'none':'block';}
-    async function forceSync(){showToast("🔄 Syncing...");localStorage.removeItem('goats_cache');await boot();showToast("✅ Synced!");}
+    
+    async function forceSync(){
+      showToast("🔄 Syncing queues...");
+      await processQueue();
+      localStorage.removeItem('goats_cache');
+      await boot();
+    }
     
     // ── ADMIN LEADERBOARD ──
     function openLb(dept){
@@ -252,5 +300,6 @@
       };
       rd.readAsDataURL(input.files[0]);
     }
-    function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+    
+    function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3200);}
   </script>
