@@ -1,0 +1,15 @@
+{
+  "name": "DB G.O.A.T.S",
+  "short_name": "GOATS",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#050508",
+  "theme_color": "#050508",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Placeholder_Logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
