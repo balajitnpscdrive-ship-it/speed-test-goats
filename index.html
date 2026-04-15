@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#fbff00">
   <title>DB G.O.A.T.S | PORTAL</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
-
   <style>
     /* =======================
        GLOBAL VARIABLES 
@@ -21,14 +21,12 @@
       --red: #ff416c;
       --bg: #050508;
     }
-
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--bg);
@@ -36,7 +34,6 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
     /* =======================
        PRELOADER & OVERLAYS 
        ======================= */
@@ -51,16 +48,13 @@
       justify-content: center;
       transition: opacity 0.6s ease;
     }
-
     .loader-pulse {
       animation: pulseLogo 0.8s infinite alternate;
     }
-
     @keyframes pulseLogo {
       from { transform: scale(0.9); filter: drop-shadow(0 0 10px rgba(251,255,0,0)); }
       to { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--neon)); }
     }
-
     .bg-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -69,7 +63,6 @@
       background-position: center;
       filter: brightness(0.2) blur(6px);
     }
-
     /* =======================
        HEADER SECTION 
        ======================= */
@@ -85,14 +78,12 @@
       top: 0;
       z-index: 100;
     }
-
     .logo-img {
       width: 54px;
       height: 54px;
       object-fit: contain;
       border-radius: 8px;
     }
-
     .founder-img {
       width: 54px;
       height: 54px;
@@ -101,11 +92,9 @@
       object-fit: cover;
       justify-self: end;
     }
-
     .header-title {
       text-align: center;
     }
-
     .header-title h1 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 16px;
@@ -113,7 +102,6 @@
       color: white;
       line-height: 1.2;
     }
-
     .header-title p {
       font-size: 8px;
       color: var(--neon);
@@ -122,7 +110,6 @@
       margin-top: 2px;
       opacity: .9;
     }
-
     .header-title small {
       font-size: 7.5px;
       color: rgba(255,255,255,0.35);
@@ -130,7 +117,6 @@
       text-transform: uppercase;
       display: block;
     }
-
     /* =======================
        WIFI SYNC STATUS 
        ======================= */
@@ -147,10 +133,8 @@
       border: 1px solid rgba(255,255,255,0.08);
       z-index: 200;
     }
-
     .status-live { color: var(--green) !important; border-color: rgba(0,255,136,.3) !important; }
     .status-offline { color: var(--red) !important; border-color: rgba(255,65,108,.3) !important; }
-
     /* =======================
        DEPARTMENT CARDS GRID 
        ======================= */
@@ -159,7 +143,6 @@
       max-width: 900px;
       margin: auto;
     }
-
     .gate-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 26px;
@@ -169,13 +152,11 @@
       margin-bottom: 20px;
       text-shadow: 0 4px 10px rgba(0,0,0,0.8);
     }
-
     .dept-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 12px;
     }
-
     .dept-card {
       background: rgba(20,20,25,0.95);
       border: 1px solid rgba(255,255,255,0.15);
@@ -186,17 +167,14 @@
       transition: transform 0.15s;
       box-shadow: 0 8px 30px rgba(0,0,0,0.6);
     }
-
     .dept-card:active {
       transform: scale(0.92);
       box-shadow: 0 0 20px rgba(251,255,0,.3);
     }
-
     .dept-card-icon {
       font-size: 32px;
       margin-bottom: 8px;
     }
-
     .dept-card b {
       display: block;
       font-size: 13px;
@@ -207,7 +185,6 @@
       width: 100%;
       word-wrap: break-word;
     }
-
     .dept-card-bar {
       height: 3px;
       background: linear-gradient(90deg, var(--neon), var(--accent));
@@ -216,7 +193,6 @@
       width: 80%;
       opacity: .8;
     }
-
     /* =======================
        LOGIN MODAL 
        ======================= */
@@ -231,7 +207,6 @@
       z-index: 2000;
       padding: 20px;
     }
-
     .modal-box {
       background: rgba(20,20,25,1);
       border: 1px solid rgba(251,255,0,.4);
@@ -242,7 +217,6 @@
       text-align: center;
       box-shadow: 0 0 60px rgba(251,255,0,.15);
     }
-
     .modal-box h2 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 26px;
@@ -250,7 +224,6 @@
       letter-spacing: 3px;
       margin-bottom: 20px;
     }
-
     input, select {
       width: 100%;
       padding: 14px 16px;
@@ -263,13 +236,11 @@
       font-family: inherit;
       transition: border-color 0.2s;
     }
-
     input:focus, select:focus {
       border-color: var(--neon);
       outline: none;
       background: rgba(251,255,0,.08);
     }
-
     .btn-main {
       width: 100%;
       padding: 16px;
@@ -284,7 +255,6 @@
       font-size: 18px;
       margin-top: 5px;
     }
-
     /* =======================
        TEACHER VIEW LOGIC 
        ======================= */
@@ -293,13 +263,11 @@
       margin: auto;
       padding-bottom: 40px;
     }
-
     .scoreboard {
       padding: 16px;
       background: rgba(0,0,0,0.85);
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-
     .sb-label {
       font-size: 9px;
       letter-spacing: 3px;
@@ -308,7 +276,6 @@
       margin-bottom: 10px;
       text-align: center;
     }
-
     .score-strip {
       display: flex;
       gap: 8px;
@@ -316,7 +283,6 @@
       scrollbar-width: none;
       padding-bottom: 4px;
     }
-
     .score-chip {
       flex: 0 0 auto;
       min-width: 80px;
@@ -327,11 +293,9 @@
       border-top: 3px solid #333;
       position: relative;
     }
-
     .score-chip.leader {
       box-shadow: 0 0 20px var(--chip-color, #888);
     }
-
     .chip-name {
       font-size: 10px;
       font-weight: 600;
@@ -339,21 +303,18 @@
       letter-spacing: 1px;
       color: rgba(255,255,255,0.6);
     }
-
     .chip-score {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 32px;
       line-height: 1.1;
       color: white;
     }
-
     .chip-rank {
       font-size: 14px;
       position: absolute;
       top: -8px;
       right: -4px;
     }
-
     .t-panel {
       margin: 16px;
       background: rgba(10,10,18,0.9);
@@ -362,7 +323,6 @@
       padding: 16px 14px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.7);
     }
-
     .mode-toggle {
       display: flex;
       gap: 8px;
@@ -371,7 +331,6 @@
       border-radius: 14px;
       padding: 4px;
     }
-
     .mode-btn {
       flex: 1;
       padding: 14px 4px;
@@ -384,26 +343,22 @@
       letter-spacing: 2px;
       font-size: 16px;
     }
-
     .mode-btn.active-pos {
       background: linear-gradient(135deg, #00b09b, #00ff88);
       color: black;
       box-shadow: 0 4px 20px rgba(0,255,136,.3);
     }
-
     .mode-btn.active-neg {
       background: linear-gradient(135deg, #ff416c, #ff4b2b);
       color: white;
       box-shadow: 0 4px 20px rgba(255,65,108,.3);
     }
-
     .house-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 16px;
     }
-
     .house-btn {
       padding: 28px 4px;
       border-radius: 16px;
@@ -415,16 +370,13 @@
       cursor: pointer;
       position: relative;
     }
-
     .house-btn:active {
       transform: scale(0.94);
     }
-
     .scan-area {
       text-align: center;
       margin-bottom: 14px;
     }
-
     #cam-btn {
       background: linear-gradient(135deg, var(--neon), #e8ff00);
       border: none;
@@ -435,7 +387,6 @@
       font-size: 30px;
       cursor: pointer;
     }
-
     .scan-hint {
       font-size: 10px;
       color: rgba(255,255,255,0.3);
@@ -443,20 +394,17 @@
       text-transform: uppercase;
       margin-top: 8px;
     }
-
     #reader {
       border-radius: 16px;
       overflow: hidden;
       border: 2px solid var(--neon);
       margin-bottom: 14px;
     }
-
     .manual-row {
       display: flex;
       gap: 8px;
       margin-bottom: 6px;
     }
-
     .btn-sub {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.2);
@@ -469,7 +417,6 @@
       margin-bottom: 14px;
       letter-spacing: 1px;
     }
-
     /* =======================
        ADMIN ACTIONS DASHBOARD 
        ======================= */
@@ -479,7 +426,6 @@
       flex-direction: column;
       gap: 10px;
     }
-
     .btn-admin {
       padding: 14px 10px;
       border-radius: 12px;
@@ -490,7 +436,6 @@
       letter-spacing: 1px;
       font-family: inherit;
     }
-
     .upload-box {
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.1);
@@ -498,7 +443,6 @@
       border-radius: 12px;
       margin-bottom: 8px;
     }
-
     .upload-box label {
       font-size: 10px;
       color: var(--accent);
@@ -508,7 +452,6 @@
       letter-spacing: 2px;
       text-transform: uppercase;
     }
-
     .btn-logout {
       width: calc(100% - 32px);
       margin: 16px;
@@ -521,7 +464,6 @@
       cursor: pointer;
       letter-spacing: 1px;
     }
-
     /* =======================
        LEADERBOARD MODAL 
        ======================= */
@@ -534,7 +476,6 @@
       overflow-x: hidden;
       overflow-y: auto;
     }
-
     .lb-header {
       padding: 16px;
       background: rgba(0,0,0,1);
@@ -546,14 +487,12 @@
       top: 0;
       z-index: 10;
     }
-
     .lb-header h2 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 22px;
       letter-spacing: 2px;
       flex: 1;
     }
-
     .lb-back {
       background: rgba(255,255,255,0.15);
       border: none;
@@ -564,13 +503,11 @@
       font-weight: 900;
       font-size: 13px;
     }
-
     .lb-period-toggle {
       display: flex;
       gap: 10px;
       padding: 16px 16px 4px 16px;
     }
-
     .period-btn {
       flex: 1;
       background: rgba(255,255,255,0.08);
@@ -582,14 +519,12 @@
       font-weight: 900;
       font-size: 11px;
     }
-
     .period-btn.active {
       background: var(--neon);
       color: black;
       border-color: var(--neon);
       box-shadow: 0 0 15px rgba(251,255,0,0.2);
     }
-
     /* FIXED FILTER BUTTONS */
     .lb-filters {
       display: flex;
@@ -602,11 +537,9 @@
       flex-wrap: nowrap;
       -webkit-overflow-scrolling: touch;
     }
-
     .lb-filters::-webkit-scrollbar {
       display: none;
     }
-
     .lb-filter-btn {
       -webkit-appearance: none;
       appearance: none;
@@ -627,18 +560,15 @@
       line-height: normal;
       min-height: 44px;
     }
-
     .lb-filter-btn.active {
       background: var(--accent);
       color: #000000;
       border-color: var(--accent);
       box-shadow: 0 0 15px rgba(0,212,255,0.5);
     }
-
     .lb-body {
       padding: 20px 14px;
     }
-
     .lb-podium {
       display: flex;
       gap: 8px;
@@ -646,13 +576,11 @@
       align-items: flex-end;
       justify-content: center;
     }
-
     .lb-podium-item {
       text-align: center;
       flex: 1;
       max-width: 90px;
     }
-
     .lb-podium-bar {
       border-radius: 10px 10px 0 0;
       display: flex;
@@ -663,8 +591,10 @@
       font-size: 20px;
       color: rgba(0,0,0,0.8);
       min-height: 36px;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-
     .lb-podium-name {
       font-size: 10px;
       font-weight: 900;
@@ -672,13 +602,11 @@
       margin-top: 6px;
       color: rgba(255,255,255,1);
     }
-
     .lb-podium-score {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 18px;
       color: var(--neon);
     }
-
     .lb-row {
       display: flex;
       align-items: center;
@@ -689,7 +617,6 @@
       margin-bottom: 10px;
       border-left: 4px solid #333;
     }
-
     .lb-row-rank {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 20px;
@@ -697,19 +624,70 @@
       width: 26px;
       text-align: center;
     }
-
     .lb-row-name {
       font-weight: 900;
       font-size: 14px;
       text-transform: uppercase;
     }
-
+    .lb-bar-bg {
+      background: rgba(255,255,255,0.1);
+      height: 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .lb-bar-fill {
+      height: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
     .lb-row-pts {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 24px;
       color: var(--neon);
     }
-
+    /* =======================
+       UPGRADED SNACKBAR TOAST 
+       ======================= */
+    #toast {
+      position: fixed;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,15,20,0.95);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 50px;
+      z-index: 5000;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show {
+      bottom: 28px;
+      opacity: 1;
+    }
+    /* =======================
+       SKELETON SHIMMER 
+       ======================= */
+    .shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+      animation: shimmerFlow 1.5s infinite linear;
+      border-radius: 8px;
+    }
+    @keyframes shimmerFlow {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
     /* =======================
        CINEMATIC PAPER POPUP 
        ======================= */
@@ -731,51 +709,37 @@
       pointer-events: none;
       display: none;
     }
-
     #paper-popup.show {
       display: block;
       animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
-
     @keyframes popIn {
       0% { transform: translate(-50%, -20%) scale(0.5) perspective(800px) rotateX(60deg); opacity: 0; }
       100% { transform: translate(-50%, -50%) scale(1) perspective(800px) rotateX(0deg); opacity: 1; }
     }
-
-    #toast {
-      position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(10,10,10,0.95);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 50px;
-      display: none;
-      z-index: 5000;
-      font-weight: 600;
-      font-size: 14px;
+    @keyframes screenShake {
+      0%, 100% { transform: translateX(0); }
+      10% { transform: translateX(-6px) rotate(-0.5deg); }
+      30% { transform: translateX(5px) rotate(0.5deg); }
+      50% { transform: translateX(-4px); }
+      70% { transform: translateX(3px); }
+      90% { transform: translateX(-2px); }
     }
+    .shake { animation: screenShake 0.5s ease; }
   </style>
 </head>
 <body onload="boot()">
-  
+  <!-- PRELOADER -->
   <div class="preloader" id="preloader">
     <div class="loader-pulse" style="font-size:60px;margin-bottom:10px;">⚡</div>
     <div style="font-family:'Bebas Neue',sans-serif; letter-spacing:4px; color:var(--neon); font-size:24px;">G.O.A.T.S UPLINK</div>
     <div style="font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:2px; margin-top:5px;">SECURE CONNECTION ESTABLISHING...</div>
   </div>
-
+  <!-- STATUS & OVERLAYS -->
   <div id="sync-status">OFFLINE</div>
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
-  
-  <!-- HTML5 Audio Elements directly in body for bypass logic -->
-  <audio id="sfx-success" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Notif1.wav" preload="auto"></audio>
-  <audio id="sfx-fail" src="https://upload.wikimedia.org/wikipedia/commons/3/30/Buzzer.ogg" preload="auto"></audio>
-  
-  <!-- CINEMATIC POPUP (Securely Hidden by Default) -->
+  <!-- CINEMATIC PAPER POPUP -->
   <div id="paper-popup">
     <div style="font-size:16px;font-weight:900;color:var(--neon);letter-spacing:2px;text-transform:uppercase;" id="pop-status">🎉 POINT AWARDED 🎉</div>
     <div id="pop-name" style="font-family:'Bebas Neue',sans-serif;font-size:40px;margin:12px 0;line-height:1.1;word-wrap:break-word;color:white;text-shadow:0 2px 10px #000;">STUDENT</div>
@@ -783,7 +747,7 @@
     <div id="pop-pts" style="font-family:'Bebas Neue',sans-serif;font-size:80px;font-weight:900;color:var(--neon);line-height:1;margin:16px 0;">+10</div>
     <div id="pop-house" style="color:black;padding:12px 20px;border-radius:14px;font-weight:900;font-size:20px;letter-spacing:2px;text-transform:uppercase;box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">HOUSE</div>
   </div>
-  
+  <!-- HEADER -->
   <div class="header">
     <img id="m-logo" class="logo-img">
     <div class="header-title">
@@ -793,32 +757,26 @@
     </div>
     <img id="m-founder" class="founder-img">
   </div>
-
-  <!-- ADMIN LEADERBOARD MODAL (Securely Hidden by Default) -->
+  <!-- LEADERBOARD MODAL -->
   <div id="lb-modal" style="display:none;">
     <div class="lb-header">
       <button class="lb-back" onclick="closeLb()">← BACK</button>
       <h2 id="lb-title">LEADERBOARD</h2>
     </div>
     <div class="lb-period-toggle">
-        <button id="btn-period-weekly" class="period-btn active" onclick="setLbPeriod('weekly')">📅 WEEKLY</button>
-        <button id="btn-period-annually" class="period-btn" onclick="setLbPeriod('annually')">🏆 ANNUALLY</button>
+      <button id="btn-period-weekly" class="period-btn active" onclick="setLbPeriod('weekly')">📅 WEEKLY</button>
+      <button id="btn-period-annually" class="period-btn" onclick="setLbPeriod('annually')">🏆 ANNUALLY</button>
     </div>
-    
-    <!-- CATEGORY FILTERS NOW BOLD AND BRIGHT -->
     <div class="lb-filters" id="lb-cat-filters"></div>
-    
     <div class="lb-body" id="lb-body">
       <div class="lb-empty">Loading...</div>
     </div>
   </div>
-
-  <!-- MAIN DEPT GATE -->
+  <!-- DEPARTMENT SELECTION GRID -->
   <div id="dept-gate" style="display:block;">
     <p class="gate-title">SELECT DEPARTMENT</p>
     <div id="dept-grid" class="dept-grid"></div>
   </div>
-
   <!-- LOGIN MODAL -->
   <div id="login-modal" style="display:none;" onclick="if(event.target==this)closeLogin()">
     <div class="modal-box">
@@ -827,34 +785,24 @@
       <button class="btn-main" onclick="handleLogin()">ENTER PORTAL</button>
     </div>
   </div>
-
-  <!-- ===============================
-       TEACHER & ADMIN DASHBOARD SECTION
-       =============================== -->
+  <!-- TEACHER / ADMIN VIEW -->
   <div id="teacher-view" style="display:none;">
     <div class="scoreboard" style="display:none;">
       <div class="sb-label">🏆 LIVE HOUSE SCORES</div>
       <div id="score-strip" class="score-strip"></div>
     </div>
-    
     <div class="t-panel">
       <div id="dept-label" style="font-size:11px;color:var(--accent);font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;text-align:center;"></div>
-      
-      <!-- TEACHER TOOLS (Blocked for Admin) -->
       <div class="mode-toggle" id="type-select">
         <button class="mode-btn active-pos" id="btn-pos" onclick="setMode('Positive')">＋10 POSITIVE</button>
         <button class="mode-btn" id="btn-neg" onclick="setMode('Negative')">－5 NEGATIVE</button>
       </div>
-      
       <div id="house-grid" class="house-grid"></div>
-      
       <div class="scan-area" id="cam-area">
         <button id="cam-btn" onclick="toggleCam()">📷</button>
         <div class="scan-hint" id="scan-hint">TAP TO SCAN QR</div>
       </div>
-      
       <div id="reader" style="display:none;"></div>
-      
       <div id="manual-area">
         <div class="manual-row">
           <input type="text" id="man-name" placeholder="Student Name" list="student-list">
@@ -863,26 +811,22 @@
         </div>
         <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
       </div>
-      
       <div class="meta-row" id="teacher-meta">
         <input type="text" id="t-name" placeholder="Teacher Name">
         <select id="p-cat"></select>
       </div>
-      
-      <!-- ADMIN ACTIONS (Only visible to Admin) -->
+      <!-- ADMIN ACTIONS -->
       <div id="admin-actions" class="admin-section" style="display:none;">
         <button class="btn-admin" style="color:var(--accent);border:1px solid var(--accent);" onclick="toggleWebAppForm()">🔗 NEW WEB APP CONNECTION</button>
         <button class="btn-admin" style="color:#00ff88;border:1px solid #00ff88;" onclick="toggleBranding()">🎨 BRANDING DASHBOARD</button>
         <button class="btn-admin" style="color:white;border:1px dashed rgba(255,255,255,0.4);" onclick="prepareBulkPrint()">🖨️ BULK QR SYSTEM (A4)</button>
         <button class="btn-admin" style="color:white;border:1px solid rgba(255,255,255,0.15);" onclick="forceSync()">🔄 SYNC DATA CACHE</button>
-        
         <div id="admin-webapp-form" style="display:none; margin-top:4px; padding-top:16px; border-top:1px dashed rgba(255,255,255,.2);">
           <div class="upload-box"><label>App Name</label><input type="text" id="new-app-name" placeholder="e.g. Scoreboard"></div>
           <div class="upload-box"><label>URL Link</label><input type="text" id="new-app-url" placeholder="https://..."></div>
           <div class="upload-box"><label>Icon (Emoji)</label><input type="text" id="new-app-icon" placeholder="📺"></div>
           <button class="btn-sub" style="background:var(--accent);color:#000;margin-top:10px;" onclick="saveNewApp()">UPLOAD LINK</button>
         </div>
-
         <div id="admin-branding" style="display:none; margin-top:4px; padding-top:16px; border-top:1px dashed rgba(255,255,255,.2);">
           <div class="upload-box"><label>Logo</label><input type="file" onchange="handleFile(this,'Logo_ID')" accept="image/*"></div>
           <div class="upload-box"><label>Founder</label><input type="file" onchange="handleFile(this,'Founder_ID')" accept="image/*"></div>
@@ -892,358 +836,395 @@
     </div>
     <button class="btn-logout" onclick="logout()">← LOGOUT</button>
   </div>
-
   <script>
-    if('serviceWorker' in navigator) {
+    /* ============================================================
+       SERVICE WORKER REGISTRATION
+    ============================================================ */
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(console.error);
     }
-
-    // 👇👇 YOUR NEW GOOGLE SHEETS DEPLOYMENT URL GOES HERE! 👇👇
-    const API = "https://script.google.com/macros/s/AKfycbyyY63WqLuZvsFtx5rD2iUWabvZqVpl9Dvu2zbst8dR3ET_Ilu3P_oW8pTGL3pcvnQYyA/exec";  
-    
-    let scores={}, houseColors={}, currentMode="Positive", currentDept="", selectedDept="", scanActive=false, html5QrCode=null, isAdmin=false, adminCats=[], lbDept="", lbCat="ALL", lbPeriod="weekly";
+    /* ============================================================
+       CONFIG — PUT YOUR GOOGLE APPS SCRIPT DEPLOYMENT URL HERE!
+    ============================================================ */
+    const API = "https://script.google.com/macros/s/AKfycbzSxyR3kCGCKv25Sh0h9Q2IiGjmmMvhuNcJ2BmWa9RAVvgmsh3CHJJZhKD7vlUJNX184A/exec";
+    /* ============================================================
+       GLOBAL STATE
+    ============================================================ */
+    let scores = {}, houseColors = {}, currentMode = "Positive",
+        currentDept = "", selectedDept = "", scanActive = false,
+        html5QrCode = null, isAdmin = false, adminCats = [],
+        lbDept = "", lbCat = "ALL", lbPeriod = "weekly";
     let globalDeptList = [], globalAppLinks = [];
-
-    function api(payload) { 
-      return fetch(API, { method:"POST", body:JSON.stringify(payload) }).then(r=>r.json()); 
+    /* ============================================================
+       BUILT-IN SOUND SYNTHESIZER (No external files needed!)
+    ============================================================ */
+    let audioCtx = null;
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
-
+    function playBeep(type) {
+      try {
+        ensureAudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+        if (type === 'success') {
+          // Bright ascending coin-ding
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);       // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(880.00, now + 0.16); // A5
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.5, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else {
+          // Harsh descending buzzer
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, now);
+          osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        }
+      } catch (e) {
+        // Silently fail if audio not supported
+      }
+    }
+    /* ============================================================
+       API HELPER
+    ============================================================ */
+    function api(payload) {
+      return fetch(API, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+    }
+    /* ============================================================
+       BOOT — Initialize App
+    ============================================================ */
     async function boot() {
       const st = document.getElementById('sync-status');
       const cache = localStorage.getItem('goats_cache');
-      
-      if(cache) {
-        try { render(JSON.parse(cache)); } catch(e){}
+      if (cache) {
+        try { render(JSON.parse(cache)); } catch (e) {}
       }
-      
       try {
-        const res = await api({action: "getAppData"});
-        if(res && res.deptList) {
+        const res = await api({ action: "getAppData" });
+        if (res && res.deptList) {
           localStorage.setItem('goats_cache', JSON.stringify(res));
           render(res);
-          st.innerText = "🟢 LIVE"; 
+          st.innerText = "🟢 LIVE";
           st.className = "status-live";
-          
           const savedUser = localStorage.getItem('goats_user');
           const savedPass = localStorage.getItem('goats_pass');
-          if (savedUser && savedPass) { 
-            selectedDept = savedUser; 
-            document.getElementById('pass-input').value = savedPass; 
-            handleLogin(true); 
+          if (savedUser && savedPass) {
+            selectedDept = savedUser;
+            document.getElementById('pass-input').value = savedPass;
+            handleLogin(true);
           }
           processQueue();
         } else {
           throw new Error(res.error || "empty");
         }
-      } catch(e) { 
-        st.innerText = "🔴 OFFLINE"; 
-        st.className = "status-offline"; 
+      } catch (e) {
+        st.innerText = "🔴 OFFLINE";
+        st.className = "status-offline";
       }
-      
       const pl = document.getElementById('preloader');
-      if(pl) { 
-        pl.style.opacity = '0'; 
-        setTimeout(() => pl.style.display = 'none', 600); 
+      if (pl) {
+        pl.style.opacity = '0';
+        setTimeout(() => pl.style.display = 'none', 600);
       }
-
-      api({action: "getStudentList"}).then(res => {
-        if(res && res.success) {
+      // Load student list for autocomplete
+      api({ action: "getStudentList" }).then(res => {
+        if (res && res.success) {
           const dl = document.getElementById('student-list');
           dl.innerHTML = res.students.map(s => `<option value="${s.name}" data-house="${s.house}">`).join('');
-          
           document.getElementById('man-name').addEventListener('input', (e) => {
             const val = e.target.value.toUpperCase();
             const opt = Array.from(dl.options).find(o => o.value.toUpperCase() === val);
-            if(opt && opt.dataset.house) {
+            if (opt && opt.dataset.house) {
               const hs = document.getElementById('man-house');
-              for(let i=0; i<hs.options.length; i++) { 
-                if(hs.options[i].value === opt.dataset.house) hs.selectedIndex = i; 
+              for (let i = 0; i < hs.options.length; i++) {
+                if (hs.options[i].value === opt.dataset.house) hs.selectedIndex = i;
               }
             }
           });
         }
-      });
+      }).catch(() => {});
     }
-
-    const deptIcons = {'cse':'💻','it':'🖥️','ece':'📡','eee':'⚡','mech':'⚙️','civil':'🏗️','auto':'🚗','chem':'🧪','arch':'🏛️','admin':'👑','mca':'🖱️','bca':'📱','arts':'🎨','science':'🔬','commerce':'📊'};
-    function getIcon(d){
-      const k = d.toLowerCase().replace(/\s+/g,'');
-      for(const key in deptIcons) {
-        if(k.includes(key)) return deptIcons[key];
+    /* ============================================================
+       ICON RESOLVER
+    ============================================================ */
+    const deptIcons = {
+      'cse': '💻', 'it': '🖥️', 'ece': '📡', 'eee': '⚡', 'mech': '⚙️',
+      'civil': '🏗️', 'auto': '🚗', 'chem': '🧪', 'arch': '🏛️', 'admin': '👑',
+      'mca': '🖱️', 'bca': '📱', 'arts': '🎨', 'science': '🔬', 'commerce': '📊'
+    };
+    function getIcon(d) {
+      const k = d.toLowerCase().replace(/\s+/g, '');
+      for (const key in deptIcons) {
+        if (k.includes(key)) return deptIcons[key];
       }
       return '📚';
     }
-    
-    function render(data){
-      if(!data) return;
-      const {images, houseConfig, deptList, categories, appLinks} = data;
+    /* ============================================================
+       RENDER — Build the UI from Data
+    ============================================================ */
+    function render(data) {
+      if (!data) return;
+      const { images, houseConfig, deptList, categories, appLinks } = data;
       adminCats = categories || [];
       globalDeptList = deptList || [];
       globalAppLinks = appLinks || [];
-      
-      if(images && images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
-      if(images && images.logo) document.getElementById('m-logo').src = images.logo;
-      if(images && images.founder) document.getElementById('m-founder').src = images.founder;
-      
-      document.getElementById('dept-grid').innerHTML = globalDeptList.map(d=>`
+      if (images && images.bg) document.getElementById('main-bg').style.backgroundImage = `url('${images.bg}')`;
+      if (images && images.logo) document.getElementById('m-logo').src = images.logo;
+      if (images && images.founder) document.getElementById('m-founder').src = images.founder;
+      document.getElementById('dept-grid').innerHTML = globalDeptList.map(d => `
         <div class="dept-card" onclick="handleCard('${d}')">
           <div class="dept-card-icon">${getIcon(d)}</div>
           <b>${d}</b>
           <div class="dept-card-bar"></div>
         </div>
       `).join('');
-        
-      if(categories) {
-        document.getElementById('p-cat').innerHTML = categories.map(c=>`<option>${c}</option>`).join('');
+      if (categories) {
+        document.getElementById('p-cat').innerHTML = categories.map(c => `<option>${c}</option>`).join('');
       }
-
-      if(houseConfig){
+      if (houseConfig) {
         const strip = document.getElementById('score-strip');
         const grid = document.getElementById('house-grid');
         const sel = document.getElementById('man-house');
-        
         strip.innerHTML = "";
         grid.innerHTML = "";
         sel.innerHTML = '<option selected disabled>House</option>';
-        
-        houseConfig.forEach((h, i)=>{
+        houseConfig.forEach((h, i) => {
           scores[h.name] = 0;
           houseColors[h.name] = h.color;
-          
           strip.innerHTML += `
             <div class="score-chip" id="chip-${h.name}" style="border-top-color:${h.color};--chip-color:${h.color}">
               <div class="chip-rank" id="rank-${h.name}"></div>
               <div class="chip-name">${h.name}</div>
               <div class="chip-score" id="s-${h.name}">0</div>
             </div>`;
-            
           grid.innerHTML += `
-            <button class="house-btn" style="background:${h.color};--glow:${h.color};animation:pulseGlow ${2+i*.3}s ease-in-out infinite" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
-            
+            <button class="house-btn" style="background:${h.color}" onclick="record('${h.name}','WINNER')">${h.name}</button>`;
           sel.add(new Option(h.name, h.name));
         });
       }
       setMode('Positive');
     }
-
-    function updateRanks(){
-      const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-      const medals = ['🥇','🥈','🥉'];
+    /* ============================================================
+       RANK UPDATE
+    ============================================================ */
+    function updateRanks() {
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const medals = ['🥇', '🥈', '🥉'];
       sorted.forEach(([name], i) => {
-        document.getElementById('rank-'+name).innerText = medals[i] || '';
-        document.getElementById('chip-'+name).classList.toggle('leader', i===0);
+        const rankEl = document.getElementById('rank-' + name);
+        const chipEl = document.getElementById('chip-' + name);
+        if (rankEl) rankEl.innerText = medals[i] || '';
+        if (chipEl) chipEl.classList.toggle('leader', i === 0);
       });
     }
-
-    function handleCard(d) { 
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    function handleCard(d) {
       if (isAdmin) { openLb(d); } else { openLogin(d); }
     }
-    
-    function openLogin(d) { 
-      selectedDept = d; 
-      document.getElementById('target-dept').innerText = d; 
-      document.getElementById('pass-input').value = ''; 
-      document.getElementById('login-modal').style.display = 'flex'; 
-      setTimeout(() => document.getElementById('pass-input').focus(), 50); 
+    function openLogin(d) {
+      selectedDept = d;
+      document.getElementById('target-dept').innerText = d;
+      document.getElementById('pass-input').value = '';
+      document.getElementById('login-modal').style.display = 'flex';
+      setTimeout(() => document.getElementById('pass-input').focus(), 50);
     }
-    
-    function closeLogin() { 
-      document.getElementById('login-modal').style.display = 'none'; 
+    function closeLogin() {
+      document.getElementById('login-modal').style.display = 'none';
     }
-    
-    async function handleLogin(isSilent = false){
-      const p = document.getElementById('pass-input').value; 
-      if(!p) return;
-
+    /* ============================================================
+       LOGIN HANDLER
+    ============================================================ */
+    async function handleLogin(isSilent = false) {
+      const p = document.getElementById('pass-input').value;
+      if (!p) return;
       try {
-        const res = await api({action: "authenticate", user: selectedDept, pass: p});
-        
-        if(res.success){
+        const res = await api({ action: "authenticate", user: selectedDept, pass: p });
+        if (res.success) {
           closeLogin();
           localStorage.setItem('goats_user', selectedDept);
           localStorage.setItem('goats_pass', p);
-          
           isAdmin = (res.role === 'Admin');
           currentDept = selectedDept;
-          
           document.getElementById('dept-label').innerText = selectedDept;
           document.getElementById('dept-gate').style.display = isAdmin ? 'block' : 'none';
           document.getElementById('teacher-view').style.display = 'block';
           document.getElementById('admin-actions').style.display = isAdmin ? 'flex' : 'none';
-          
-          if(!isAdmin) {
-             // TEACHER ONLY - SHOW TEACHER TOOLS
-             document.getElementById('type-select').style.display = 'flex'; 
-             document.getElementById('house-grid').style.display = 'grid';
-             document.getElementById('cam-area').style.display = 'block'; 
-             document.getElementById('manual-area').style.display = 'block'; 
-             document.getElementById('teacher-meta').style.display = 'flex'; 
-             document.querySelector('.scoreboard').style.display = 'block'; 
-             document.getElementById('dept-label').style.display = 'block';
+          if (!isAdmin) {
+            // TEACHER VIEW: Show all point-giving tools
+            document.getElementById('type-select').style.display = 'flex';
+            document.getElementById('house-grid').style.display = 'grid';
+            document.getElementById('cam-area').style.display = 'block';
+            document.getElementById('manual-area').style.display = 'block';
+            document.getElementById('teacher-meta').style.display = 'flex';
+            document.querySelector('.scoreboard').style.display = 'block';
+            document.getElementById('dept-label').style.display = 'block';
           } else {
-             // ADMIN ONLY - HIDE TEACHER TOOLS FIRMLY
-             document.getElementById('type-select').style.display = 'none'; 
-             document.getElementById('house-grid').style.display = 'none';
-             document.getElementById('cam-area').style.display = 'none'; 
-             document.getElementById('manual-area').style.display = 'none'; 
-             document.getElementById('teacher-meta').style.display = 'none'; 
-             document.querySelector('.scoreboard').style.display = 'none'; 
-             document.getElementById('dept-label').style.display = 'none';
-             
-             document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
-            
-             const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
-             const gridHtml = leaderDepts.map(d=>`
+            // ADMIN VIEW: Hide all point-giving tools
+            document.getElementById('type-select').style.display = 'none';
+            document.getElementById('house-grid').style.display = 'none';
+            document.getElementById('cam-area').style.display = 'none';
+            document.getElementById('manual-area').style.display = 'none';
+            document.getElementById('teacher-meta').style.display = 'none';
+            document.querySelector('.scoreboard').style.display = 'none';
+            document.getElementById('dept-label').style.display = 'none';
+            document.querySelector('.gate-title').innerText = "📊 ADMIN DASHBOARD - SELECT LEADERBOARD";
+            const leaderDepts = globalDeptList.filter(d => d.toLowerCase() !== 'admin');
+            const gridHtml = leaderDepts.map(d => `
               <div class="dept-card" onclick="openLb('${d}')">
                 <div class="dept-card-icon">${getIcon(d)}</div>
                 <b>${d}</b>
                 <div class="dept-card-bar"></div>
               </div>`).join('');
-              
-             const allCard = `
+            const allCard = `
               <div id="card-all" class="dept-card" style="border-color:var(--neon); box-shadow: 0 0 20px rgba(251,255,0,0.2);" onclick="openLb('ALL')">
                 <div class="dept-card-icon">👑</div>
                 <b style="color:var(--neon)">OVERALL TOTALS</b>
                 <div class="dept-card-bar" style="background:var(--neon)"></div>
               </div>`;
-              
-             const externalApps = globalAppLinks.map(app=>`
+            const externalApps = globalAppLinks.map(app => `
               <div class="dept-card" style="border-color:var(--accent); background:rgba(0,212,255,0.05); box-shadow: 0 0 15px rgba(0,212,255,0.15);" onclick="window.open('${app.url}', '_blank')">
                 <div class="dept-card-icon">${app.icon}</div>
                 <b style="color:var(--accent)">${app.name}</b>
                 <div class="dept-card-bar" style="background:var(--accent)"></div>
               </div>`).join('');
-            
-             document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
-             document.getElementById('teacher-view').style.paddingBottom = "10px"; 
-             window.scrollTo(0, 0);
+            document.getElementById('dept-grid').innerHTML = allCard + gridHtml + externalApps;
+            document.getElementById('teacher-view').style.paddingBottom = "10px";
+            window.scrollTo(0, 0);
           }
         } else {
-          localStorage.removeItem('goats_user'); 
+          localStorage.removeItem('goats_user');
           localStorage.removeItem('goats_pass');
-          if(!isSilent) showToast("❌ Wrong Password");
+          if (!isSilent) showToast("❌ Wrong Password");
         }
-      } catch(e) { 
-        if(!isSilent) showToast("❌ Login Error!"); 
+      } catch (e) {
+        if (!isSilent) showToast("❌ Login Error!");
       }
     }
-
+    /* ============================================================
+       OFFLINE QUEUE SYNC
+    ============================================================ */
     async function processQueue() {
       const q = JSON.parse(localStorage.getItem('goats_queue') || '[]');
-      if(q.length === 0) return;
-      
+      if (q.length === 0) return;
       showToast("📡 Syncing " + q.length + " offline points...");
       let failed = [];
-      
-      for(const item of q) { 
-        try { 
-          const r = await api({action: "submitPoint", data: item}); 
-          if(!r || !r.success) throw new Error(); 
-        } catch(e) { 
-          failed.push(item); 
-        } 
+      for (const item of q) {
+        try {
+          const r = await api({ action: "submitPoint", data: item });
+          if (!r || !r.success) throw new Error();
+        } catch (e) {
+          failed.push(item);
+        }
       }
-      
       localStorage.setItem('goats_queue', JSON.stringify(failed));
-      
-      if(failed.length === 0) {
-        showToast("✅ All offline points synced!"); 
+      if (failed.length === 0) {
+        showToast("✅ All offline points synced!");
       } else {
         showToast("⚠️ Some offline points still pending.");
       }
     }
-
-    async function record(hInput, sName, sDept=null) {
-      if(isAdmin) return; // Admins CANNOT give points!
-      
+    /* ============================================================
+       RECORD POINT — Cinematic Feedback System
+    ============================================================ */
+    async function record(hInput, sName, sDept = null) {
+      if (isAdmin) return; // Admins CANNOT give points!
       const t = document.getElementById('t-name').value;
-      if(!t) {
+      if (!t) {
         showToast("⚠️ Enter Teacher Name first!");
-        if(scanActive) stopCam();
+        if (scanActive) stopCam();
         return;
       }
-      
       const actualH = Object.keys(scores).find(k => k.toLowerCase() === hInput.trim().toLowerCase());
-      if(!actualH) return;
-      
+      if (!actualH) return;
       const pts = currentMode === 'Positive' ? 10 : -5;
-      
-      scores[actualH] += pts; 
-      document.getElementById('s-'+actualH).innerText = scores[actualH]; 
+      scores[actualH] += pts;
+      document.getElementById('s-' + actualH).innerText = scores[actualH];
       updateRanks();
-      
-      if(navigator.vibrate) { 
-        try { navigator.vibrate(pts > 0 ? [60,60,60] : [250]); } catch(e){} 
+      // Haptic Vibration
+      if (navigator.vibrate) {
+        try { navigator.vibrate(pts > 0 ? [60, 60, 60] : [250]); } catch (e) {}
       }
-      
-      if(pts > 0) {
-        confetti({particleCount: 60, spread: 70, origin: {y: 0.6}}); 
-        const sfx = document.getElementById('sfx-success');
-        if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>{}); }
+      // Sound Effects via Built-In Synthesizer
+      if (pts > 0) {
+        confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+        playBeep('success');
       } else {
-        const sfx = document.getElementById('sfx-fail');
-        if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>{}); }
+        playBeep('fail');
       }
-
+      // Screen Shake Effect
+      document.body.classList.remove('shake');
+      void document.body.offsetWidth;
+      document.body.classList.add('shake');
+      setTimeout(() => document.body.classList.remove('shake'), 500);
+      // Cinematic Paper Popup
       const pop = document.getElementById('paper-popup');
       document.getElementById('pop-status').innerText = pts > 0 ? "🎉 POINT AWARDED 🎉" : "⚠️ POINT DEDUCTED ⚠️";
       document.getElementById('pop-status').style.color = pts > 0 ? "var(--neon)" : "var(--red)";
-      
       document.getElementById('pop-name').innerText = sName || "STUDENT";
       document.getElementById('pop-dept').innerText = currentDept.toUpperCase();
-      
       document.getElementById('pop-pts').innerText = pts > 0 ? "+10" : "-5";
       document.getElementById('pop-pts').style.color = pts > 0 ? "var(--neon)" : "var(--red)";
-      
       document.getElementById('pop-house').innerText = actualH;
       document.getElementById('pop-house').style.background = houseColors[actualH] || "#fff";
-      
       pop.classList.remove('show');
-      void pop.offsetWidth; 
+      void pop.offsetWidth;
       pop.classList.add('show');
       setTimeout(() => pop.classList.remove('show'), 3500);
-
+      // Send to server
       const payload = {
-        dept: currentDept, 
-        studentDept: sDept, 
-        studentName: sName, 
-        teacherName: t, 
-        category: document.getElementById('p-cat').value, 
-        house: actualH, 
+        dept: currentDept,
+        studentDept: sDept,
+        studentName: sName,
+        teacherName: t,
+        category: document.getElementById('p-cat').value,
+        house: actualH,
         type: currentMode
       };
-      
       try {
-        if(!navigator.onLine) throw new Error("Offline");
-        const res = await api({action: "submitPoint", data: payload});
-        if(!res || !res.success) throw new Error();
-      } catch(e) {
-        const q = JSON.parse(localStorage.getItem('goats_queue') || '[]'); 
-        q.push(payload); 
+        if (!navigator.onLine) throw new Error("Offline");
+        const res = await api({ action: "submitPoint", data: payload });
+        if (!res || !res.success) throw new Error();
+      } catch (e) {
+        const q = JSON.parse(localStorage.getItem('goats_queue') || '[]');
+        q.push(payload);
         localStorage.setItem('goats_queue', JSON.stringify(q));
       }
     }
-    
-    async function toggleCam(){
-      const btn = document.getElementById('cam-btn');
-      const hint = document.getElementById('scan-hint');
-      
-      if(!scanActive) {
+    /* ============================================================
+       QR CAMERA
+    ============================================================ */
+    async function toggleCam() {
+      if (!scanActive) {
         document.getElementById('reader').style.display = 'block';
-        btn.classList.add('scanning');
-        btn.innerText = '⏹';
-        hint.innerText = 'SCANNING...';
-        
+        document.getElementById('cam-btn').innerText = '⏹';
+        document.getElementById('scan-hint').innerText = 'SCANNING...';
         html5QrCode = new Html5Qrcode("reader");
         await html5QrCode.start(
-          {facingMode: "environment"},
-          {fps: 15, qrbox: 240},
-          (t) => { 
-            const p = t.split('|').map(x => x.trim()); 
-            if(p.length >= 3){
+          { facingMode: "environment" },
+          { fps: 15, qrbox: 240 },
+          (t) => {
+            const p = t.split('|').map(x => x.trim());
+            if (p.length >= 3) {
               record(p[2], p[0], p[1]);
               stopCam();
-            } 
+            }
           }
         );
         scanActive = true;
@@ -1251,217 +1232,107 @@
         stopCam();
       }
     }
-    
-    async function stopCam(){ 
-      if(html5QrCode) await html5QrCode.stop(); 
-      document.getElementById('reader').style.display = 'none'; 
-      document.getElementById('cam-btn').classList.remove('scanning');
+    async function stopCam() {
+      if (html5QrCode) await html5QrCode.stop();
+      document.getElementById('reader').style.display = 'none';
       document.getElementById('cam-btn').innerText = '📷';
       document.getElementById('scan-hint').innerText = 'TAP TO SCAN QR';
-      scanActive = false; 
+      scanActive = false;
     }
-    
-    function submitManual(){
+    function submitManual() {
       const n = document.getElementById('man-name').value;
       const h = document.getElementById('man-house').value;
-      
-      if(!n || !h){
+      if (!n || !h) {
         showToast("⚠️ Fill name & house");
         return;
       }
-      
       record(h, n);
       document.getElementById('man-name').value = "";
     }
-    
-    function setMode(m){
+    /* ============================================================
+       UPGRADED TOAST / SNACKBAR
+    ============================================================ */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3200);
+    }
+    /* ============================================================
+       MODE SETTER + DYNAMIC BROWSER THEME COLOR
+    ============================================================ */
+    function setMode(m) {
       currentMode = m;
       document.getElementById('btn-pos').className = 'mode-btn' + (m === 'Positive' ? ' active-pos' : '');
       document.getElementById('btn-neg').className = 'mode-btn' + (m === 'Negative' ? ' active-neg' : '');
+      // Dynamic Browser Context Color (Apple-style)
+      let metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (!metaTheme) {
+        metaTheme = document.createElement('meta');
+        metaTheme.name = "theme-color";
+        document.head.appendChild(metaTheme);
+      }
+      metaTheme.content = (m === 'Positive') ? "#00ff88" : "#ff416c";
     }
-    
-    function logout(){ 
-      localStorage.removeItem('goats_user'); 
-      localStorage.removeItem('goats_pass'); 
-      
-      document.getElementById('teacher-view').style.display = 'none'; 
-      document.getElementById('dept-gate').style.display = 'block'; 
-      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT"; 
-      
-      const allCard = document.getElementById('card-all'); 
-      if(allCard) allCard.remove(); 
-      
-      isAdmin = false; 
-      currentDept = ""; 
-      
-      if(scanActive) stopCam(); 
-      if(localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache'))); 
+    /* ============================================================
+       LOGOUT
+    ============================================================ */
+    function logout() {
+      localStorage.removeItem('goats_user');
+      localStorage.removeItem('goats_pass');
+      document.getElementById('teacher-view').style.display = 'none';
+      document.getElementById('dept-gate').style.display = 'block';
+      document.querySelector('.gate-title').innerText = "SELECT DEPARTMENT";
+      const allCard = document.getElementById('card-all');
+      if (allCard) allCard.remove();
+      isAdmin = false;
+      currentDept = "";
+      if (scanActive) stopCam();
+      if (localStorage.getItem('goats_cache')) render(JSON.parse(localStorage.getItem('goats_cache')));
     }
-    
-    function toggleBranding(){
+    /* ============================================================
+       ADMIN TOOLS
+    ============================================================ */
+    function toggleBranding() {
       const b = document.getElementById('admin-branding');
-      b.style.display = (b.style.display === 'block') ? 'none' : 'block'; 
+      b.style.display = (b.style.display === 'block') ? 'none' : 'block';
       document.getElementById('admin-webapp-form').style.display = 'none';
     }
-    
-    function toggleWebAppForm(){
+    function toggleWebAppForm() {
       const b = document.getElementById('admin-webapp-form');
-      b.style.display = (b.style.display === 'block') ? 'none' : 'block'; 
+      b.style.display = (b.style.display === 'block') ? 'none' : 'block';
       document.getElementById('admin-branding').style.display = 'none';
     }
-    
-    async function forceSync(){ 
-      showToast("🔄 Syncing queues..."); 
-      await processQueue(); 
-      localStorage.removeItem('goats_cache'); 
-      await boot(); 
+    async function forceSync() {
+      showToast("🔄 Syncing queues...");
+      await processQueue();
+      localStorage.removeItem('goats_cache');
+      await boot();
     }
-    
     async function saveNewApp() {
       const name = document.getElementById('new-app-name').value;
       const url = document.getElementById('new-app-url').value;
       const icon = document.getElementById('new-app-icon').value || "✨";
-      
-      if(!name || !url){ showToast("⚠️ Name and URL required"); return; }
-      
+      if (!name || !url) { showToast("⚠️ Name and URL required"); return; }
       showToast("Uploading App Link...");
-      const res = await api({action: "saveAppLink", data: {name, url, icon}});
-      
-      if(res.success) {
-         localStorage.removeItem('goats_cache');
-         document.getElementById('new-app-name').value = '';
-         document.getElementById('new-app-url').value = '';
-         showToast("✅ App Linked! Refreshing...");
-         setTimeout(() => location.reload(), 1000);
+      const res = await api({ action: "saveAppLink", data: { name, url, icon } });
+      if (res.success) {
+        localStorage.removeItem('goats_cache');
+        document.getElementById('new-app-name').value = '';
+        document.getElementById('new-app-url').value = '';
+        showToast("✅ App Linked! Refreshing...");
+        setTimeout(() => location.reload(), 1000);
       } else {
         showToast("❌ Failed to save.");
       }
     }
-    
-    // ── ADMIN LEADERBOARD MODAL ──
-    function openLb(dept){ 
-      lbDept = dept; 
-      lbCat = 'ALL'; 
-      setLbPeriod('weekly'); 
-      
-      document.getElementById('lb-title').innerText = dept.toUpperCase(); 
-      
-      const cats = ['ALL', ...adminCats]; 
-      document.getElementById('lb-cat-filters').innerHTML = cats.map(c=>`
-        <button class="lb-filter-btn${c === 'ALL' ? ' active' : ''}" onclick="setLbCat('${c}')">${c}</button>
-      `).join(''); 
-      
-      document.getElementById('lb-modal').style.display = 'flex'; 
-    }
-    
-    function closeLb(){
-      document.getElementById('lb-modal').style.display = 'none';
-    }
-    
-    function setLbCat(cat){
-      lbCat = cat;
-      document.querySelectorAll('.lb-filter-btn').forEach(b => {
-        b.classList.toggle('active', b.innerText === cat);
-      });
-      loadLb();
-    }
-    
-    function setLbPeriod(p){ 
-      lbPeriod = p; 
-      document.getElementById('btn-period-weekly').className = 'period-btn' + (p === 'weekly' ? ' active' : ''); 
-      document.getElementById('btn-period-annually').className = 'period-btn' + (p === 'annually' ? ' active' : ''); 
-      loadLb(); 
-    }
-    
-    async function loadLb(){
-      const body = document.getElementById('lb-body'); 
-      body.innerHTML = '<div class="lb-empty">⌛ Loading...</div>';
-      
-      try {
-        const res = await api({action: "getDeptLeaderboard", dept: lbDept, category: lbCat, period: lbPeriod});
-        
-        if(!res.success || !res.leaderboard.length){
-          body.innerHTML = '<div class="lb-empty">No data for this timeframe.</div>';
-          return;
-        }
-        
-        const lb = res.leaderboard;
-        const max = lb[0].pts || 1;
-        const medals = ['🥇', '🥈', '🥉']; 
-        
-        let pod = '<div class="lb-podium">'; 
-        const order = lb.length >= 3 ? [1, 0, 2] : lb.map((_, i) => i);
-        
-        order.filter(i => lb[i]).forEach(i => { 
-          const h = lb[i];
-          const col = houseColors[h.name] || '#888';
-          const ht = Math.max(60, Math.round((h.pts / max) * 140)); 
-          
-          pod += `
-            <div class="lb-podium-item">
-              <div class="lb-podium-bar" style="background:${col}; height:${ht}px">${medals[i] || ''}</div>
-              <div class="lb-podium-name">${h.name}</div>
-              <div class="lb-podium-score">${h.pts}</div>
-            </div>`; 
-        }); 
-        pod += '</div>';
-        
-        let rowsHtml = '';
-        lb.forEach((h, i) => { 
-          const col = houseColors[h.name] || '#888';
-          let pct = 0; 
-          if (max > 0 && h.pts > 0) pct = Math.round((h.pts / max) * 100);
-          
-          rowsHtml += `
-            <div class="lb-row" style="border-left-color:${col}">
-              <div class="lb-row-rank">${medals[i] || i + 1}</div>
-              <div style="flex:1; min-width:0;">
-                <div class="lb-row-name">${h.name}</div>
-                <div class="lb-bar-bg">
-                  <div class="lb-bar-fill" style="width:${pct}%; background:${col}"></div>
-                </div>
-              </div>
-              <div class="lb-row-pts">${h.pts}</div>
-            </div>`;
-        });
-        
-        const subtitle = lbPeriod === 'weekly' ? '📅 LAST 7 DAYS' : '🏆 ANNUAL SCORES';
-        const catTitle = lbCat === 'ALL' ? 'All Categories' : lbCat;
-        
-        body.innerHTML = `
-          <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">
-            ${subtitle} · ${catTitle}
-          </div>
-          ${pod}
-          ${rowsHtml}`;
-          
-      } catch(e) {
-        body.innerHTML = '<div class="lb-empty">Failed to load.</div>';
-      }
-    }
-    
-    async function prepareBulkPrint(){
-      showToast("Loading students...");
-      const res = await api({action: "getStudentList"});
-      const pw = window.open('','_blank');
-      pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title>
-        <style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style>
-      </head><body>
-        <button class="btn" onclick="window.print()">PRINT A4 SHEET</button>
-        <div class="grid" id="g"></div>
-        <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
-        <script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.className='lbl';l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script>
-      </body></html>`);
-      pw.document.close();
-    }
-    
-    function handleFile(input, key){
-      if(!input.files[0]) return;
+    function handleFile(input, key) {
+      if (!input.files[0]) return;
       const rd = new FileReader();
-      rd.onload = async(e) => {
+      rd.onload = async (e) => {
         showToast("Uploading...");
-        const res = await api({action: "uploadBranding", data: {key, name: input.files[0].name, file: e.target.result}});
-        if(res.success){
+        const res = await api({ action: "uploadBranding", data: { key, name: input.files[0].name, file: e.target.result } });
+        if (res.success) {
           localStorage.removeItem('goats_cache');
           showToast("✅ Updated!");
           setTimeout(() => location.reload(), 1000);
@@ -1471,12 +1342,138 @@
       };
       rd.readAsDataURL(input.files[0]);
     }
-    
-    function showToast(msg){
-      const t = document.getElementById('toast');
-      t.innerText = msg;
-      t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3200);
+    /* ============================================================
+       LEADERBOARD MODAL
+    ============================================================ */
+    function openLb(dept) {
+      lbDept = dept;
+      lbCat = 'ALL';
+      setLbPeriod('weekly');
+      document.getElementById('lb-title').innerText = dept.toUpperCase();
+      const cats = ['ALL', ...adminCats];
+      document.getElementById('lb-cat-filters').innerHTML = cats.map(c => `
+        <button class="lb-filter-btn${c === 'ALL' ? ' active' : ''}" onclick="setLbCat('${c}')">${c}</button>
+      `).join('');
+      document.getElementById('lb-modal').style.display = 'flex';
+    }
+    function closeLb() {
+      document.getElementById('lb-modal').style.display = 'none';
+    }
+    function setLbCat(cat) {
+      lbCat = cat;
+      document.querySelectorAll('.lb-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText === cat);
+      });
+      loadLb();
+    }
+    function setLbPeriod(p) {
+      lbPeriod = p;
+      document.getElementById('btn-period-weekly').className = 'period-btn' + (p === 'weekly' ? ' active' : '');
+      document.getElementById('btn-period-annually').className = 'period-btn' + (p === 'annually' ? ' active' : '');
+      loadLb();
+    }
+    /* ============================================================
+       LOAD LEADERBOARD — Shimmer + Odometer + Spring Bars
+    ============================================================ */
+    async function loadLb() {
+      const body = document.getElementById('lb-body');
+      // SKELETON SHIMMER LOADING
+      body.innerHTML = `
+        <div style="height:120px; width:100%; margin-bottom:20px;" class="shimmer"></div>
+        <div style="height:45px; width:100%; margin-bottom:10px;" class="shimmer"></div>
+        <div style="height:45px; width:100%; margin-bottom:10px;" class="shimmer"></div>
+        <div style="height:45px; width:100%; margin-bottom:10px;" class="shimmer"></div>
+      `;
+      try {
+        const res = await api({ action: "getDeptLeaderboard", dept: lbDept, category: lbCat, period: lbPeriod });
+        if (!res.success || !res.leaderboard.length) {
+          body.innerHTML = '<div style="text-align:center; padding: 40px; color:rgba(255,255,255,0.4); font-size:14px;">No data for this timeframe.</div>';
+          return;
+        }
+        const lb = res.leaderboard;
+        const max = lb[0].pts || 1;
+        const medals = ['🥇', '🥈', '🥉'];
+        // BUILD PODIUM
+        let pod = '<div class="lb-podium">';
+        const order = lb.length >= 3 ? [1, 0, 2] : lb.map((_, i) => i);
+        order.filter(i => lb[i]).forEach(i => {
+          const h = lb[i];
+          const col = houseColors[h.name] || '#888';
+          const ht = Math.max(60, Math.round((h.pts / max) * 140));
+          pod += `
+            <div class="lb-podium-item">
+              <div class="lb-podium-bar val-bar" style="background:${col}; height:${ht}px">${medals[i] || ''}</div>
+              <div class="lb-podium-name">${h.name}</div>
+              <div class="lb-podium-score count-up" data-val="${h.pts}">0</div>
+            </div>`;
+        });
+        pod += '</div>';
+        // BUILD ROWS
+        let rowsHtml = '';
+        lb.forEach((h, i) => {
+          const col = houseColors[h.name] || '#888';
+          let pct = 0;
+          if (max > 0 && h.pts > 0) pct = Math.round((h.pts / max) * 100);
+          rowsHtml += `
+            <div class="lb-row" style="border-left-color:${col}">
+              <div class="lb-row-rank">${medals[i] || i + 1}</div>
+              <div style="flex:1; min-width:0;">
+                <div class="lb-row-name">${h.name}</div>
+                <div class="lb-bar-bg">
+                  <div class="lb-bar-fill val-bar" style="width:${pct}%; background:${col}"></div>
+                </div>
+              </div>
+              <div class="lb-row-pts count-up" data-val="${h.pts}">0</div>
+            </div>`;
+        });
+        const subtitle = lbPeriod === 'weekly' ? '📅 LAST 7 DAYS' : '🏆 ANNUAL SCORES';
+        const catTitle = lbCat === 'ALL' ? 'All Categories' : lbCat;
+        body.innerHTML = `
+          <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">
+            ${subtitle} · ${catTitle}
+          </div>
+          ${pod}
+          ${rowsHtml}`;
+        // ODOMETER COUNTING ANIMATION
+        body.querySelectorAll('.count-up').forEach(el => {
+          const target = parseInt(el.getAttribute('data-val'), 10) || 0;
+          const dur = 1400;
+          let start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            const prog = Math.min((ts - start) / dur, 1);
+            const ease = 1 - Math.pow(1 - prog, 3);
+            el.innerText = Math.floor(ease * target);
+            if (prog < 1) window.requestAnimationFrame(step);
+          }
+          window.requestAnimationFrame(step);
+        });
+        // SPRING-LOADED BAR ANIMATIONS
+        setTimeout(() => {
+          body.querySelectorAll('.val-bar').forEach(el => {
+            el.style.transform = 'scaleX(1) scaleY(1)';
+          });
+        }, 50);
+      } catch (e) {
+        body.innerHTML = '<div style="text-align:center;color:red;padding:40px;">Failed to load data.</div>';
+      }
+    }
+    /* ============================================================
+       BULK QR PRINT
+    ============================================================ */
+    async function prepareBulkPrint() {
+      showToast("Loading students...");
+      const res = await api({ action: "getStudentList" });
+      const pw = window.open('', '_blank');
+      pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title>
+        <style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style>
+      </head><body>
+        <button class="btn" onclick="window.print()">PRINT A4 SHEET</button>
+        <div class="grid" id="g"></div>
+        <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
+        <script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.className='lbl';l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script>
+      </body></html>`);
+      pw.document.close();
     }
   </script>
 </body>
