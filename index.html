@@ -84,6 +84,7 @@
     .activity-tabs { display: none; gap: 10px; margin-bottom: 14px; }
     .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: rgba(255,255,255,0.7); font-weight: 900; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; font-size: 16px; cursor: pointer; transition: all 0.2s; }
     .tab-btn.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 15px rgba(251,255,0,0.3); }
+
     /* Medal Tiers & Buttons */
     .medal-section { margin-bottom: 16px; }
     .medal-section-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); text-align: center; margin-bottom: 12px; }
@@ -183,6 +184,7 @@
   <div id="sync-status">OFFLINE</div>
   <div class="bg-overlay" id="main-bg"></div>
   <div id="toast"></div>
+
   <!-- CINEMATIC PAPER POPUP -->
   <div id="paper-popup">
     <div style="font-size:16px;font-weight:900;color:var(--neon);letter-spacing:2px;text-transform:uppercase;" id="pop-status">🎉 POINT AWARDED 🎉</div>
@@ -193,6 +195,7 @@
     <div id="pop-house" style="color:black;padding:12px 20px;border-radius:14px;font-weight:900;font-size:20px;letter-spacing:2px;text-transform:uppercase;box-shadow:inset 0 0 10px rgba(0,0,0,0.5);">HOUSE</div>
     <div id="pop-remarks"></div>
   </div>
+
   <div class="header">
     <img id="m-logo" class="logo-img">
     <div class="header-title">
@@ -202,6 +205,7 @@
     </div>
     <img id="m-founder" class="founder-img">
   </div>
+
   <!-- LEADERBOARD MODAL -->
   <div id="lb-modal" style="display:none;">
     <div class="lb-header">
@@ -215,6 +219,7 @@
     <div class="lb-filters" id="lb-cat-filters"></div>
     <div class="lb-body" id="lb-body"><div class="lb-empty">Loading...</div></div>
   </div>
+
   <!-- CERTIFICATE GENERATOR MODAL -->
   <div id="cert-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#050508; z-index:4000; overflow-y:auto; padding-bottom:50px;">
     <div class="lb-header">
@@ -236,6 +241,7 @@
       <div id="cert-list"></div>
     </div>
   </div>
+
   <!-- EVENT CERTIFICATE GENERATOR MODAL -->
   <div id="event-cert-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#050508; z-index:5000; overflow-y:auto; padding-bottom:50px;">
     <div class="lb-header">
@@ -262,11 +268,13 @@
             <input type="text" id="ev-event-name" placeholder="e.g. 100M SPRINT" style="width:100%; padding:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
           </div>
         </div>
+
         <label style="display:block; font-size:10px; color:#aaa; font-weight:900; letter-spacing:1px; margin-bottom:8px;">STUDENT IDENTIFICATION</label>
         <div style="position:relative; margin-bottom:16px;">
           <input type="text" id="ev-student-search" placeholder="Search Student Name..." autocomplete="off" style="width:100%; padding:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
           <div id="ev-autocomplete" style="position:absolute; top:100%; left:0; right:0; background:#1a1a1a; border:1px solid var(--neon); border-radius:8px; max-height:200px; overflow-y:auto; z-index:1000; display:none; box-shadow:0 4px 20px #000; text-align:left;"></div>
         </div>
+
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
           <div>
             <label style="display:block; font-size:10px; color:#aaa; font-weight:900; letter-spacing:1px; margin-bottom:8px;">DEPARTMENT</label>
@@ -277,6 +285,7 @@
             <select id="ev-student-house" style="width:100%; padding:14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;"></select>
           </div>
         </div>
+
         <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:16px; margin-bottom:20px;">
           <div>
             <label style="display:block; font-size:10px; color:#aaa; font-weight:900; letter-spacing:1px; margin-bottom:8px;">ACHIEVEMENT / RANK</label>
@@ -303,6 +312,7 @@
             </label>
           </div>
         </div>
+
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
           <div id="ev-photo-preview-wrap" style="display:none; text-align:center; padding:15px; background:rgba(0,0,0,0.3); border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
             <img id="ev-photo-preview" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--neon);">
@@ -313,6 +323,7 @@
             <div style="font-size:10px; color:#666; margin-top:5px;">WASHOUT BG PREVIEW</div>
           </div>
         </div>
+
         <button class="btn-main" onclick="generateEventCert()" style="margin-top:40px; background:linear-gradient(to right, #00d4ff, #00ff88); color:#000; font-size:18px; height:60px; font-weight:900;">🖨️ GENERATE A4 PROFESSIONAL CERTIFICATE</button>
       </div>
     </div>
@@ -345,6 +356,7 @@
     <p class="gate-title">SELECT DEPARTMENT</p>
     <div id="dept-grid" class="dept-grid"></div>
   </div>
+
   <!-- LOGIN MODAL -->
   <div id="login-modal" style="display:none;" onclick="if(event.target==this)closeLogin()">
     <div class="modal-box">
@@ -353,6 +365,7 @@
       <button class="btn-main" onclick="handleLogin()">ENTER PORTAL</button>
     </div>
   </div>
+
   <!-- TEACHER / ADMIN VIEW -->
   <div id="teacher-view" style="display:none;">
     <div class="scoreboard" style="display:none;">
@@ -368,6 +381,7 @@
           <option value="" disabled selected>👤 Select Your Name</option>
         </select>
       </div>
+
       <!-- ACTIVITY TABS -->
       <div class="activity-tabs" id="activity-tabs">
         <button id="tab-team" class="tab-btn active" onclick="switchMode('team')">👥 TEAM ACTIVITY</button>
@@ -405,6 +419,7 @@
         </div>
         <button class="btn-sub" onclick="submitManual()">✓ SUBMIT MANUALLY</button>
       </div>
+
       <!-- REMARKS -->
       <div class="remarks-wrap" id="remarks-area">
         <div class="remarks-label">📝 REMARKS (OPTIONAL)</div>
@@ -453,6 +468,7 @@
       <button onclick="undoPoint()" style="background:var(--neon); color:#000; font-family:'Bebas Neue', sans-serif; letter-spacing:2px; font-size:16px; border:none; padding:8px 20px; border-radius:20px; cursor:pointer; box-shadow:0 0 15px rgba(251,255,0,0.4);">UNDO</button>
     </div>
   </div>
+
   <script>
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
     
@@ -550,11 +566,13 @@
               if (hs.options[i].value.trim().toLowerCase() === h) { hs.selectedIndex = i; return; }
             }
           };
+
           inp.addEventListener('input', (e) => {
             const val = e.target.value.toLowerCase().trim(); ac.innerHTML = '';
             // Auto-select if full name matches exactly
             const exactMatch = res.students.find(s => s.name.toLowerCase().trim() === val);
             if (exactMatch) setHouse(exactMatch.house);
+
             if (val.length >= 3) {
               const deptFilter = currentDept === 'Admin' ? null : currentDept;
               const matches = res.students.filter(s => s.name.toLowerCase().includes(val) && (!deptFilter || !s.dept || s.dept.toLowerCase() === deptFilter.toLowerCase()));
@@ -793,6 +811,7 @@
         setTimeout(() => { body.querySelectorAll('.val-bar').forEach(el => { el.style.transform = 'scaleX(1) scaleY(1)'; }); }, 50);
       } catch (e) { body.innerHTML = '<div style="text-align:center;color:red;padding:40px;">Failed to load.</div>'; }
     }
+
     /* ============================================================
        CERTIFICATE SYSTEM LOGIC
     ============================================================ */
@@ -801,19 +820,24 @@
         document.getElementById('cert-modal').style.display = 'block';
         document.getElementById('cert-title').innerText = type === 'weekly' ? '🏅 WEEKLY CERTIFICATES (TOP 3)' : '🏆 ANNUAL CERTIFICATES (TOP 5)';
         document.getElementById('cert-list').innerHTML = '<div class="shimmer" style="height:100px;margin-bottom:15px;"></div><div class="shimmer" style="height:100px;"></div>';
+
         const res = await api({ action: "getReportData", period: type });
         if (!res.success) { document.getElementById('cert-list').innerHTML = '<div style="color:red;">Error fetching data.</div>'; return; }
+
         certStudents = [];
         const depts = res.departments;
         const maxRank = type === 'weekly' ? 3 : 5;
+
         for (const dept in depts) {
             if (!depts.hasOwnProperty(dept)) continue;
             const toppers = depts[dept].toppers || [];
             if (toppers.length === 0) continue;
+
             let scores = toppers.map(t => t[1]);
             let uniqueScores = [...new Set(scores)].sort((a, b) => b - a); 
             let cutoffScore = uniqueScores.length >= maxRank ? uniqueScores[maxRank - 1] : uniqueScores[uniqueScores.length - 1];
             if(cutoffScore === undefined) cutoffScore = -9999;
+
             toppers.forEach(t => {
                 if (t[1] >= cutoffScore) {
                     let rank = uniqueScores.indexOf(t[1]) + 1;
@@ -832,7 +856,9 @@
         }
         renderCertList();
     }
+
     function closeCertDashboard() { document.getElementById('cert-modal').style.display = 'none'; }
+
     function renderCertList() {
         if (certStudents.length === 0) { document.getElementById('cert-list').innerHTML = '<div style="color:#aaa;">No outstanding students found.</div>'; return; }
         
@@ -857,6 +883,7 @@
         });
         document.getElementById('cert-list').innerHTML = html;
     }
+
     function handleCertPhoto(input, index) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -867,6 +894,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
     async function generateCertificates() {
         const size = document.getElementById('cert-size-select').value;
         const customEvent = document.getElementById('cert-event-name').value.trim();
@@ -887,6 +915,7 @@
         const isA4 = (size === 'A4');
         const W = isA4 ? '210mm' : '148mm';
         const H = isA4 ? '297mm' : '210mm';
+
         // Build Premium Certificate Templates
         let html = `<!DOCTYPE html>
         <html>
@@ -974,6 +1003,7 @@
                     padding: 6px 20px; font-size: ${isA4 ? '13px' : '11px'}; color: #ffd700; letter-spacing: 2px; font-weight: 900;
                     box-shadow: 0 5px 10px rgba(0,0,0,0.7); font-family: 'Montserrat', sans-serif;
                 }
+
                 .description {
                     margin-top: ${isA4 ? '50px' : '35px'};
                     text-align: center;
@@ -992,6 +1022,7 @@
         <body>
             <button class="print-btn" onclick="window.print()">🖨️ PRINT ${size} CERTIFICATES</button>
         `;
+
         certStudents.forEach(st => {
             let title2 = customEvent ? customEvent.toUpperCase() : (currentCertType === 'weekly' ? 'OF THE WEEK' : 'OF THE YEAR');
             let badgeTxt = currentCertType === 'weekly' ? 'WEEKLY CHAMPION' : 'ANNUAL CHAMPION';
@@ -1052,16 +1083,19 @@
                 </div>
             </div>`;
         });
+
         html += `</body></html>`;
         pw.document.open();
         pw.document.write(html);
         pw.document.close();
     }
+
     async function prepareBulkPrint() {
       showToast("Loading students..."); const res = await api({ action: "getStudentList" }); const pw = window.open('', '_blank');
       pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title><style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style></head><body><button class="btn" onclick="window.print()">PRINT A4 SHEET</button><div class="grid" id="g"></div><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script><script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script></body></html>`);
       pw.document.close();
     }
+
     async function generateReport(period) {
       const pw = window.open('', '_blank'); if (!pw) { showToast("❌ Popup blocked!"); return; }
       pw.document.write(`<html><body style="font-family:sans-serif; text-align:center; margin-top:20vh; background:#111; color:#00ff88;"><h2>Fetching Database...<br><br>Please wait ⏳</h2></body></html>`);
@@ -1081,6 +1115,7 @@
         pw.document.close(); showToast("✅ Report generated!");
       } catch (e) { if (pw && !pw.closed) { pw.document.body.innerHTML = `<h3 style="color:red;font-family:sans-serif;">❌ Error generating report.</h3>`; } showToast("❌ Error: " + e.message); }
     }
+
     let evCertPhoto = null, evCertBg = null;
     function previewEvPhoto(input) {
       if (input.files && input.files[0]) {
@@ -1092,6 +1127,7 @@
         const reader = new FileReader(); reader.onload = (e) => { evCertBg = e.target.result; document.getElementById('ev-bg-preview-wrap').style.display = 'block'; document.getElementById('ev-bg-preview').src = e.target.result; }; reader.readAsDataURL(input.files[0]);
       }
     }
+
     function openEventCertModal() {
       document.getElementById('event-cert-modal').style.display = 'block';
       const cache = JSON.parse(localStorage.getItem('goats_cache') || '{}');
@@ -1118,7 +1154,9 @@
         };
       });
     }
+
     function closeEventCertModal() { document.getElementById('event-cert-modal').style.display = 'none'; }
+
     function generateEventCert() {
       const prog = document.getElementById('ev-prog-title').value.trim() || 'COLLEGE PROGRAM';
       const cat = document.getElementById('ev-category').value;
@@ -1138,7 +1176,8 @@
         cultural: `Showcasing immense creativity and artistic talent, your graceful participation has enriched the cultural fabric of our college and inspired the entire community.`,
         academic: `Exhibiting scholarly excellence and intellectual prowess, your dedication to academic mastery serves as a beacon of inspiration for your fellow students.`
       };
-      const html = `<!DOCTYPE html><html><head><title>Certificate - ${student}</title><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#555;font-family:'Montserrat',sans-serif;}.page{width:210mm;height:297mm;background:#fff;margin:0 auto;position:relative;overflow:hidden;color:#000;padding:40px 60px;}.washout-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140%;height:140%;object-fit:contain;opacity:0.1;z-index:1;pointer-events:none;}.border-outer{position:absolute;top:15px;left:15px;right:15px;bottom:15px;border:5px solid #d4af37;z-index:2;}.border-inner{position:absolute;top:25px;left:25px;right:25px;bottom:25px;border:1.5px solid #b8860b;z-index:2;}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;position:relative;z-index:10;}.logo{width:120px;height:120px;object-fit:contain;}.founder{width:120px;height:120px;border-radius:50%;border:3px solid #d4af37;object-fit:cover;}.college-info{text-align:center;flex:1;}.college-info h1{font-size:36px;font-weight:900;margin-bottom:5px;letter-spacing:1px;}.prog-title{text-align:center;margin:40px 0;font-family:'Cinzel',serif;font-size:56px;font-weight:900;color:#d4af37;text-transform:uppercase;letter-spacing:6px;width:100%;position:relative;z-index:10;}.photo-box{width:280px;height:280px;border-radius:50%;border:10px solid #d4af37;margin:20px auto;overflow:hidden;box-shadow:0 10px 50px rgba(0,0,0,0.25);position:relative;z-index:10;}.photo-box img{width:100%;height:100%;object-fit:cover;}.ribbon-wrap{position:relative;width:100%;text-align:center;margin-top:-50px;margin-bottom:40px;z-index:15;}.ribbon-body{display:inline-block;background:linear-gradient(to right, #b8860b, #ffd700, #b8860b);padding:15px 90px;color:#000;font-weight:900;font-size:42px;text-transform:uppercase;clip-path:polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);box-shadow:0 10px 25px rgba(0,0,0,0.4);min-width:550px;}.cert-content{text-align:center;position:relative;z-index:10;}.event-details{font-size:24px;margin:15px 0;font-weight:700;letter-spacing:1px;}.wording{font-size:20px;line-height:1.9;color:#222;margin:50px auto;max-width:90%;font-style:italic;}.signatures{display:flex;justify-content:space-between;margin-top:140px;padding:0 80px;position:relative;z-index:10;}.sig-box{text-align:center;width:260px;}.sig-line{border-top:2.5px solid #333;margin-bottom:12px;}.sig-label{font-weight:900;font-size:18px;letter-spacing:2px;}.sig-sub{font-size:13px;color:#777;}@media print{body{background:#fff;}.page{box-shadow:none;}.print-btn{display:none;}@page{size:A4 portrait;margin:0;}}.print-btn{position:fixed;top:20px;right:20px;z-index:1000;background:#000;color:#fff;border:none;padding:15px 30px;border-radius:30px;font-weight:900;cursor:pointer;}</style></head><body><button class="print-btn" onclick="window.print()">🖨️ PRINT CERTIFICATE</button><div class="page">${evCertBg?`<img src="${evCertBg}" class="washout-bg">`:''}<div class="border-outer"></div><div class="border-inner"></div><div class="header">${logoUrl?`<img src="${logoUrl}" class="logo">`:''}<div class="college-info"><h1>DON BOSCO POLYTECHNIC COLLEGE</h1></div>${founderUrl?`<img src="${founderUrl}" class="founder">`:''}</div><div class="prog-title">${prog}</div><div style="font-family:'Cinzel',serif;letter-spacing:5px;color:#d4af37;font-size:28px;font-weight:900;margin-bottom:15px;text-align:center;position:relative;z-index:10;">CERTIFICATE OF ACHIEVEMENT</div>${evCertPhoto?`<div class="photo-box"><img src="${evCertPhoto}"></div>`:''}<div class="ribbon-wrap"><div class="ribbon-body">${student}</div></div><div class="cert-content"><div style="font-size:16px;letter-spacing:2px;color:#666;margin:15px 0;font-weight:700;">This is to certify that the above mentioned student of</div><div class="event-details"><b>${dept.toUpperCase()} DEPARTMENT</b></div>${houseName!=='NONE'?`<div class="event-details" style="color:${houseCol};font-weight:900;">${houseName.toUpperCase()} HOUSE</div>`:''}<div class="event-details" style="margin-top:25px;font-size:26px;">has secured <b>${rank.toUpperCase()}</b> in the event <b>"${event.toUpperCase()}"</b></div><div class="wording">${wordings[cat]}</div></div><div class="signatures"><div class="sig-box"><div class="sig-line"></div><div class="sig-label">SECRETARY</div><div class="sig-sub">Don Bosco Polytechnic College</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-label">PRINCIPAL</div><div class="sig-sub">Don Bosco Polytechnic College</div></div></div></div></body></html>`;
+
+      const html = `<!DOCTYPE html><html><head><title>Certificate - ${student}</title><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#555;font-family:'Montserrat',sans-serif;}.page{width:210mm;height:297mm;background:#fff;margin:0 auto;position:relative;overflow:hidden;color:#000;padding:30px 50px;}.washout-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140%;height:140%;object-fit:contain;opacity:0.1;z-index:1;pointer-events:none;}.border-outer{position:absolute;top:15px;left:15px;right:15px;bottom:15px;border:4px solid #d4af37;z-index:2;}.border-inner{position:absolute;top:25px;left:25px;right:25px;bottom:25px;border:1.2px solid #b8860b;z-index:2;}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;position:relative;z-index:10;}.logo{width:105px;height:105px;object-fit:contain;}.founder{width:105px;height:105px;border-radius:50%;border:2px solid #d4af37;object-fit:cover;}.college-info{text-align:center;flex:1;}.college-info h1{font-size:28px;font-weight:900;margin-bottom:0;letter-spacing:1px;line-height:1.2;}.prog-title{text-align:center;margin:20px 0;font-family:'Cinzel',serif;font-size:48px;font-weight:900;color:#d4af37;text-transform:uppercase;letter-spacing:4px;width:100%;position:relative;z-index:10;}.photo-box{width:240px;height:240px;border-radius:50%;border:8px solid #d4af37;margin:15px auto;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.2);position:relative;z-index:10;}.photo-box img{width:100%;height:100%;object-fit:cover;}.ribbon-wrap{position:relative;width:100%;text-align:center;margin-top:-35px;margin-bottom:25px;z-index:15;}.ribbon-body{display:inline-block;background:linear-gradient(to right, #b8860b, #ffd700, #b8860b);padding:12px 70px;color:#000;font-weight:900;font-size:32px;text-transform:uppercase;clip-path:polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);box-shadow:0 8px 18px rgba(0,0,0,0.3);min-width:480px;}.cert-content{text-align:center;position:relative;z-index:10;}.event-details{font-size:20px;margin:10px 0;font-weight:700;letter-spacing:1px;}.wording{font-size:17px;line-height:1.7;color:#333;margin:25px auto;max-width:85%;font-style:italic;}.signatures{display:flex;justify-content:space-between;margin-top:60px;padding:0 60px;position:relative;z-index:10;}.sig-box{text-align:center;width:240px;}.sig-line{border-top:2px solid #333;margin-bottom:10px;}.sig-label{font-weight:900;font-size:15px;letter-spacing:2px;}.sig-sub{font-size:11px;color:#777;}@media print{body{background:#fff;}.page{box-shadow:none;}.print-btn{display:none;}@page{size:A4 portrait;margin:0;}}.print-btn{position:fixed;top:20px;right:20px;z-index:1000;background:#000;color:#fff;border:none;padding:15px 30px;border-radius:30px;font-weight:900;cursor:pointer;}</style></head><body><button class="print-btn" onclick="window.print()">🖨️ PRINT CERTIFICATE</button><div class="page">${evCertBg?`<img src="${evCertBg}" class="washout-bg">`:''}<div class="border-outer"></div><div class="border-inner"></div><div class="header">${logoUrl?`<img src="${logoUrl}" class="logo">`:''}<div class="college-info"><h1>DON BOSCO<br>POLYTECHNIC COLLEGE</h1></div>${founderUrl?`<img src="${founderUrl}" class="founder">`:''}</div><div class="prog-title">${prog}</div><div style="font-family:'Cinzel',serif;letter-spacing:4px;color:#d4af37;font-size:22px;font-weight:900;margin-bottom:10px;text-align:center;position:relative;z-index:10;">CERTIFICATE OF ACHIEVEMENT</div>${evCertPhoto?`<div class="photo-box"><img src="${evCertPhoto}"></div>`:''}<div class="ribbon-wrap"><div class="ribbon-body">${student}</div></div><div class="cert-content"><div style="font-size:13px;letter-spacing:1px;color:#666;margin:8px 0;font-weight:700;">This is to certify that the above mentioned student of</div><div class="event-details"><b>${dept.toUpperCase()} DEPARTMENT</b></div>${houseName!=='NONE'?`<div class="event-details" style="color:${houseCol};font-weight:900;">${houseName.toUpperCase()} HOUSE</div>`:''}<div class="event-details" style="margin-top:15px;font-size:22px;">has secured <b>${rank.toUpperCase()}</b> in the event <b>"${event.toUpperCase()}"</b></div><div class="wording">${wordings[cat]}</div></div><div class="signatures"><div class="sig-box"><div class="sig-line"></div><div class="sig-label">SECRETARY</div><div class="sig-sub">Don Bosco Polytechnic College</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-label">PRINCIPAL</div><div class="sig-sub">Don Bosco Polytechnic College</div></div></div></div></body></html>`;
       pw.document.open(); pw.document.write(html); pw.document.close();
     }
     
@@ -1147,6 +1186,7 @@
       pw.document.write(`<!DOCTYPE html><html><head><title>Batch QR</title><style>body{font-family:sans-serif;margin:0;padding:20px}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.box{border:1px solid #ddd;padding:10px;text-align:center;page-break-inside:avoid;border-radius:8px}.qr{width:110px;height:110px;margin:5px auto;background:#fff}.lbl{font-size:9px;font-weight:900;text-transform:uppercase;line-height:1.4;margin-top:5px;color:#000}.btn{position:fixed;top:10px;right:10px;padding:12px 24px;background:#000;color:#fbff00;border:none;border-radius:8px;font-weight:900;cursor:pointer}@media print{.btn{display:none}@page{size:A4;margin:1cm}}</style></head><body><button class="btn" onclick="window.print()">PRINT A4 SHEET</button><div class="grid" id="g"></div><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script><script>function gen(){const ss=${JSON.stringify(res.students)},g=document.getElementById('g');if(typeof QRCode==='undefined'){setTimeout(gen,100);return;}ss.forEach(s=>{const b=document.createElement('div');b.className='box';const q=document.createElement('div');q.className='qr';const l=document.createElement('div');l.className='lbl';l.innerHTML=(s.name||'')+'<br>'+(s.dept||'')+' | '+(s.house||'');b.appendChild(q);b.appendChild(l);g.appendChild(b);try{new QRCode(q,{text:(s.name||'')+' | '+(s.dept||'')+' | '+(s.house||''),width:110,height:110});}catch(e){}});}gen();<\/script></body></html>`);
       pw.document.close();
     }
+
     async function generateReport(period) {
       const pw = window.open('', '_blank'); if (!pw) { showToast("❌ Popup blocked!"); return; }
       pw.document.write(`<html><body style="font-family:sans-serif; text-align:center; margin-top:20vh; background:#111; color:#00ff88;"><h2>Fetching Database...<br><br>Please wait ⏳</h2></body></html>`);
@@ -1166,6 +1206,7 @@
         pw.document.close(); showToast("✅ Report generated!");
       } catch (e) { if (pw && !pw.closed) { pw.document.body.innerHTML = `<h3 style="color:red;font-family:sans-serif;">❌ Error generating report.</h3>`; } showToast("❌ Error: " + e.message); }
     }
+
     async function downloadDatabaseCSV() {
       showToast("📥 Preparing database CSV...");
       try {
@@ -1186,6 +1227,7 @@
         showToast("✅ Database downloaded!");
       } catch (e) { showToast("❌ Error: " + e.message); }
     }
+
     let stmtHtml5QrCode = null;
     function openStuStmtModal() {
       document.getElementById('stu-stmt-modal').style.display = 'block';
@@ -1211,6 +1253,7 @@
         };
       });
     }
+
     function closeStuStmtModal() { if (stmtHtml5QrCode) stopStmtCam(); document.getElementById('stu-stmt-modal').style.display = 'none'; }
     async function toggleStmtCam() {
       if (!stmtHtml5QrCode) {
@@ -1223,6 +1266,7 @@
       } else { stopStmtCam(); }
     }
     async function stopStmtCam() { if (stmtHtml5QrCode) { await stmtHtml5QrCode.stop(); stmtHtml5QrCode = null; } document.getElementById('stmt-reader').style.display = 'none'; }
+
     async function fetchStudentStatement() {
       const name = document.getElementById('stmt-search').value.trim(); if (!name) { showToast("⚠️ Enter name!"); return; }
       showToast("⏳ Loading statement...");
@@ -1235,6 +1279,7 @@
         resDiv.innerHTML = `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(251,255,0,0.2);border-radius:16px;padding:25px;margin-bottom:20px;text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:white;line-height:1;">${studentProfile.name}</div><div style="font-size:12px;color:var(--accent);font-weight:900;letter-spacing:2px;margin:8px 0;">${studentProfile.dept.toUpperCase()} | ${studentProfile.house.toUpperCase()} HOUSE</div><div style="font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--neon);margin:15px 0;">${totalPoints}</div><div style="font-size:10px;color:#666;letter-spacing:3px;">TOTAL POINTS EARNED</div></div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;margin-bottom:20px;"><div style="font-size:10px;font-weight:900;color:#888;letter-spacing:2px;margin-bottom:15px;">CATEGORY BREAKDOWN</div>${catHtml || '<div style="color:#555;font-style:italic;">No points yet.</div>'}</div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;"><div style="font-size:10px;font-weight:900;color:#888;letter-spacing:2px;margin-bottom:15px;">RECENT ACTIVITY</div><div style="max-height:300px;overflow-y:auto;">${logs.map(l => `<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;font-weight:900;color:#fff;">${l.cat}</span><span style="font-size:14px;font-weight:900;color:${l.pts > 0 ? 'var(--neon)' : 'var(--red)'}">${l.pts > 0 ? '+' : ''}${l.pts}</span></div><div style="font-size:10px;color:#666;margin-top:4px;">${new Date(l.date).toLocaleDateString()} • By ${l.teacher}</div>${l.remarks ? `<div style="font-size:10px;color:#888;font-style:italic;margin-top:4px;">"${l.remarks}"</div>` : ''}</div>`).join('')}</div></div><button onclick="printStudentStatement('${name}')" class="btn-main" style="margin-top:20px;background:#fff;color:#000;font-size:16px;">🖨️ PRINT A4 PERFORMANCE STATEMENT</button>`;
       } catch (e) { showToast("❌ Error: " + e.message); }
     }
+
     async function printStudentStatement(name) {
       const resp = await api({ action: "getStudentStatement", studentName: name }); if (!resp.success) return;
       const { totalPoints, categoryBreakdown, logs, studentProfile } = resp; const pw = window.open('', '_blank');
